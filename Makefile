@@ -29,6 +29,9 @@ BUGSTO = gflima@telemidia.puc-rio.br
 TESTS_ENVIRONMENT = LUA_PATH="$(PWD)/?.lua;;$$LUA_PATH" $(LUA)
 
 TESTS =\
+ test-path-is-absolute.lua\
+ test-path-is-relative.lua\
+ test-path-split.lua\
  test-xmlsugar-eval.lua\
  test-xmlsugar-insert.lua\
  test-xmlsugar-remove.lua\
