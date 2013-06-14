@@ -32,6 +32,7 @@ TESTS =\
  test-path-is-absolute.lua\
  test-path-is-relative.lua\
  test-path-split.lua\
+ test-path-join.lua\
  test-xmlsugar-eval.lua\
  test-xmlsugar-insert.lua\
  test-xmlsugar-remove.lua\

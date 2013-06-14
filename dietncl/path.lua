@@ -81,3 +81,13 @@ function basename (p)
    local _, file = split (p)
    return file
 end
+
+-- Returns the result of concatenating path-names P and Q.
+function join (p, q)
+   assert (#p > 0 or #q > 0)
+   if is_sep (p:sub (#p, #p)) or is_sep (q:sub (1,1)) then
+      return p..q
+   else
+      return p..'/'..q
+   end
+end
