@@ -17,7 +17,6 @@
 -- along with DietNCL.  If not, see <http://www.gnu.org/licenses/>.
 
 local _G = _G
-local assert = assert
 module (...)
 
 local function at (s, i)
