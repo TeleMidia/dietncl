@@ -16,7 +16,7 @@
 # You should have received a copy of the GNU General Public License
 # along with DietNCL.  If not, see <http://www.gnu.org/licenses/>.
 
-include config
+sinclude config
 PREFIX       ?= /usr
 BIN_DIR      ?= $(PREFIX)/bin
 LUA          ?= lua
