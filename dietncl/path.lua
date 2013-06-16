@@ -20,74 +20,67 @@ local _G = _G
 local assert = assert
 module (...)
 
--- Returns true if we're on MS Windows.
-local function is_windows ()
-   return _G.package.config:sub (1,1) == '\\'
+local function at (s, i)
+   return s:sub (i,i)
 end
 
+-- True if we're on MS Windows.
+local is_windows = at (_G.package.config, 1) == '\\'
+
 -- Returns true if char C is a path separator.
-local function is_sep (c)
-   if is_windows () then
+local function is_slash (c)
+   if is_windows then
       return c == '/' or c == '\\'
    else
       return c == '/'
    end
 end
 
+-- Returns the length of file system prefix in path name P.
+local function fs_prefix_len (p)
+   if is_windows and (at (p, 1)):match ('[a-zA-Z]') and at (p, 2) ':' then
+      return 2
+   end
+   return 0
+end
+
 
 -- Exported functions.
 
--- Returns true if path-name P is absolute.
+-- Returns true if path name P is absolute.
 function is_absolute (p)
-   local c = p:sub (1,1)
-   if is_windows () then
-      return c == '/' or c == '\\' or p:sub (2,2) == ':'
-   else
-      return c == '/'
+   if is_slash (at (p, 1)) then
+      return true
    end
+   if is_windows and fs_prefix_len (p) > 0 then
+      return true
+   end
+   return false
 end
 
--- Returns true if path-name P is relative.
+-- Returns true if path name P is relative.
 function is_relative (p)
    return not is_absolute (p)
 end
 
--- Returns the directory part and file part of path-name P.
--- If there is no directory part, the first returned value will be empty.
+-- Returns the dirname and basename parts of path name P.
+-- If there is no dirname part, the first returned value will be empty.
 function split (p)
+   local base = fs_prefix_len (p)
    local i = #p
-   assert (i > 0)
-   while i > 0 do
-      local c = p:sub (i,i)
-      if is_sep (c) then
-         break
-      end
+   while i > base and not is_slash (at (p, i)) do
       i = i - 1
    end
-   if i == 0 then
-      return '', p
-   end
-   return p:sub (1, i), p:sub (i+1)
+   return p:sub (1, i), p:sub (i + 1)
 end
 
--- Returns the directory part of path-name P.
-function dirname (p)
-   local dir, _ =  split (p)
-   return dir
-end
-
--- Returns the file part of path-name P.
-function basename (p)
-   local _, file = split (p)
-   return file
-end
-
--- Returns the result of concatenating path-names P and Q.
+-- Returns the result of concatenating path names P and Q.
 function join (p, q)
-   assert (#p > 0 or #q > 0)
-   if is_sep (p:sub (#p, #p)) or is_sep (q:sub (1,1)) then
-      return p..q
+   if #p == 0 then
+      return q
+   elseif #q == 0 then
+      return p
    else
-      return p..'/'..q
+      return (p..'/'..q):gsub ('/+', '/')
    end
 end

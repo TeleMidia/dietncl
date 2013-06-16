@@ -19,9 +19,10 @@
 local path = require ('dietncl.path')
 
 -- Empty path.
-assert (pcall (path.split, '') == false)
+local dir, file = path.split ('')
+assert (dir == '' and file == '')
 
-local dir, file = path.split ('abc')
+dir, file = path.split ('abc')
 assert (dir == '' and file == 'abc')
 
 local dir, file = path.split ('.')

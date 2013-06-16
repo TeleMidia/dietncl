@@ -18,11 +18,10 @@
 
 local path = require ('dietncl.path')
 
--- Empty path.
-assert (pcall (path.join, '', '') == false)
+assert (path.join ('', ''))
 assert (path.join ('a', 'b') == 'a/b')
 assert (path.join ('a/', 'b') == 'a/b')
-assert (path.join ('/', '/') == '//')
-assert (path.join ('/a/b/c/', '/d/e/f') == '/a/b/c//d/e/f')
+assert (path.join ('/', '/') == '/')
+assert (path.join ('/a/b/c/', '/d/e/f') == '/a/b/c/d/e/f')
 assert (path.join ('/a/b/c', '/d/e/f') == '/a/b/c/d/e/f')
 assert (path.join ('/a/b/c', 'd/e/f') == '/a/b/c/d/e/f')
