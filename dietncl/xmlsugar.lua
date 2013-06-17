@@ -17,31 +17,16 @@
 -- along with DietNCL.  If not, see <http://www.gnu.org/licenses/>.
 
 xml = require ('LuaXml')
-TAG = xml.TAG
-xml.PARENT = -1
+TAG          = xml.TAG
+xml.PARENT   = -1
+xml.USERDATA = -2
 
--- Returns E if E is a LuaXML node, otherwise returns nil.
-local function isxml (e)
+-- Checks whether E is a LuaXML element and returns E.
+local function checkxml (e)
    local t = getmetatable (e)
-   if t and t.__index == xml then
-      return e
-   else
-      return nil
-   end
+   assert (t and t.__index == xml)
+   return e
 end
-
--- Returns E if E is an element without parent, otherwise returns nil.
-local function isxmlroot (e)
-   assert (isxml (e))
-   if e[xml.PARENT] == nil then
-      return e
-   else
-      return nil
-   end
-end
-
-local function checkxml (e) return assert (isxml (e)) end
-local function checkxmlroot (e) return assert (isxmlroot (e)) end
 
 -- Sets PARENT to be the parent element of E.
 local function setparent (e, parent)
@@ -60,7 +45,9 @@ end
 
 -- Exported functions.
 
--- Sugarize xml.eval().
+-- Parses the XML string S.
+-- Returns a new XML handle if successful,
+-- otherwise returns nil plus error message.
 local _eval = xml.eval
 function xml.eval (s)
    local status, e = pcall (_eval, s)
@@ -70,7 +57,8 @@ function xml.eval (s)
    return sugarize (e)
 end
 
--- Sugarize xml.load().
+-- Parses the XML document at path name S.
+-- Returns true if successful, otherwise returns nil plus error message.
 local _load = xml.load
 function xml.load (s)
    local status, e = pcall (_load, s)
@@ -92,18 +80,18 @@ function xml.insert (e, pos, child)
    checkxml (e)
    if child == nil then
       child = pos
-      pos = #e+1
+      pos = #e + 1
    end
    if pos < 1 or pos > #e+1 then
       return nil
    end
-   checkxmlroot (child)
+   assert (child[xml.PARENT] == nil)
    setparent (child, e)
    table.insert (e, pos, child)
    return pos
 end
 
--- Fix xml.append ().
+-- Safe replacement for the original append() function.
 function xml.append (e, child)
    return xml.insert (e, child)
 end
@@ -146,7 +134,7 @@ function xml.attributes (e)
    end
 end
 
--- Returns an identical copy of the tree rooted at E.
+-- Returns an identical copy of tree E.
 function xml.clone (e)
    checkxml (e)
    local t = xml.new (e:tag ())
@@ -159,8 +147,8 @@ function xml.clone (e)
    return t
 end
 
--- Walk the elements of tree E.
--- ACTION is the function to be called at each element.
+-- Walks across the elements of tree E.
+-- ACTION is a function to be called at each element.
 function xml.walk (e, action)
    checkxml (e)
    action (e)
@@ -169,8 +157,8 @@ function xml.walk (e, action)
    end
 end
 
--- Returns an array containing the elements of tree E
--- that match a given <tag,attribute,value> triple.
+-- Looks for the elements that match the triple (tag,attribute,value) in the
+-- tree E and returns an array containing the matched elements.
 -- TAG is a tag name or nil (any).
 -- ATTRIBUTE is an attribute name or nil (any).
 -- VALUE is a value string or nil (any).
@@ -185,4 +173,25 @@ function xml.match (e, tag, attribute, value)
    end
    xml.walk (e, match)
    return t
+end
+
+-- Returns user data previously attached to element E.
+-- KEY is the key the user data was attached to.
+function xml.getuserdata (e, key)
+   checkxml (e)
+   if e[xml.USERDATA] == nil then
+      return nil
+   end
+   return e[xml.USERDATA][key]
+end
+
+-- Attaches user data to element E.
+-- KEY is the key to attach the user data to.
+-- USERDATA is a user data to attach to the element.
+function xml.setuserdata (e, key, userdata)
+   checkxml (e)
+   if e[xml.USERDATA] == nil then
+      e[xml.USERDATA] = {}
+   end
+   e[xml.USERDATA][key] = userdata
 end

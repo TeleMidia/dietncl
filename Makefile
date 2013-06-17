@@ -26,7 +26,8 @@ DIETNCL_TOOL ?= dietncl
 COLOR_TESTS  ?= yes
 
 BUGSTO = gflima@telemidia.puc-rio.br
-TESTS_ENVIRONMENT = LUA_PATH="$(PWD)/?.lua;;$$LUA_PATH" $(LUA)
+TESTS_ENVIRONMENT =\
+ LUA_PATH="$(PWD)/?.lua;$(PWD)/?/init.lua;;$$LUA_PATH" $(LUA)
 
 TESTS =\
  test-path-is-absolute.lua\
@@ -39,7 +40,8 @@ TESTS =\
  test-xmlsugar-children.lua\
  test-xmlsugar-attributes.lua\
  test-xmlsugar-clone.lua\
- test-xmlsugar-match.lua
+ test-xmlsugar-match.lua\
+ test-xmlsugar-userdata.lua
 
 XFAIL_TESTS =
 
