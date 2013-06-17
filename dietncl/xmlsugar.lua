@@ -58,7 +58,8 @@ function xml.eval (s)
 end
 
 -- Parses the XML document at path name S.
--- Returns true if successful, otherwise returns nil plus error message.
+-- Returns a new XML handle if successful,
+-- otherwise returns nil plus error message.
 local _load = xml.load
 function xml.load (s)
    local status, e = pcall (_load, s)
