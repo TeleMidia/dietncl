@@ -30,8 +30,8 @@ TESTS_ENVIRONMENT =\
  LUA_PATH="$(PWD)/?.lua;$(PWD)/?/init.lua;;$$LUA_PATH" $(LUA)
 
 TESTS =\
- test-path-is-absolute.lua\
- test-path-is-relative.lua\
+ test-path-absolute.lua\
+ test-path-relative.lua\
  test-path-split.lua\
  test-path-join.lua\
  test-xmlsugar-eval.lua\

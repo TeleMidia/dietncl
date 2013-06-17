@@ -1,4 +1,4 @@
--- test-path-is-absolute.lua -- Checks path.is_absolute.
+-- test-path-relative.lua -- Checks path.relative.
 -- Copyright (C) 2013 PUC-Rio/Laboratorio TeleMidia
 --
 -- This file is part of DietNCL.
@@ -17,9 +17,9 @@
 -- along with DietNCL.  If not, see <http://www.gnu.org/licenses/>.
 
 local path = require ('dietncl.path')
-assert (path.is_absolute ('') == false)
-assert (path.is_absolute ('//') == true)
-assert (path.is_absolute ('a/b/c/') == false)
-assert (path.is_absolute ('/a/b/c/') == true)
-assert (path.is_absolute (':/a/b/c/') == false)
-assert (path.is_absolute ('5:/a/b/') == false)
+
+assert (path.relative ('') == true)
+assert (path.relative ('//') == false)
+assert (path.relative ('a/b/c/') == true)
+assert (path.relative ('/a/b/c/') == false)
+assert (path.relative (':/a/b/c/') == true)

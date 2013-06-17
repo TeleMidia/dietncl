@@ -24,11 +24,11 @@ local function at (s, i)
 end
 
 -- True if we're on MS Windows.
-local is_windows = at (_G.package.config, 1) == '\\'
+local iswindows = at (_G.package.config, 1) == '\\'
 
 -- Returns true if char C is a path separator.
-local function is_slash (c)
-   if is_windows then
+local function isslash (c)
+   if iswindows then
       return c == '/' or c == '\\'
    else
       return c == '/'
@@ -36,8 +36,8 @@ local function is_slash (c)
 end
 
 -- Returns the length of file system prefix in path name P.
-local function fs_prefix_len (p)
-   if is_windows and (at (p, 1)):match ('[a-zA-Z]') and at (p, 2) ':' then
+local function filesystem_prefix_len (p)
+   if iswindows and (at (p, 1)):match ('[a-zA-Z]') and at (p, 2) ':' then
       return 2
    end
    return 0
@@ -47,27 +47,27 @@ end
 -- Exported functions.
 
 -- Returns true if path name P is absolute.
-function is_absolute (p)
-   if is_slash (at (p, 1)) then
+function absolute (p)
+   if isslash (at (p, 1)) then
       return true
    end
-   if is_windows and fs_prefix_len (p) > 0 then
+   if iswindows and filesystem_prefix_len (p) > 0 then
       return true
    end
    return false
 end
 
 -- Returns true if path name P is relative.
-function is_relative (p)
-   return not is_absolute (p)
+function relative (p)
+   return not absolute (p)
 end
 
 -- Returns the dirname and basename parts of path name P.
 -- If there is no dirname part, the first returned value will be empty.
 function split (p)
-   local base = fs_prefix_len (p)
+   local base = filesystem_prefix_len (p)
    local i = #p
-   while i > base and not is_slash (at (p, i)) do
+   while i > base and not isslash (at (p, i)) do
       i = i - 1
    end
    return p:sub (1, i), p:sub (i + 1)
