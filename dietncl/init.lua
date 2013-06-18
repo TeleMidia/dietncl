@@ -17,7 +17,8 @@
 -- along with DietNCL.  If not, see <http://www.gnu.org/licenses/>.
 
 require ('dietncl.xmlsugar')
-local xml = xml
+local xml    = xml
+local assert = assert
 module (...)
 
 
@@ -27,7 +28,7 @@ module (...)
 -- Returns a new NCL handle if successful if successful,
 -- otherwise returns nil plus error message.
 function parsestring (s)
-   local ncl, err = xml.eval (s)
+   local ncl, err = xml.eval (assert (s))
    if ncl == nil then
       return nil, err
    end
@@ -38,7 +39,7 @@ end
 -- Returns a new NCL handle if successful if successful,
 -- otherwise returns nil plus error message.
 function parse (pathname)
-   local ncl, err = xml.load (pathname)
+   local ncl, err = xml.load (assert (pathname))
    if ncl == nil then
       return nil, err
    end
