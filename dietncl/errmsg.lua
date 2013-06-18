@@ -22,6 +22,7 @@ module (...)
 local messages = {
    attrmissing = "invalid <%s>: missing required attribute '%s'",
    badparent   = "invalid <%s>: bad parent <%s>",
+   badidref    = "invalid <%s>: bad id-ref %s='%s'",
 }
 
 -- Install exported functions.
