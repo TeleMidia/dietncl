@@ -27,7 +27,8 @@ COLOR_TESTS  ?= yes
 
 BUGSTO = gflima@telemidia.puc-rio.br
 TESTS_ENVIRONMENT =\
- LUA_PATH="$(PWD)/?.lua;$(PWD)/?/init.lua;;$$LUA_PATH" $(LUA)
+ LUA_PATH="$(PWD)/tests/?.lua;$(PWD)/?.lua;$(PWD)/?/init.lua;;$$LUA_PATH"\
+ $(LUA)
 
 TESTS =\
  test-path-absolute.lua\
@@ -43,7 +44,8 @@ TESTS =\
  test-xmlsugar-match.lua\
  test-xmlsugar-userdata.lua\
  test-init-parse.lua\
- test-init-parsestring.lua
+ test-init-parsestring.lua\
+ test-filter-import.lua
 
 XFAIL_TESTS =
 
