@@ -158,7 +158,7 @@ function xml.walk (e, action)
    end
 end
 
--- Looks for the elements that match the triple (tag,attribute,value) in the
+-- Looks for all elements that match the triple (tag,attribute,value) in the
 -- tree E and returns an array containing the matched elements.
 -- TAG is a tag name or nil (any).
 -- ATTRIBUTE is an attribute name or nil (any).
