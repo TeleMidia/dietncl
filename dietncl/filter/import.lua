@@ -29,10 +29,11 @@ local path    = require ('dietncl.path')
 local _G     = _G
 local assert = assert
 local ipairs = ipairs
+local unpack = table.unpack
 module (...)
 
 -- List of possible parents for <importBase>.
-local possible_importbase_parent = {
+local importbase_parent_list = {
    connectorBase  = true,
    descriptorBase = true,
    regionBase     = true,
@@ -72,20 +73,36 @@ end
 --
 -- Returns E if successful, otherwise returns nil plus error message.
 local function import_base (e, ext, alias, region, baseid)
-   local base = assert (e:tag ())
-   assert (possible_importbase_parent [base])
-
    local ncl = assert (e:parent ())
    ncl = assert (ncl:parent ())
    assert (ncl:tag () == 'ncl')
 
-   local t = ext:match (base)
-   if #t == 0 then
+   local tag = assert (e:tag ())
+   assert (importbase_parent_list [tag])
+
+   if region then
+      assert (tag == 'regionBase')
+      e = unpack (ncl:match ('region', 'id', region))
+      if e == nil then
+         return nil, errmsg.badidref (tag, 'region', region)
+      end
+   end
+
+   if baseid then
+      assert (tag == 'regionBase')
+      ext = unpack (ext:match (tag, 'id', baseid))
+      if ext == nil then
+         return nil, errmsg.badidref (tag, 'baseId', baseid)
+      end
+   else
+      ext = unpack (ext:match (tag))
+   end
+
+   if not ext then
       return ncl                -- nothing to do
    end
 
-   assert (#t == 1)
-   ext = t[1]:clone ()
+   ext = ext:clone ()
    ext:walk (function (e) head_update_id_and_idref (e, alias) end)
    for x in ext:children () do
       e:insert (x)
@@ -125,14 +142,14 @@ local function resolve_importbase (ncl, e)
    -- Check parent.
    local base = assert (e:parent ())
    local tag = assert (base:tag ())
-   if not possible_importbase_parent[tag] then
+   if not importbase_parent_list[tag] then
       return false, errmsg.badparent ('importBase', tag)
    end
 
    -- Import the elements of the external document.
    local ncl, err = import_base (base, ext, e.alias, e.region, e.baseId)
    if ncl == nil then
-      return nil, err
+      return false, err
    end
 
    -- Remove <importBase> element.

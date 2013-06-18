@@ -119,10 +119,69 @@ assert (err:match ('/!!!NON_EXISTENT!!!'))
 os.remove (tmp)
 
 
+-- Check <importBase> with invalid 'region' (no such region)
+
+tmp = util.tmpfile ([[
+<ncl>
+ <head>
+  <regionBase>
+   <region id='r1' />
+  </regionBase>
+ </head>
+ <body />
+</ncl>]])
+
+ncl = assert (dietncl.parsestring (([[
+<ncl>
+ <head>
+  <regionBase>
+   <region id='r2' />
+   <importBase alias='a' documentURI='%s' region='r3' />
+  </regionBase>
+ </head>
+ <body />
+</ncl>]]):format (tmp)))
+
+ncl, err = filter.apply (ncl)
+assert (err == errmsg.badidref ('regionBase', 'region', 'r3'))
+os.remove (tmp)
+
+
+-- Check <importBase> with invalid 'baseId' (no such region-base).
+
+tmp = util.tmpfile ([[
+<ncl>
+ <head>
+  <regionBase id='rb'>
+   <region id='r1' />
+  </regionBase>
+ </head>
+ <body />
+</ncl>]])
+
+ncl = assert (dietncl.parsestring (([[
+<ncl>
+ <head>
+  <regionBase>
+   <importBase alias='a' documentURI='%s' baseId='rb' />
+   <importBase alias='b' documentURI='%s' baseId='rbx' />
+  </regionBase>
+ </head>
+ <body />
+</ncl>]]):format (tmp, tmp)))
+
+ncl, err = filter.apply (ncl)
+assert (err == errmsg.badidref ('regionBase', 'baseId', 'rbx'))
+os.remove (tmp)
+
+
 -- TODO: Check multiple inclusions of the same file.
 
 
--- Check non-recursive resolution.
+-- TODO: Check circular inclusions.
+
+
+-- Check simple (non-recursive) resolution.
 
 tmp = util.tmpfile ([[
 <ncl>
@@ -187,6 +246,67 @@ assert (d2[1].name == 'right' and d2[1].value == '5')
 local d3 = assert (ncl:match ('descriptor', 'id', 'y#d3')[1])
 assert (d3.transIn == 'y#t1;y#t2;y#t3;')
 assert (d3.transOut == 'y#t1')
+os.remove (tmp)
+
+
+-- Check simple resolution of external bases to a given local region.
+
+tmp = util.tmpfile ([[
+<ncl>
+ <head>
+  <regionBase id='rb1' device='3'>
+   <region id='rb11' top='30%'>
+    <region id='rb12' left='44%' />
+   </region>
+  </regionBase>
+  <regionBase id='rb2'>
+   <region id='rb21' width='25%' />
+   <region id='rb22' height='23%' />
+  </regionBase>
+  <regionBase id='rb3'>
+   <region id='rb31' zIndex='3' />
+   <region id='rb32' zIndex='2'>
+    <region id='rb33' />
+   </region>
+  </regionBase>
+ </head>
+ <body>
+ </body>
+</ncl>]])
+
+ncl = dietncl.parsestring (([[
+<ncl>
+ <head>
+  <regionBase id='rba'>
+   <importBase alias='a' documentURI='%s' baseId='rb1' />
+  </regionBase>
+  <regionBase id='rbb'>
+   <region id='rbb1' />
+   <region id='rbb2'>
+    <region id='rbb3' />
+   </region>
+   <importBase alias='b' documentURI='%s' region='rbb3' baseId='rb3' />
+  </regionBase>
+ </head>
+ <body />
+</ncl>]]):format (tmp, tmp))
+
+ncl = assert (filter.apply (ncl))
+assert (#ncl:match ('regionBase') == 2)
+
+local rb11 = assert (ncl:match ('region', 'id', 'a#rb11')[1])
+assert (rb11.id == 'a#rb11' and rb11.top == '30%')
+local rb12 = assert (#rb11 == 1 and rb11[1])
+assert (rb12.id == 'a#rb12' and rb12.left == '44%' and #rb12 == 0)
+
+local rbb3 = assert (ncl:match ('region', 'id', 'rbb3')[1])
+assert (rbb3.id == 'rbb3' and #rbb3 == 2)
+local rb31 = rbb3[1]
+assert (rb31.id == 'b#rb31' and rb31.zIndex == '3' and #rb31 == 0)
+local rb32 = rbb3[2]
+assert (rb32.id == 'b#rb32' and rb32.zIndex == '2' and #rb32 == 1)
+local rb33 = rb32[1]
+assert (rb33.id == 'b#rb33' and #rb33 == 0)
 os.remove (tmp)
 
 
