@@ -225,25 +225,25 @@ ncl = assert (dietncl.parsestring (([[
 </ncl>]]):format (tmp, tmp, tmp, tmp)))
 
 ncl = assert (filter.apply (ncl))
-assert (#ncl:match ('importBase') == 0)
+assert (ncl:match ('importBase') == nil)
 
-local r1 = assert (ncl:match ('region', 'id', 'x#r1')[1])
+local r1 = assert (ncl:match ('region', 'id', 'x#r1'))
 assert (r1.left == '13%')
 
-local r2 = assert (ncl:match ('region',  'id', 'x#r2')[1])
+local r2 = assert (ncl:match ('region',  'id', 'x#r2'))
 assert (r2.top == '25%')
 
-local d1 = assert (ncl:match ('descriptor', 'id', 'y#d1')[1])
+local d1 = assert (ncl:match ('descriptor', 'id', 'y#d1'))
 assert (d1.transIn == ';')
 assert (d1.transOut == 'y#t1;y#t2')
 assert (d1[1].name == 'top' and d1[1].value == '30')
 assert (d1[2].name == 'left' and d1[2].value == '35%')
 
-local d2 = assert (ncl:match ('descriptor', 'id', 'y#d2')[1])
+local d2 = assert (ncl:match ('descriptor', 'id', 'y#d2'))
 assert (d2.region == 'y#r2')
 assert (d2[1].name == 'right' and d2[1].value == '5')
 
-local d3 = assert (ncl:match ('descriptor', 'id', 'y#d3')[1])
+local d3 = assert (ncl:match ('descriptor', 'id', 'y#d3'))
 assert (d3.transIn == 'y#t1;y#t2;y#t3;')
 assert (d3.transOut == 'y#t1')
 os.remove (tmp)
@@ -292,14 +292,14 @@ ncl = dietncl.parsestring (([[
 </ncl>]]):format (tmp, tmp))
 
 ncl = assert (filter.apply (ncl))
-assert (#ncl:match ('regionBase') == 2)
+assert (#{ncl:match ('regionBase')} == 2)
 
-local rb11 = assert (ncl:match ('region', 'id', 'a#rb11')[1])
+local rb11 = assert (ncl:match ('region', 'id', 'a#rb11'))
 assert (rb11.id == 'a#rb11' and rb11.top == '30%')
 local rb12 = assert (#rb11 == 1 and rb11[1])
 assert (rb12.id == 'a#rb12' and rb12.left == '44%' and #rb12 == 0)
 
-local rbb3 = assert (ncl:match ('region', 'id', 'rbb3')[1])
+local rbb3 = assert (ncl:match ('region', 'id', 'rbb3'))
 assert (rbb3.id == 'rbb3' and #rbb3 == 2)
 local rb31 = rbb3[1]
 assert (rb31.id == 'b#rb31' and rb31.zIndex == '3' and #rb31 == 0)
@@ -388,28 +388,28 @@ ncl = dietncl.parsestring (([[
 </ncl>]]):format (tmp1, tmp3, tmp3))
 
 ncl = assert (filter.apply (ncl))
-assert (#ncl:match ('importBase') == 0)
+assert (ncl:match ('importBase') == nil)
 
-assert (#(ncl:match ('descriptorBase')[1]) == 2)
-assert (ncl:match ('descriptor', 'id', 'd2')[1])
-local d1 = assert (ncl:match ('descriptor', 'id', 'a#d1')[1])
+assert (#(ncl:match ('descriptorBase')) == 2)
+assert (ncl:match ('descriptor', 'id', 'd2'))
+local d1 = assert (ncl:match ('descriptor', 'id', 'a#d1'))
 assert (d1.region == 'a#r2')
 assert (d1[1].name == 'top' and d1[1].value == '3.5%')
 
-assert (#(ncl:match ('connectorBase')[1]) == 3)
-assert (ncl:match ('causalConnector', 'id', 'c2')[1])
-local c1 = assert (ncl:match ('causalConnector', 'id', 'b#x#c1')[1])
+assert (#(ncl:match ('connectorBase')) == 3)
+assert (ncl:match ('causalConnector', 'id', 'c2'))
+local c1 = assert (ncl:match ('causalConnector', 'id', 'b#x#c1'))
 assert (c1[1]:tag () == 'simpleCondition' and c1[1].role == 'onBegin')
 assert (c1[2]:tag () == 'simpleAction' and c1[2].role == 'start')
-c1 = assert (ncl:match ('causalConnector', 'id', 'b#w#c1')[1])
+c1 = assert (ncl:match ('causalConnector', 'id', 'b#w#c1'))
 assert (c1[1]:tag () == 'simpleCondition' and c1[1].role == 'onPause')
 assert (c1[2]:tag () == 'simpleAction' and c1[2].role == 'abort')
 
-assert (#(ncl:match ('regionBase')[1]) == 2)
-local r3 = assert (ncl:match ('region', 'id', 'c#r3')[1])
+assert (#(ncl:match ('regionBase')) == 2)
+local r3 = assert (ncl:match ('region', 'id', 'c#r3'))
 assert (r3.zIndex == '3')
 
-local r1 = assert (ncl:match ('region', 'id', 'c#y#r1')[1])
+local r1 = assert (ncl:match ('region', 'id', 'c#y#r1'))
 assert (r1.top == '34%')
 assert (r1[1].id == 'c#y#r2' and r1[1].left == '44%')
 

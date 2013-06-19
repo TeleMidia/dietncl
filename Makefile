@@ -42,6 +42,7 @@ TESTS =\
  test-xmlsugar-attributes.lua\
  test-xmlsugar-clone.lua\
  test-xmlsugar-match.lua\
+ test-xmlsugar-gmatch.lua\
  test-xmlsugar-userdata.lua\
  test-init-parse.lua\
  test-init-parsestring.lua\

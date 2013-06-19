@@ -158,22 +158,63 @@ function xml.walk (e, action)
    end
 end
 
--- Looks for all elements that match the triple (tag,attribute,value) in the
+-- Looks for all elements that match the triple (tag,attribute,value) of
 -- tree E and returns an array containing the matched elements.
 -- TAG is a tag name or nil (any).
 -- ATTRIBUTE is an attribute name or nil (any).
 -- VALUE is a value string or nil (any).
-function xml.match (e, tag, attribute, value)
+local function domatch (e, tag, attribute, value)
    local t = {}
    local match = function (e)
-      if (tag == nil or e:tag () == tag)
-         and (attribute == nil or e[attribute] ~= nil)
-         and (value == nil or e[attribute] == value) then
-         t[#t+1] = e
+      if tag and e:tag () ~= tag then
+         return
       end
+      if attribute then
+         if not e[attribute] then
+            return
+         end
+         if value and e[attribute] ~= value then
+            return
+         end
+      else
+         if value then
+            local found = false
+            for attr in e:attributes () do
+               if e[attr] == value then
+                  found = true
+               end
+            end
+            if not found then
+               return
+            end
+         end
+      end
+      t[#t+1] = e               -- success
    end
    xml.walk (e, match)
    return t
+end
+
+function xml.match (...)
+   return table.unpack (domatch (...))
+end
+
+-- Returns an iterator function that, each time is called, returns the next
+-- element of tree E that matches the triple (tag,attribute,value).
+-- TAG is a tag name or nil (any).
+-- ATTRIBUTE is an attribute name or nil (any).
+-- VALUE is a value string or nil (any).
+function xml.gmatch (...)
+   local t = domatch (...)
+   local i = 1
+   return function ()
+      if i <= #t then
+         local x = t[i]
+         i = i + 1
+         return x
+      end
+      return nil
+   end
 end
 
 -- Returns user data previously attached to element E.

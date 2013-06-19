@@ -1,4 +1,4 @@
--- test-xmlsugar-match.lua -- Checks xmlsugar.match.
+-- test-xmlsugar-gmatch.lua -- Checks xmlsugar.gmatch.
 -- Copyright (C) 2013 PUC-Rio/Laboratorio TeleMidia
 --
 -- This file is part of DietNCL.
@@ -19,10 +19,15 @@
 require ('dietncl.xmlsugar')
 
 local root = xml.eval ('<root/>')
-assert (root:match ('x') == nil)
+local f = assert (root:gmatch ('x'))
+assert (f () == nil)
+assert (f () == nil)
+assert (f () == nil)
 
-t = {root:match ('root')}
-assert (t[1]:tag () == 'root' and #t == 1)
+f = assert (root:gmatch ('root'))
+assert (f () == root)
+assert (f () == nil)
+assert (f () == nil)
 
 root = xml.eval ([[
 <root>
@@ -35,27 +40,31 @@ root = xml.eval ([[
  </z>
  <y id='y3'/>
 </root>]])
-t = {root:match ('y')}
-assert (#t == 3)
-assert (t[1].id == 'y1')
-assert (t[2].id == 'y2')
-assert (t[3].id == 'y3')
 
-t = {root:match ('y', 'a')}
-assert (#t == 2)
-assert (t[1].id == 'y1')
-assert (t[2].id == 'y2')
+f = assert (root:gmatch ('y'))
+y1 = assert (f ())
+assert (y1.id == 'y1' and y1.a == '3')
+y2 = assert (f ())
+assert (y2.id == 'y2' and y2.a == '4')
+y3 = assert (f ())
+assert (y3.id == 'y3')
+assert (f() == nil)
 
-t = {root:match ('y', 'a', '4')}
-assert (#t == 1)
-assert (t[1].id == 'y2')
+f = assert (root:gmatch (nil, 'a'))
+y1 = assert (f ())
+assert (y1.id == 'y1' and y1.a == '3')
+w = assert (f ())
+assert (w.a == '3')
+y2 = assert (f ())
+assert (y2.id == 'y2' and y2.a == '4')
+assert (f () == nil)
 
-t = {root:match (nil, 'id')}
-assert (#t == 3)
-assert (t[1]:tag () == 'y' and t[1].id == 'y1')
-assert (t[2]:tag () == 'y' and t[2].id == 'y2')
-assert (t[3]:tag () == 'y' and t[3].id == 'y3')
+f = assert (root:gmatch (nil, nil, '4'))
+y2 = assert (f ())
+assert (y2.id == 'y2' and y2.a == '4')
 
-t = {root:match (nil, 'a', '4')}
-assert (#t == 1)
-assert (t[1]:tag () == 'y' and t[1].id == 'y2')
+f = assert (root:gmatch ())
+local t = { 'root', 'x', 'y', 'z', 'w', 'y', 'y' }
+for i=1,#t do
+   assert ((f ()):tag () == t[i])
+end

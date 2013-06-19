@@ -29,7 +29,6 @@ local path    = require ('dietncl.path')
 local _G     = _G
 local assert = assert
 local ipairs = ipairs
-local unpack = table.unpack
 module (...)
 
 -- List of possible parents for <importBase>.
@@ -82,7 +81,7 @@ local function import_base (e, ext, alias, region, baseid)
 
    if region then
       assert (tag == 'regionBase')
-      e = unpack (ncl:match ('region', 'id', region))
+      e = ncl:match ('region', 'id', region)
       if e == nil then
          return nil, errmsg.badidref (tag, 'region', region)
       end
@@ -90,12 +89,12 @@ local function import_base (e, ext, alias, region, baseid)
 
    if baseid then
       assert (tag == 'regionBase')
-      ext = unpack (ext:match (tag, 'id', baseid))
+      ext = ext:match (tag, 'id', baseid)
       if ext == nil then
          return nil, errmsg.badidref (tag, 'baseId', baseid)
       end
    else
-      ext = unpack (ext:match (tag))
+      ext = ext:match (tag)
    end
 
    if not ext then
@@ -169,7 +168,7 @@ end
 -- Exported functions.
 
 function apply (ncl)
-   for _,e in _G.ipairs (ncl:match ('importBase')) do
+   for e in ncl:gmatch ('importBase') do
       local status, errmsg = resolve_importbase (ncl, e)
       if status == false then
          return nil, errmsg
