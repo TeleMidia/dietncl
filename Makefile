@@ -40,6 +40,7 @@ TESTS =\
  test-xmlsugar-remove.lua\
  test-xmlsugar-children.lua\
  test-xmlsugar-attributes.lua\
+ test-xmlsugar-equal.lua\
  test-xmlsugar-clone.lua\
  test-xmlsugar-match.lua\
  test-xmlsugar-gmatch.lua\
