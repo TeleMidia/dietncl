@@ -105,6 +105,27 @@ function xml.remove (e, pos)
    return child
 end
 
+-- Returns user data previously attached to element E.
+-- KEY is the key the user data was attached to.
+function xml.getuserdata (e, key)
+   checkxml (e)
+   if e[xml.USERDATA] == nil then
+      return nil
+   end
+   return e[xml.USERDATA][key]
+end
+
+-- Attaches user data to element E.
+-- KEY is the key to attach the user data to.
+-- USERDATA is a user data to attach to the element.
+function xml.setuserdata (e, key, userdata)
+   checkxml (e)
+   if e[xml.USERDATA] == nil then
+      e[xml.USERDATA] = {}
+   end
+   e[xml.USERDATA][key] = userdata
+end
+
 -- Returns an iterator function that, each time it is called, returns the
 -- next element in the child list of E.
 function xml.children (e)
@@ -133,6 +154,34 @@ function xml.attributes (e)
       i = k
       return k, v
    end
+end
+
+-- Checks whether tree E1 is equal to tree E2.
+function xml.equal (e1, e2)
+   checkxml (e1)
+   checkxml (e2)
+   if e1:tag () ~= e2:tag () then
+      return false
+   end
+   for k,_ in e1:attributes () do
+      if e1[k] ~= e2[k] then
+         return false
+      end
+   end
+   for k,_ in e2:attributes () do
+      if e2[k] ~= e1[k] then
+         return false
+      end
+   end
+   if #e1 ~= #e2 then
+      return false
+   end
+   for i=1,#e1 do
+      if not e1[i]:equal (e2[i]) or not e2[i]:equal (e1[i]) then
+         return false
+      end
+   end
+   return true
 end
 
 -- Returns an identical copy of tree E.
@@ -215,25 +264,4 @@ function xml.gmatch (...)
       end
       return nil
    end
-end
-
--- Returns user data previously attached to element E.
--- KEY is the key the user data was attached to.
-function xml.getuserdata (e, key)
-   checkxml (e)
-   if e[xml.USERDATA] == nil then
-      return nil
-   end
-   return e[xml.USERDATA][key]
-end
-
--- Attaches user data to element E.
--- KEY is the key to attach the user data to.
--- USERDATA is a user data to attach to the element.
-function xml.setuserdata (e, key, userdata)
-   checkxml (e)
-   if e[xml.USERDATA] == nil then
-      e[xml.USERDATA] = {}
-   end
-   e[xml.USERDATA][key] = userdata
 end
