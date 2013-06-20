@@ -16,9 +16,11 @@
 -- You should have received a copy of the GNU General Public License
 -- along with DietNCL.  If not, see <http://www.gnu.org/licenses/>.
 
-local io     = io
-local os     = os
-local assert = assert
+local dietncl = require ('dietncl')
+
+local io      = io
+local os      = os
+local assert  = assert
 module (...)
 
 -- Writes the string S into a temporary file and Returns the name of this
@@ -30,4 +32,9 @@ function tmpfile (s)
    fp:write (s)
    fp:close ()
    return tmp
+end
+
+-- Parses the formatted NCL string FMT and returns the resulting document.
+function parsenclformat (fmt, ...)
+   return dietncl.parsestring ((fmt):format (...))
 end
