@@ -21,75 +21,85 @@ local errmsg = require ('dietncl.errmsg')
 local filter = require ('dietncl.filter.import')
 local util   = require ('util')
 
+
+--========================================================================--
+--            Part I -- Checks the resolution of <importBase>             --
+--========================================================================--
+
 
--- Check invalid <importBase>.
-
--- Missing 'alias'.
-ncl = assert (dietncl.parsestring ([[
-<ncl>
- <head>
-  <regionBase>
-   <importBase documentURI='x' />
-  </regionBase>
- </head>
- <body />
-</ncl>]]))
-ncl, err = filter.apply (ncl)
-assert (ncl == nil)
-assert (err == errmsg.attrmissing ('importBase', 'alias'))
-
--- Missing 'documentURI'.
-ncl = assert (dietncl.parsestring ([[
-<ncl>
- <head>
-  <descriptorBase>
-   <importBase alias='x' />
-  </descriptorBase>
- </head>
- <body />
-</ncl>]]))
-ncl, err = filter.apply (ncl)
-assert (ncl == nil)
-assert (err == errmsg.attrmissing ('importBase', 'documentURI'))
-
--- Missing both 'alias' and 'documentURI'.
-ncl = assert (dietncl.parsestring ([[
-<ncl>
- <head>
-  <descriptorBase>
-   <importBase />
-  </descriptorBase>
- </head>
- <body />
-</ncl>]]))
-ncl, err = filter.apply (ncl)
-assert (ncl == nil)
-assert (err == errmsg.attrmissing ('importBase', 'documentURI')
-           or err == errmsg.attrmissing ('importBase', 'alias'))
-
 -- Bad parent.
-tmp = util.tmpfile ('<ncl><head /><body /></ncl>')
-ncl = assert (dietncl.parsestring (([[
+
+tmp = util.tmpfile ('<ncl><head/><body/></ncl>')
+ncl = util.parsenclformat ([[
 <ncl>
- <importBase alias='x' documentURI='%s' />
-</ncl>]]):format (tmp)))
+ <importBase alias='x' documentURI='%s'/>
+</ncl>]], tmp)
 ncl, err = filter.apply (ncl)
 assert (ncl == nil)
 assert (err == errmsg.badparent ('importBase', 'ncl'))
 os.remove (tmp)
 
 
--- Check invalid 'documentURI' (file not found).
+-- Missing 'alias'.
 
-ncl = assert (dietncl.parsestring ([[
+ncl = dietncl.parsestring ([[
+<ncl>
+ <head>
+  <regionBase>
+   <importBase documentURI='x'/>
+  </regionBase>
+ </head>
+ <body/>
+</ncl>]])
+ncl, err = filter.apply (ncl)
+assert (ncl == nil)
+assert (err == errmsg.attrmissing ('importBase', 'alias'))
+
+
+-- Missing 'documentURI'.
+
+ncl = dietncl.parsestring ([[
+<ncl>
+ <head>
+  <descriptorBase>
+   <importBase alias='x'/>
+  </descriptorBase>
+ </head>
+ <body/>
+</ncl>]])
+ncl, err = filter.apply (ncl)
+assert (ncl == nil)
+assert (err == errmsg.attrmissing ('importBase', 'documentURI'))
+
+
+-- Missing both 'alias' and 'documentURI'.
+
+ncl = dietncl.parsestring ([[
+<ncl>
+ <head>
+  <descriptorBase>
+   <importBase/>
+  </descriptorBase>
+ </head>
+ <body/>
+</ncl>]])
+ncl, err = filter.apply (ncl)
+assert (ncl == nil)
+assert (err == errmsg.attrmissing ('importBase', 'documentURI')
+           or err == errmsg.attrmissing ('importBase', 'alias'))
+
+
+-- Invalid 'documentURI' (file not found).
+
+ncl = dietncl.parsestring ([[
 <ncl>
  <head>
   <connectorBase>
-   <importBase alias='x' documentURI='!!!NON_EXISTENT!!!' />
+   <importBase alias='x' documentURI='!!!NON_EXISTENT!!!'/>
   </connectorBase>
  </head>
- <body />
-</ncl>]]))
+ <body/>
+</ncl>]])
 ncl, err = filter.apply (ncl)
 assert (ncl == nil)
 assert (err:match ('!!!NON_EXISTENT!!!'))
@@ -98,241 +108,290 @@ tmp = util.tmpfile ([[
 <ncl>
  <head>
   <connectorBase>
-   <importBase alias='x' documentURI='/!!!NON_EXISTENT!!!' />
+   <importBase alias='x' documentURI='/!!!NON_EXISTENT!!!'/>
   </connectorBase>
  </head>
- <body />
+ <body/>
 </ncl>]])
 
-ncl = assert (dietncl.parsestring (([[
+ncl = util.parsenclformat ([[
 <ncl>
  <head>
   <regionBase>
-   <importBase alias='x' documentURI='%s' />
+   <importBase alias='x' documentURI='%s'/>
   </regionbAse>
  </head>
- <body />
-</ncl>]]):format (tmp)))
+ <body/>
+</ncl>]], tmp)
 ncl, err = filter.apply (ncl)
 assert (ncl == nil)
 assert (err:match ('/!!!NON_EXISTENT!!!'))
 os.remove (tmp)
 
 
--- Check <importBase> with invalid 'region' (no such region)
+-- Invalid 'region' (no such region).
 
 tmp = util.tmpfile ([[
 <ncl>
  <head>
   <regionBase>
-   <region id='r1' />
+   <region id='r1'/>
   </regionBase>
  </head>
- <body />
+ <body/>
 </ncl>]])
 
-ncl = assert (dietncl.parsestring (([[
+ncl = util.parsenclformat ([[
 <ncl>
  <head>
   <regionBase>
-   <region id='r2' />
-   <importBase alias='a' documentURI='%s' region='r3' />
+   <region id='r2'/>
+   <importBase alias='a' documentURI='%s' region='r3'/>
   </regionBase>
  </head>
- <body />
-</ncl>]]):format (tmp)))
+ <body/>
+</ncl>]], tmp)
 
 ncl, err = filter.apply (ncl)
 assert (err == errmsg.badidref ('regionBase', 'region', 'r3'))
 os.remove (tmp)
 
 
--- Check <importBase> with invalid 'baseId' (no such region-base).
+-- Invalid 'baseId' (no such region-base).
 
 tmp = util.tmpfile ([[
 <ncl>
  <head>
   <regionBase id='rb'>
-   <region id='r1' />
+   <region id='r1'/>
   </regionBase>
  </head>
- <body />
+ <body/>
 </ncl>]])
 
-ncl = assert (dietncl.parsestring (([[
+ncl = util.parsenclformat ([[
 <ncl>
  <head>
   <regionBase>
-   <importBase alias='a' documentURI='%s' baseId='rb' />
-   <importBase alias='b' documentURI='%s' baseId='rbx' />
+   <importBase alias='a' documentURI='%s' baseId='rb'/>
+   <importBase alias='b' documentURI='%s' baseId='rbx'/>
   </regionBase>
  </head>
- <body />
-</ncl>]]):format (tmp, tmp)))
+ <body/>
+</ncl>]], tmp, tmp)
 
 ncl, err = filter.apply (ncl)
 assert (err == errmsg.badidref ('regionBase', 'baseId', 'rbx'))
 os.remove (tmp)
 
 
--- TODO: Check multiple inclusions of the same file.
+-- Invalid 'baseId' (there are multiple bases with the same id).
+
+tmp = util.tmpfile ([[
+<ncl>
+ <head>
+  <regionBase id='rb'/>
+  <regionBase id='rb'/>
+ </head>
+ <body/>
+</ncl>]])
+
+ncl = util.parsenclformat ([[
+<ncl>
+ <head>
+  <regionBase>
+   <importBase alias='a' documentURI='%s' baseId='rb'/>
+  </regionBase>
+ </head>
+ <body/>
+</ncl>]], tmp)
+
+ncl, err = filter.apply (ncl)
+assert (ncl == nil)
+assert (err == errmsg.dupid ('regionBase', 'rb'))
+os.remove (tmp)
 
 
--- TODO: Check circular inclusions.
+-- TODO: Circular inclusion.
 
 
--- Check simple (non-recursive) resolution.
+-- TODO: Multiple inclusions of the same file.
+
+
+-- Simple resolution (non-recursive).
 
 tmp = util.tmpfile ([[
 <ncl>
  <head>
   <descriptorBase>
    <descriptor id='d1' transIn=';' transOut='t1;  t2'>
-    <descriptorParam name='top' value='30' />
-    <descriptorParam name='left' value='35%' />
+    <descriptorParam name='top' value='30'/>
+    <descriptorParam name='left' value='35%'/>
    </descriptor>
    <descriptor id='d2' region='r2'>
-    <descriptorParam name='right' value='5' />
+    <descriptorParam name='right' value='5'/>
    </descriptor>
-   <descriptor id='d3' transIn=' t1;t2;t3 ;  ' transOut='t1 ' />
+   <descriptor id='d3' transIn=' t1;t2;t3 ;  ' transOut='t1 '/>
   </descriptorBase>
   <regionBase>
-   <region id='r1' left='13%' />
-   <region id='r2' top='25%' />
+   <region id='r1' left='13%'/>
+   <region id='r2' top='25%'/>
   </regionBase>
   <transitionBase>
   </transitionBase>
  </head>
- <body />
+ <body/>
 </ncl>]])
 
-ncl = assert (dietncl.parsestring (([[
+ncl = util.parsenclformat ([[
 <ncl>
  <head>
   <regionBase>
-   <importBase alias='x' documentURI='%s' />
+   <importBase alias='x' documentURI='%s'/>
   </regionBase>
   <descriptorBase>
-   <importBase alias='y' documentURI='%s' />
+   <importBase alias='y' documentURI='%s'/>
   </descriptorBase>
   <transitionBase>
-   <importBase alias='z' documentURI='%s' />
+   <importBase alias='z' documentURI='%s'/>
   </transitionBase>
   <connectorBase>
-   <importBase alias='w' documentURI='%s' />
+   <importBase alias='w' documentURI='%s'/>
   </connectorBase>
  </head>
-</ncl>]]):format (tmp, tmp, tmp, tmp)))
+</ncl>]], tmp, tmp, tmp, tmp)
 
-ncl = assert (filter.apply (ncl))
-assert (ncl:match ('importBase') == nil)
-
-local r1 = assert (ncl:match ('region', 'id', 'x#r1'))
-assert (r1.left == '13%')
-
-local r2 = assert (ncl:match ('region',  'id', 'x#r2'))
-assert (r2.top == '25%')
-
-local d1 = assert (ncl:match ('descriptor', 'id', 'y#d1'))
-assert (d1.transIn == ';')
-assert (d1.transOut == 'y#t1;y#t2')
-assert (d1[1].name == 'top' and d1[1].value == '30')
-assert (d1[2].name == 'left' and d1[2].value == '35%')
-
-local d2 = assert (ncl:match ('descriptor', 'id', 'y#d2'))
-assert (d2.region == 'y#r2')
-assert (d2[1].name == 'right' and d2[1].value == '5')
-
-local d3 = assert (ncl:match ('descriptor', 'id', 'y#d3'))
-assert (d3.transIn == 'y#t1;y#t2;y#t3;')
-assert (d3.transOut == 'y#t1')
+ncl = filter.apply (ncl)
+assert (ncl:equal (dietncl.parsestring ([[
+<ncl>
+ <head>
+  <regionBase>
+   <region id='x#r1' left='13%'/>
+   <region id='x#r2' top='25%'/>
+  </regionBase>
+  <descriptorBase>
+   <descriptor id='y#d1' transIn=';' transOut='y#t1;y#t2'>
+    <descriptorParam name='top' value='30'/>
+    <descriptorParam name='left' value='35%'/>
+   </descriptor>
+   <descriptor id='y#d2' region='y#r2'>
+    <descriptorParam name='right' value='5'/>
+   </descriptor>
+   <descriptor id='y#d3' transIn='y#t1;y#t2;y#t3;' transOut='y#t1'/>
+  </descriptorBase>
+  <transitionBase>
+  </transitionBase>
+  <connectorBase>
+  </connectorBase>
+ </head>
+</ncl>]])))
 os.remove (tmp)
 
 
--- Check simple resolution of external bases to a given local region.
+-- Simple resolution of external region bases to a local region.
 
 tmp = util.tmpfile ([[
 <ncl>
  <head>
   <regionBase id='rb1' device='3'>
    <region id='rb11' top='30%'>
-    <region id='rb12' left='44%' />
+    <region id='rb12' left='44%'/>
    </region>
   </regionBase>
   <regionBase id='rb2'>
-   <region id='rb21' width='25%' />
-   <region id='rb22' height='23%' />
+   <region id='rb21' width='25%'/>
+   <region id='rb22' height='23%'/>
   </regionBase>
   <regionBase id='rb3'>
-   <region id='rb31' zIndex='3' />
+   <region id='rb31' zIndex='3'/>
    <region id='rb32' zIndex='2'>
-    <region id='rb33' />
+    <region id='rb33'/>
    </region>
   </regionBase>
  </head>
- <body>
- </body>
+ <body/>
 </ncl>]])
 
-ncl = dietncl.parsestring (([[
+ncl = util.parsenclformat ([[
 <ncl>
  <head>
   <regionBase id='rba'>
-   <importBase alias='a' documentURI='%s' baseId='rb1' />
+   <importBase alias='a' documentURI='%s' baseId='rb1'/>
   </regionBase>
   <regionBase id='rbb'>
-   <region id='rbb1' />
+   <region id='rbb1'/>
    <region id='rbb2'>
-    <region id='rbb3' />
+    <region id='rbb3'/>
    </region>
-   <importBase alias='b' documentURI='%s' region='rbb3' baseId='rb3' />
+   <importBase alias='b' documentURI='%s' region='rbb3' baseId='rb3'/>
+  </regionBase>
+  <regionBase id='rbc'>
+   <importBase alias='c' documentURI='%s'/>
+  </regionase>
+ </head>
+ <body/>
+</ncl>]], tmp, tmp, tmp)
+
+ncl = filter.apply (ncl)
+assert (ncl:equal (dietncl.parsestring ([[
+<ncl>
+ <head>
+  <regionBase id='rba'>
+   <region id='a#rb11' top='30%'>
+    <region id='a#rb12' left='44%'/>
+   </region>
+  </regionBase>
+  <regionBase id='rbb'>
+   <region id='rbb1'/>
+   <region id='rbb2'>
+    <region id='rbb3'>
+     <region id='b#rb31' zIndex='3'/>
+     <region id='b#rb32' zIndex='2'>
+      <region id='b#rb33'/>
+     </region>
+    </region>
+   </region>
+  </regionBase>
+  <regionBase id='rbc'>
+   <region id='c#rb11' top='30%'>
+    <region id='c#rb12' left='44%'/>
+   </region>
+   <region id='c#rb21' width='25%'/>
+   <region id='c#rb22' height='23%'/>
+   <region id='c#rb31' zIndex='3'/>
+   <region id='c#rb32' zIndex='2'>
+    <region id='c#rb33'/>
+   </region>
   </regionBase>
  </head>
- <body />
-</ncl>]]):format (tmp, tmp))
-
-ncl = assert (filter.apply (ncl))
-assert (#{ncl:match ('regionBase')} == 2)
-
-local rb11 = assert (ncl:match ('region', 'id', 'a#rb11'))
-assert (rb11.id == 'a#rb11' and rb11.top == '30%')
-local rb12 = assert (#rb11 == 1 and rb11[1])
-assert (rb12.id == 'a#rb12' and rb12.left == '44%' and #rb12 == 0)
-
-local rbb3 = assert (ncl:match ('region', 'id', 'rbb3'))
-assert (rbb3.id == 'rbb3' and #rbb3 == 2)
-local rb31 = rbb3[1]
-assert (rb31.id == 'b#rb31' and rb31.zIndex == '3' and #rb31 == 0)
-local rb32 = rbb3[2]
-assert (rb32.id == 'b#rb32' and rb32.zIndex == '2' and #rb32 == 1)
-local rb33 = rb32[1]
-assert (rb33.id == 'b#rb33' and #rb33 == 0)
+ <body/>
+</ncl>]])))
 os.remove (tmp)
 
 
--- Check recursive resolution.
+-- Recursive resolution.
 
 tmp1 = util.tmpfile ([[
 <ncl>
  <head>
   <descriptorBase>
    <descriptor id='d1' region='r2'>
-    <descriptorParam name='top' value='3.5%' />
+    <descriptorParam name='top' value='3.5%'/>
    </descriptor>
   </descriptorBase>
   <regionBase>
    <region id='r1' top='34%'>
-    <region id='r2' left='44%' />
+    <region id='r2' left='44%'/>
    </region>
   </regionBase>
   <connectorBase>
    <causalConnector id='c1'>
-    <simpleCondition role='onPause' />
-    <simpleAction role='abort' />
+    <simpleCondition role='onPause'/>
+    <simpleAction role='abort'/>
    </causalConnector>
   </connectorBase>
  </head>
- <body />
+ <body/>
 </ncl>]])
 
 tmp2 = util.tmpfile ([[
@@ -340,79 +399,348 @@ tmp2 = util.tmpfile ([[
  <head>
   <connectorBase>
    <causalConnector id='c1'>
-    <simpleCondition role='onBegin' />
-    <simpleAction role='start' />
+    <simpleCondition role='onBegin'/>
+    <simpleAction role='start'/>
    </causalConnector>
   </connectorBase>
  </head>
- <body />
+ <body/>
 </ncl>]])
 
 tmp3 = util.tmpfile (([[
 <ncl>
  <head>
   <connectorBase>
-   <importBase alias='x' documentURI='%s' />
-   <importBase alias='w' documentURI='%s' />
+   <importBase alias='x' documentURI='%s'/>
+   <importBase alias='w' documentURI='%s'/>
   </connectorBase>
   <regionBase device='7'>
-   <region id='r3' zIndex='3' />
-   <importBase alias='y' documentURI='%s' />
+   <region id='r3' zIndex='3'/>
+   <importBase alias='y' documentURI='%s'/>
   </regionBase>
   <descriptorBase>
-   <importBase alias='z' documentURI='%s' />
+   <importBase alias='z' documentURI='%s'/>
   </descriptorBase>
  </head>
- <body />
+ <body/>
 </ncl>]]):format (tmp2, tmp1, tmp1, tmp1))
 
 ncl = dietncl.parsestring (([[
 <ncl>
  <head>
   <descriptorBase>
-   <descriptor id='d2' />
-   <importBase alias='a' documentURI='%s' />
+   <descriptor id='d2'/>
+   <importBase alias='a' documentURI='%s'/>
   </descriptorBase>
   <connectorBase>
    <causalConnector id='c2'>
-    <simpleCondition role='onEnd' />
-    <simpleAction role='stop' />
+    <simpleCondition role='onEnd'/>
+    <simpleAction role='stop'/>
    </causalConnector>
-   <importBase alias='b' documentURI='%s' />
+   <importBase alias='b' documentURI='%s'/>
   </connectorBase>
   <regionBase>
-   <importBase alias='c' documentURI='%s' />
+   <importBase alias='c' documentURI='%s'/>
   </regionBase>
  </head>
- <body />
+ <body/>
 </ncl>]]):format (tmp1, tmp3, tmp3))
 
-ncl = assert (filter.apply (ncl))
-assert (ncl:match ('importBase') == nil)
-
-assert (#(ncl:match ('descriptorBase')) == 2)
-assert (ncl:match ('descriptor', 'id', 'd2'))
-local d1 = assert (ncl:match ('descriptor', 'id', 'a#d1'))
-assert (d1.region == 'a#r2')
-assert (d1[1].name == 'top' and d1[1].value == '3.5%')
-
-assert (#(ncl:match ('connectorBase')) == 3)
-assert (ncl:match ('causalConnector', 'id', 'c2'))
-local c1 = assert (ncl:match ('causalConnector', 'id', 'b#x#c1'))
-assert (c1[1]:tag () == 'simpleCondition' and c1[1].role == 'onBegin')
-assert (c1[2]:tag () == 'simpleAction' and c1[2].role == 'start')
-c1 = assert (ncl:match ('causalConnector', 'id', 'b#w#c1'))
-assert (c1[1]:tag () == 'simpleCondition' and c1[1].role == 'onPause')
-assert (c1[2]:tag () == 'simpleAction' and c1[2].role == 'abort')
-
-assert (#(ncl:match ('regionBase')) == 2)
-local r3 = assert (ncl:match ('region', 'id', 'c#r3'))
-assert (r3.zIndex == '3')
-
-local r1 = assert (ncl:match ('region', 'id', 'c#y#r1'))
-assert (r1.top == '34%')
-assert (r1[1].id == 'c#y#r2' and r1[1].left == '44%')
-
+ncl = filter.apply (ncl)
+assert (ncl:equal (dietncl.parsestring ([[
+<ncl>
+ <head>
+  <descriptorBase>
+   <descriptor id='d2'/>
+   <descriptor id='a#d1' region='a#r2'>
+    <descriptorParam name='top' value='3.5%'/>
+   </descriptor>
+   <!-- <importBase alias='a' documentURI='%s'/> -->
+  </descriptorBase>
+  <connectorBase>
+   <causalConnector id='c2'>
+    <simpleCondition role='onEnd'/>
+    <simpleAction role='stop'/>
+   </causalConnector>
+   <causalConnector id='b#x#c1'>
+    <simpleCondition role='onBegin'/>
+    <simpleAction role='start'/>
+   </causalConnector>
+   <causalConnector id='b#w#c1'>
+    <simpleCondition role='onPause'/>
+    <simpleAction role='abort'/>
+   </causalConnector>
+   <!-- <importBase alias='b' documentURI='%s'/> -->
+  </connectorBase>
+  <regionBase>
+   <region id='c#r3' zIndex='3'/>
+   <region id='c#y#r1' top='34%'>
+    <region id='c#y#r2' left='44%'/>
+   </region>
+   <!-- <importBase alias='c' documentURI='%s'/> -->
+  </regionBase>
+ </head>
+ <body/>
+</ncl>
+]])))
 os.remove (tmp1)
 os.remove (tmp2)
 os.remove (tmp3)
+
+
+--========================================================================--
+--            Part II -- Checks the resolution of <importNCL>             --
+--========================================================================--
+
+
+-- Bad parent.
+
+tmp = util.tmpfile ('<ncl><head/><body/></ncl>')
+ncl = util.parsenclformat ([[
+<ncl>
+ <regionBase>
+  <importNCL alias='x' documentURI='%s'/>
+ </regionBase>
+</ncl>]], tmp)
+ncl, err = filter.apply (ncl)
+assert (ncl == nil)
+assert (err == errmsg.badparent ('importNCL', 'regionBase'))
+os.remove (tmp)
+
+
+-- Missing 'alias'.
+
+ncl = dietncl.parsestring ([[
+<ncl>
+ <head>
+  <importedDocumentBase>
+   <importNCL documentURI='x'/>
+  </importedDocumentBase>
+ </head>
+ <body/>
+</ncl>]])
+ncl, err = filter.apply (ncl)
+assert (ncl == nil)
+assert (err == errmsg.attrmissing ('importNCL', 'alias'))
+
+
+-- Missing 'documentURI'.
+
+ncl = dietncl.parsestring ([[
+<ncl>
+ <head>
+  <importedDocumentBase>
+   <importNCL alias='x'/>
+  </importedDocumentBase>
+ </head>
+ <body/>
+</ncl>]])
+ncl, err = filter.apply (ncl)
+assert (ncl == nil)
+assert (err == errmsg.attrmissing ('importNCL', 'documentURI'))
+
+
+-- Missing both 'alias' and 'documentURI'.
+
+ncl = dietncl.parsestring ([[
+<ncl>
+ <head>
+  <importedDocumentBase>
+   <importNCL/>
+  </importedDocumentBase>
+ </head>
+ <body/>
+</ncl>]])
+ncl, err = filter.apply (ncl)
+assert (ncl == nil)
+assert (err == errmsg.attrmissing ('importNCL', 'documentURI')
+           or err == errmsg.attrmissing ('importNCL', 'alias'))
+
+
+-- Invalid 'documentURI' (file not found).
+
+ncl = dietncl.parsestring ([[
+<ncl>
+ <head>
+  <importedDocumentBase>
+   <importNCL alias='x' documentURI='!!!NON_EXISTENT!!!'/>
+  </importedDocumentBase>
+ </head>
+ <body/>
+</ncl>]])
+ncl, err = filter.apply (ncl)
+assert (ncl == nil)
+assert (err:match ('!!!NON_EXISTENT!!!'))
+
+tmp = util.tmpfile ([[
+<ncl>
+ <head>
+  <connectorBase>
+   <importBase alias='x' documentURI='/!!!NON_EXISTENT!!!'/>
+  </connectorBase>
+ </head>
+ <body/>
+</ncl>]])
+
+ncl = util.parsenclformat ([[
+<ncl>
+ <head>
+  <regionBase>
+   <importBase alias='x' documentURI='%s'/>
+  </regionbAse>
+ </head>
+ <body/>
+</ncl>]], tmp)
+ncl, err = filter.apply (ncl)
+assert (ncl == nil)
+assert (err:match ('/!!!NON_EXISTENT!!!'))
+os.remove (tmp)
+
+
+-- TODO: Circular inclusion.
+
+
+-- TODO: Multiple inclusions of the same file.
+
+
+-- Simple resolution (non-recursive0
+
+tmp = util.tmpfile ([[
+<ncl>
+ <head>
+  <descriptorBase>
+   <descriptor id='d1' transIn=';' transOut='t1;  t2'>
+    <descriptorParam name='top' value='30'/>
+    <descriptorParam name='left' value='35%'/>
+   </descriptor>
+   <descriptor id='d2' region='r2'>
+    <descriptorParam name='right' value='5'/>
+   </descriptor>
+   <descriptor id='d3' transIn=' t1;t2;t3 ;  ' transOut='t1 '/>
+  </descriptorBase>
+  <regionBase>
+   <region id='r1' left='13%'/>
+   <region id='r2' top='25%'/>
+  </regionBase>
+  <transitionBase>
+   <transition id='t1' type='barWipe'/>
+   <transition id='t2' type='irisWipe'/>
+   <transition id='t3' type='fade' dur='5s'/>
+  </transitionBase>
+  <ruleBase>
+   <rule id='r1' var='x' comparator='eq' value='30'/>
+   <compositeRule id='r2' operator='and'>
+    <rule id='r3' var='x' comparator='ne' value='30'/>
+    <rule id='r4' var='y' comparator='eq' value='44'/>
+   </compositeRule>
+  </ruleBase>
+  <regionBase>
+   <region id='r3'/>
+  </regionBase>
+  <connectorBase>
+   <causalConnector id='c1'>
+    <simpleCondition role='onPause'/>
+    <simpleAction role='stop'/>
+   </causalConnector>
+   <causalConnector id='c2'>
+    <simpleCondition role='onEnd'/>
+    <simpleAction role='abort'/>
+   </causalConnector>
+  </connectorBase>
+ </head>
+ <body>
+  <media id='m1' descriptor='d1'/>
+  <context id='m2'>
+   <port id='m2p' component='m41'/>
+   <switch id='m41'>
+    <media id='m411' src='yyy'/>
+    <bindRule rule='r4' constituent='m411'/>
+   </switch>
+  </context>
+  <media id='m3' src='xyz'>
+   <property top='35px'/>
+  </media>
+ </body>
+</ncl>]])
+
+ncl = util.parsenclformat ([[
+<ncl>
+ <head>
+  <importedDocumentBase>
+   <importNCL alias='x' documentURI='%s'/>
+  </importedDocumentBase>
+  <transitionBase/>
+ </head>
+ <body>
+  <media id='w1' refer='x#m3'/>
+  <media id='w2' descriptor='x#d1' refer='w1' instance='gradSame'/>
+  <media id='w3' refer='x#m1'/>
+  <context id='w4' refer='x#m2'>
+  </context>
+ </body>
+</ncl>]], tmp)
+
+ncl = filter.apply (ncl)
+assert (ncl:equal (ncl, dietncl.parsestring ([[
+<ncl>
+ <head>
+  <!-- <importedDocumentBase> -->
+   <!-- <importNCL alias='x' documentURI='%s'/> -->
+  <!-- </importedDocumentBase> -->
+  <transitionBase>
+   <transition id='x#t1' type='barWipe'/>
+   <transition id='x#t2' type='irisWipe'/>
+   <transition id='x#t3' type='fade' dur='5s'/>
+  </transitionBase>
+  <connectorBase>
+   <causalConnector id='x#c1'>
+    <simpleCondition role='onPause'/>
+    <simpleAction role='stop'/>
+   </causalConnector>
+   <causalConnector id='x#c2'>
+    <simpleCondition role='onEnd'/>
+    <simpleAction role='abort'/>
+   </causalConnector>
+  </connectorBase>
+  <descriptorBase>
+   <descriptor id='x#d1' transIn=';' transOut='x#t1;x#t2'>
+    <descriptorParam name='top' value='30'/>
+    <descriptorParam name='left' value='35%'/>
+   </descriptor>
+   <descriptor id='x#d2' region='x#r2'>
+    <descriptorParam name='right' value='5'/>
+   </descriptor>
+   <descriptor id='x#d3' transIn='x#t1;x#t2;x#t3;' transOut='x#t1'/>
+  </descriptorBase>
+  <regionBase>
+   <region id='x#r1' left='13%'/>
+   <region id='x#r2' top='25%'/>
+   <region id='x#r3'/>
+  </regionBase>
+  <ruleBase>
+   <rule id='x#r1' var='x' comparator='eq' value='30'/>
+   <compositeRule id='x#r2' operator='and'>
+    <rule id='x#r3' var='x' comparator='ne' value='30'/>
+    <rule id='x#r4' var='y' comparator='eq' value='44'/>
+   </compositeRule>
+  </ruleBase>
+ </head>
+ <body>
+  <!-- <media id='w1' refer='x#m3'/> -->
+  <media id='w1' src='xyz'>
+   <property top='35px'/>
+  </media>
+  <media id='w2' descriptor='x#d1' refer='w1' instance='gradSame'/>
+  <!-- <media id='w3' refer='x#m1'/> -->
+  <media id='w3' descriptor='x#d1'/>
+  <!-- <context id='w4' refer='m2'> -->
+  <context id='w4'>
+   <port id='x#m2p' component='x#m41'/>
+   <switch id='x#m41'>
+    <media id='x#m411' src='yyy'/>
+    <bindRule rule='x#r4' constituent='x#m411'/>
+   </switch>
+  </context>
+ </body>
+</ncl>]])))
+os.remove (tmp)
