@@ -23,6 +23,7 @@ local messages = {
    attrmissing = "invalid <%s>: missing required attribute '%s'",
    badparent   = "invalid <%s>: bad parent <%s>",
    badidref    = "invalid <%s>: bad id-ref %s='%s'",
+   dupid       = "invalid <%s>: duplicated id='%s'",
 }
 
 -- Install exported functions.
