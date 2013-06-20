@@ -1,15 +1,26 @@
-DietNCL TODO -- Tasks that need implementing.                -*- outline -*-
+DietNCL TODO -- Tasks that need implementing.                  -*-outline-*-
 
 * KNOWN BUGS
 
 * FEATURES OR PROBLEMS
 
-  + filter.import: Check circular imports.
+  + filter.import: Use 'documentURI' as importation prefix.
+
+    An imported <descriptor> should refer to the correct region even if this
+    was imported by another <importBase> element.
+
+  + filter.import: Replace '#' by some valid string.
+
+    We may use SHA1 (together with a collision table) to compute new ids.
+
+  + test-filter-import.lua: Check multiple inclusions of the same file.
+
+  + test-filter-import.lua: Check circular inclusion.
 
     The resolve_importbase() and resolve_importncl() functions, in
     filter/import.lua, should check if the target URI was imported in a
     previous call.  If this is the case, they should silently remove the
-    <importBase> or <importNCL> element from the source document.
+    <importBase> or <importNCL> element from the source document and return.
 
 * OPTIMIZATION AND CLEAN UP
 
