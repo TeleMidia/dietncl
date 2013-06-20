@@ -27,7 +27,7 @@ clone = root:clone ()
 assert (root ~= clone and clone:tag () == 'root' and #clone == #root)
 assert (clone.a == '1' and clone.b == '2' and clone.c == '3')
 
-root = xml.eval([[
+local s = [[
 <root>
  <a value='a'/>
  <b>
@@ -40,9 +40,11 @@ root = xml.eval([[
    <z/>
   </y>
  </d>
-</root>]])
+</root>]]
+root = xml.eval (s)
 
 clone = root:clone ()
+assert (root:equal (clone))
 local function compar (a, b)
    assert (a ~= b)
    assert (a:tag () == b:tag ())
