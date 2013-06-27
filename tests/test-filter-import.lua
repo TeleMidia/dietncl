@@ -393,7 +393,7 @@ os.remove (tmp)
 -- TODO: Multiple inclusions of the same file.
 
 
--- Simple resolution (non-recursive0
+-- Simple resolution (non-recursive)
 
 tmp = util.tmpfile ([[
 <ncl>
