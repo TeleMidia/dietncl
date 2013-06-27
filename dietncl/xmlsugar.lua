@@ -42,6 +42,27 @@ local function sugarize (e)
    return e
 end
 
+-- Searches for a given child element of E.
+-- CHILD is the searched element or its position in child list of E.
+-- Returns both the searched element and its position.
+local function findchild (e, child)
+   local pos
+   if type (child) == 'number' then
+      pos = child
+      child = assert (e[pos])
+   else
+      checkxml (child)
+      assert (child[xml.PARENT] == e)
+      for i=1,#e do
+         if child == e[i] then
+            pos = i
+         end
+      end
+      assert (pos)
+   end
+   return child, pos
+end
+
 
 -- Exported functions.
 
@@ -92,17 +113,35 @@ function xml.insert (e, pos, child)
    return pos
 end
 
--- Safe replacement for the original append() function.
+-- Replacement for the original append() function.
 function xml.append (e, child)
    return xml.insert (e, child)
 end
 
--- Removes and returns the element at position POS in child list of E.
-function xml.remove (e, pos)
+-- Removes an element from child list of E.
+-- CHILD is the element to be removed or its position in child list of E
+-- Returns the removed element and its position in child list of E.
+function xml.remove (e, child)
    checkxml (e)
-   local child = table.remove (e, pos)
+   local child, pos = findchild (e, child)
+   table.remove (e, pos)
    setparent (child, nil)
-   return child
+   return child, pos
+end
+
+-- Replaces an element in child list of E.
+-- OLD is the element to be replaced or its position in child list of E.
+-- NEW is the replacement.
+-- Returns the replaced element and its position in child of E.
+function xml.replace (e, old, new)
+   checkxml (e)
+   checkxml (new)
+   assert (new[xml.PARENT] == nil)
+   local old, pos = findchild (e, old)
+   e[pos] = new
+   setparent (new, e)
+   setparent (old, nil)
+   return old, pos
 end
 
 -- Returns user data previously attached to element E.

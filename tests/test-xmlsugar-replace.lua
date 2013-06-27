@@ -1,4 +1,4 @@
--- test-xmlsugar-remove.lua -- Checks xmlsugar.remove.
+-- test-xmlsugar-replace.lua -- Checks xmlsugar.replace.
 -- Copyright (C) 2013 PUC-Rio/Laboratorio TeleMidia
 --
 -- This file is part of DietNCL.
@@ -27,25 +27,26 @@ local w = xml.new ('w')
 assert (root:insert (x) == 1)
 assert (x:insert (y) == 1)
 assert (x:insert (z) == 2)
-assert (y:insert (w) == 1)
 
--- Child denotes a position.
-assert (x:remove (1) == y)
+-- Old denotes a position.
+local w = xml.new ('w')
+local rep, pos = x:replace (1, w)
+assert (rep == y and pos == 1)
 assert (y:parent () == nil)
-assert (root[1] == x)
-assert (x[1] == z)
-assert (#z == 0)
+assert (w:parent () == x)
 
-assert (y:parent () == nil)
-assert (y[1] == w)
-assert (w:parent () == y)
+rep, pos = root:replace (1, y)
+assert (rep == x and pos == 1)
+assert (root:replace (1, x) == y)
 
-assert (root:insert (1, y))
-assert (y:parent () == root)
+-- Old denotes an element.
+rep, pos = x:replace (z, y)
+assert (rep == z and pos == 2)
+assert (x[2] == y)
+assert (y:parent () == x)
+assert (z:parent () == nil)
 
--- Child denotes an element.
-assert (root:remove (y) == y)
-assert (y:parent () == nil)
-assert (root[1] == x)
-assert (x:remove (z) == z)
-assert (root[1] == x and #x == 0)
+assert (x:remove (y) == y)
+assert (x:replace (w, y) == w)
+assert (x[1] == y)
+assert (w:parent () == nil)
