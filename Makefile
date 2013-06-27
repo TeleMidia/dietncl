@@ -48,7 +48,8 @@ TESTS =\
  test-xmlsugar-userdata.lua\
  test-init-parse.lua\
  test-init-parsestring.lua\
- test-filter-import.lua
+ test-filter-import.lua\
+ test-filter-region.lua
 
 XFAIL_TESTS =
 
