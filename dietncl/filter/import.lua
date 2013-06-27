@@ -16,34 +16,42 @@
 -- You should have received a copy of the GNU General Public License
 -- along with DietNCL.  If not, see <http://www.gnu.org/licenses/>.
 
--- This filter resolves document importation.  It removes all <importNCL>,
--- <importBase>, and <importedDocumentBase> tags from the host document.
-
 require ('dietncl.xmlsugar')
 local xml     = xml
 local dietncl = require ('dietncl')
-local errmsg  = require ('dietncl.errmsg')
 local path    = require ('dietncl.path')
 
-local _G     = _G
 local assert = assert
 local ipairs = ipairs
-local pairs  = pairs
 local table  = table
 module (...)
 
--- List of possible parents for <importBase>.
+-- List of possible <importBase> parents.
 local importbase_parent_list = {
-   connectorBase  = true,
-   descriptorBase = true,
-   regionBase     = true,
-   ruleBase       = true,
-   transitionBase = true,
+   'connectorBase',
+   'descriptorBase',
+   'regionBase',
+   'ruleBase',
+   'transitionBase',
 }
 
--- Table mapping an element to a list containing its XML-IDREF attributes.
--- We do not list the <descriptor> attributes 'transIn' and 'transOut' here
--- because these require a special treatment.  Cf. update_id_and_idref().
+local _importbase_parent_list = {}
+for _,s in ipairs (importbase_parent_list) do
+   _importbase_parent_list[s] = true
+end
+
+-- Returns true if tag-name TAG is a possible <importBase> parent.
+local function is_importbase_parent (tag)
+   return _importbase_parent_list[tag]
+end
+
+-- List of XML-IDREF attributes indexed by tag-name.
+--
+-- IMPORTANT: We do not list the descriptor attributes 'transIn' and
+-- 'transOut' here because these require a special treatment -- i.e., their
+-- value is not XML-IDREFs in the strict sense; their value is a semicolon
+-- separated list of XML-IDREFs.  (Cf. the update_id_and_idref() function
+-- for details.)
 local idref_attribute_table = {
    bind             = {'component'},
    bindRule         = {'constituent', 'rule'},
@@ -53,37 +61,17 @@ local idref_attribute_table = {
    mapping          = {'component'},
    media            = {'descriptor', 'refer'},
    port             = {'component'},
-   switch           = {'refer'}
+   switch           = {'refer'},
 }
 
--- Removes element E from its parent.
--- Returns the index of the removed element if successful,
--- otherwise returns nil.
-local function remove_from_parent (e)
-   local parent = e:parent ()
-   if parent == nil then
-      return nil
-   end
-   local index = nil
-   for i=1,#parent do
-      if parent[i] == e then
-         index = i
-      end
-   end
-   if index == nil then
-      return nil
-   end
-   parent:remove (index)
-   return index
-end
-
--- Concatenates the string 'ALIAS#' to the attributes in tree E
--- such that their value is an XML-ID or XML-IDREF.
+-- Concatenates the string 'ALIAS#' to the XML-ID or XML-IDREF attributes of
+-- all elements in tree E.
 local function update_id_and_idref (e, alias)
-   if e.id ~= nil then
+   local tag = e:tag ()
+   if e.id then
       e.id = alias..'#'..e.id
    end
-   local tag = assert (e:tag ())
+
    if tag == 'descriptor' then
       --
       -- Special treatment for 'transIn' and 'transOut'.
@@ -96,12 +84,13 @@ local function update_id_and_idref (e, alias)
          end
       end
    end
-   local list = idref_attribute_table[tag]
-   for _,attr in ipairs (list or {}) do
+
+   for _,attr in ipairs (idref_attribute_table[tag] or {}) do
       if e[attr] then
          e[attr] = alias..'#'..e[attr]
       end
    end
+
    for i=1,#e do
       update_id_and_idref (e[i], alias)
    end
@@ -109,57 +98,46 @@ end
 
 -- Copies all elements of the specified base of external document EXT and
 -- inserts them into element E of the host document.  Moreover, prefix the
--- string 'ALIAS#' to id of the copied elements.
+-- string 'ALIAS#' to the XML-ID and XML-IDREF attributes of the copied
+-- elements.
 --
--- If the specified base is a <regionBase> then:
---  * REGION contains the ID of the <region> element under which the
---    imported elements should be inserted; and
---  * BASEID contains the ID of the <regionBase> element that should be
+-- If the specified base is a <regionBase> and the parameters REGION and
+-- BASEID are given, then:
+--  * REGION is the XML-ID of the <region> element under which the imported
+--    elements should be inserted; and
+--  * BASEID is the XML-ID of the <regionBase> element that should be
 --    imported.
 -- Otherwise, the parameters REGION an BASEID are ignored.
 --
 -- Returns true if successful, otherwise returns false plus error message.
 local function import_base (e, ext, alias, region, baseid)
-   local ncl = assert (e:parent ())
-   ncl = assert (ncl:parent ())
-   assert (ncl:tag () == 'ncl')
+   local ncl                    -- pointer to NCL document
+   local tag                    -- tag-name of base E
+   local list                   -- list of bases in EXT to be processed
 
-   local tag = assert (e:tag ())
-   assert (importbase_parent_list [tag])
+   ncl = xml.parent (e:parent ())
+   tag = e:tag ()
+   assert (is_importbase_parent (tag))
 
-   local list
-   if tag == 'regionBase' then
-      if region then
-         e = ncl:match ('region', 'id', region)
-         if e == nil then
-            return false, errmsg.badidref (tag, 'region', region)
-         end
-      end
-      if baseid then
-         list = {ext:match (tag, 'id', baseid)}
-         if #list == 0 then
-            return false, errmsg.badidref (tag, 'baseId', baseid)
-         elseif #list > 1 then
-            return false, errmsg.dupid (tag, baseid)
-         end
-      else
-         -- Import all region bases.
-         list = {ext:match (tag)}
-      end
+   if tag == 'regionBase' and region then
+      e = assert (ncl:match ('region', 'id', region))
+   end
+
+   if tag == 'regionBase' and baseid then
+      list = {ext:match (tag, 'id', baseid)}
+      assert (#list == 1)
    else
-      -- Import the *FIRST* (non-region) base found.
-      list = {}
-      list[1] = ext:match (tag)
+      list = {ext:match (tag)}
    end
 
    if #list == 0 then
       return true               -- nothing to do
    end
 
-   for _, ext in ipairs (list) do
-      ext = ext:clone ()
-      update_id_and_idref (ext, alias)
-      for x in ext:children () do
+   for _,base in ipairs (list) do
+      base = base:clone ()
+      update_id_and_idref (base, alias)
+      for x in base:children () do
          e:insert (x)
       end
    end
@@ -168,11 +146,9 @@ local function import_base (e, ext, alias, region, baseid)
 end
 
 -- Applies the import filter to the document at path name URI.
--- NCL is the handle of the host document -- this is used to resolve
--- relative path names.
---
--- Returns a handle to the external document if successful.
--- Otherwise returns nil plus error message.
+-- NCL is the pointer to the host document.
+-- Returns a pointer to the external document if successful,
+-- otherwise returns nil plus error message.
 local function resolve_external_document (ncl, uri)
    local pathname = uri
    if path.relative (uri) then
@@ -193,141 +169,122 @@ end
 -- Resolve <importBase> element E.
 -- Returns true if successful, otherwise returns false plus error message.
 local function resolve_importbase (ncl, e)
+   local parent                 -- pointer to E's parent
+   local ext                    -- pointer to external document
+   local err                    -- error message
+   local status
+
+   parent = e:parent ()
+
    assert (e:tag () == 'importBase')
+   assert (is_importbase_parent (parent:tag ()))
+   assert (e.alias)
+   assert (e.documentURI)
 
-   -- Check parent.
-   local parent = assert (e:parent ())
-   local tag = assert (parent:tag ())
-   if not importbase_parent_list[tag] then
-      return false, errmsg.badparent ('importBase', tag)
-   end
-
-   -- Check required attributes.
-   if e.alias == nil then
-      return false, errmsg.attrmissing ('importBase', 'alias')
-   end
-   if e.documentURI == nil then
-      return false, errmsg.attrmissing ('importBase', 'documentURI')
-   end
-
-   -- Resolve the external document.
-   local ext, err = resolve_external_document (ncl, e.documentURI)
+   ext, err = resolve_external_document (ncl, e.documentURI)
    if ext == nil then
       return false, err
    end
 
-   -- Import the external base.
-   local status, err = import_base (parent, ext,
-                                    e.alias, e.region, e.baseId)
+   status, err = import_base (parent, ext, e.alias, e.region, e.baseId)
    if status == false then
       return false, err
    end
 
-   -- Remove the resolved <importBase> element.
-   remove_from_parent (e)
-
-   -- All done.
+   parent:remove (e)
    return true
 end
 
 -- Resolve <importNCL> element E.
 -- Returns true if successful, otherwise returns false plus error message.
 local function resolve_importncl (ncl, e)
+   local parent                 -- pointer to E's parent
+   local ext                    -- pointer to external document
+   local err                    -- error message
+   local status
+
+   parent = e:parent ()
+
    assert (e:tag () == 'importNCL')
+   assert (parent:tag () == 'importedDocumentBase')
+   assert (e.alias)
+   assert (e.documentURI)
 
-   -- Check parent.
-   local parent = assert (e:parent ())
-   local tag = assert (parent:tag ())
-   if tag ~= 'importedDocumentBase' then
-      return false, errmsg.badparent ('importNCL', tag)
-   end
-
-   -- Check required attributes.
-   if e.alias == nil then
-      return false, errmsg.attrmissing ('importNCL', 'alias')
-   end
-   if e.documentURI == nil then
-      return false, errmsg.attrmissing ('importNCL', 'documentURI')
-   end
-
-   -- Resolve the external document.
-   local ext, err = resolve_external_document (ncl, e.documentURI)
+   ext, err = resolve_external_document (ncl, e.documentURI)
    if ext == nil then
       return false, err
    end
 
    -- Import all bases of the external document.
-   local list = {}
-   for tag,_ in pairs (importbase_parent_list) do
-      list[#list+1] = tag
-   end
-   table.sort (list)
-   for _,tag in ipairs (list) do
+   for _,tag in ipairs (importbase_parent_list) do
       local base = ncl:match (tag)
-      if not base then
+      if base == nil then
          base = xml.new (tag)
-         assert (ncl:match ('head')):insert (base)
+         ncl:match ('head'):insert (base)
       end
-      local status, err = import_base (base, ext, e.alias)
+      status, err = import_base (base, ext, e.alias)
       if status == false then
          return false, err
       end
    end
 
-   -- Import all <media>, <context>, and <switch> of the external document
-   -- that are referenced by the host document.
-   for m in ncl:gmatch (nil, 'refer') do
-      local tag = m:tag ()
-      if tag ~= 'media' and tag ~= 'context' and tag ~= 'switch' then
+   -- Import the components (media, contexts, or switches) of the external
+   -- document that are referenced by the host document.
+   for x in ncl:gmatch (nil, 'refer') do
+      local tag = x:tag ()
+      assert (tag == 'media' or tag == 'context' or tag == 'switch')
+
+      if tag == 'media' and x.instance and x.instance ~= 'new' then
          goto continue          -- nothing to do
       end
-      if tag == 'media' and m.instance and m.instance ~= 'new' then
+
+      local refer = x.refer:match ('^'..e.alias..'#(.*)$')
+      if refer == nil then
          goto continue          -- nothing to do
       end
-      local id = m.id
-      if id == nil then
-         return false, errmsg.attrmissing (tag, 'id')
-      end
-      local refer = m.refer:match ('^'..e.alias..'#(.*)$')
-      local mref = ext:match (tag, 'id', refer)
-      if mref == nil or mref:tag () ~= tag then
-         return false, errmsg.badidref (tag, 'refer', refer)
-      end
-      local parent = m:parent ()
-      local i = assert (remove_from_parent (m))
-      mref = assert (mref:clone ())
-      update_id_and_idref (mref, e.alias)
-      mref.id = id
-      parent:insert (i, mref)
+
+      local y = ext:match (tag, 'id', refer)
+      y = y:clone ()
+      y.id = x.id
+      update_id_and_idref (y, e.alias)
+
+      xml.replace (x:parent (), x, y)
       :: continue ::
    end
 
-   -- Remove the resolved <importNCL> element.
-   remove_from_parent (e)
-
-   -- All done.
+   xml.remove (parent, e)
    return true
 end
 
 
 -- Exported functions.
 
+-- Resolves external document importation.
+-- NCL is a pointer to syntactically correct document.
+-- Returns an equivalent document containing no <importNCL>, <importBase>,
+-- nor <importedDocumentBase> tags.
 function apply (ncl)
+   local status
+   local err
+
    for e in ncl:gmatch ('importBase') do
-      local status, err = resolve_importbase (ncl, e)
+      status, err = resolve_importbase (ncl, e)
       if status == false then
          return nil, err
       end
    end
+
    for e in ncl:gmatch ('importNCL') do
-      local status, err = resolve_importncl (ncl, e)
+      status, err = resolve_importncl (ncl, e)
       if status == false then
          return nil, err
       end
    end
+
    local e = ncl:match ('importedDocumentBase')
    if e then
-      remove_from_parent (e)
+      xml.remove (e:parent (), e)
    end
+
    return ncl
 end

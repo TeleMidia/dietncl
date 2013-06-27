@@ -17,76 +17,13 @@
 -- along with DietNCL.  If not, see <http://www.gnu.org/licenses/>.
 
 require ('dietncl')
-local errmsg = require ('dietncl.errmsg')
 local filter = require ('dietncl.filter.import')
 local util   = require ('util')
 
-
+
 --========================================================================--
 --            Part I -- Checks the resolution of <importBase>             --
 --========================================================================--
-
-
--- Bad parent.
-
-tmp = util.tmpfile ('<ncl><head/><body/></ncl>')
-ncl = util.parsenclformat ([[
-<ncl>
- <importBase alias='x' documentURI='%s'/>
-</ncl>]], tmp)
-ncl, err = filter.apply (ncl)
-assert (ncl == nil)
-assert (err == errmsg.badparent ('importBase', 'ncl'))
-os.remove (tmp)
-
-
--- Missing 'alias'.
-
-ncl = dietncl.parsestring ([[
-<ncl>
- <head>
-  <regionBase>
-   <importBase documentURI='x'/>
-  </regionBase>
- </head>
- <body/>
-</ncl>]])
-ncl, err = filter.apply (ncl)
-assert (ncl == nil)
-assert (err == errmsg.attrmissing ('importBase', 'alias'))
-
-
--- Missing 'documentURI'.
-
-ncl = dietncl.parsestring ([[
-<ncl>
- <head>
-  <descriptorBase>
-   <importBase alias='x'/>
-  </descriptorBase>
- </head>
- <body/>
-</ncl>]])
-ncl, err = filter.apply (ncl)
-assert (ncl == nil)
-assert (err == errmsg.attrmissing ('importBase', 'documentURI'))
-
-
--- Missing both 'alias' and 'documentURI'.
-
-ncl = dietncl.parsestring ([[
-<ncl>
- <head>
-  <descriptorBase>
-   <importBase/>
-  </descriptorBase>
- </head>
- <body/>
-</ncl>]])
-ncl, err = filter.apply (ncl)
-assert (ncl == nil)
-assert (err == errmsg.attrmissing ('importBase', 'documentURI')
-           or err == errmsg.attrmissing ('importBase', 'alias'))
 
 
 -- Invalid 'documentURI' (file not found).
@@ -126,89 +63,6 @@ ncl = util.parsenclformat ([[
 ncl, err = filter.apply (ncl)
 assert (ncl == nil)
 assert (err:match ('/!!!NON_EXISTENT!!!'))
-os.remove (tmp)
-
-
--- Invalid 'region' (no such region).
-
-tmp = util.tmpfile ([[
-<ncl>
- <head>
-  <regionBase>
-   <region id='r1'/>
-  </regionBase>
- </head>
- <body/>
-</ncl>]])
-
-ncl = util.parsenclformat ([[
-<ncl>
- <head>
-  <regionBase>
-   <region id='r2'/>
-   <importBase alias='a' documentURI='%s' region='r3'/>
-  </regionBase>
- </head>
- <body/>
-</ncl>]], tmp)
-
-ncl, err = filter.apply (ncl)
-assert (err == errmsg.badidref ('regionBase', 'region', 'r3'))
-os.remove (tmp)
-
-
--- Invalid 'baseId' (no such region-base).
-
-tmp = util.tmpfile ([[
-<ncl>
- <head>
-  <regionBase id='rb'>
-   <region id='r1'/>
-  </regionBase>
- </head>
- <body/>
-</ncl>]])
-
-ncl = util.parsenclformat ([[
-<ncl>
- <head>
-  <regionBase>
-   <importBase alias='a' documentURI='%s' baseId='rb'/>
-   <importBase alias='b' documentURI='%s' baseId='rbx'/>
-  </regionBase>
- </head>
- <body/>
-</ncl>]], tmp, tmp)
-
-ncl, err = filter.apply (ncl)
-assert (err == errmsg.badidref ('regionBase', 'baseId', 'rbx'))
-os.remove (tmp)
-
-
--- Invalid 'baseId' (there are multiple bases with the same id).
-
-tmp = util.tmpfile ([[
-<ncl>
- <head>
-  <regionBase id='rb'/>
-  <regionBase id='rb'/>
- </head>
- <body/>
-</ncl>]])
-
-ncl = util.parsenclformat ([[
-<ncl>
- <head>
-  <regionBase>
-   <importBase alias='a' documentURI='%s' baseId='rb'/>
-  </regionBase>
- </head>
- <body/>
-</ncl>]], tmp)
-
-ncl, err = filter.apply (ncl)
-assert (ncl == nil)
-assert (err == errmsg.dupid ('regionBase', 'rb'))
 os.remove (tmp)
 
 
@@ -487,74 +341,10 @@ os.remove (tmp1)
 os.remove (tmp2)
 os.remove (tmp3)
 
-
+
 --========================================================================--
 --            Part II -- Checks the resolution of <importNCL>             --
 --========================================================================--
-
-
--- Bad parent.
-
-tmp = util.tmpfile ('<ncl><head/><body/></ncl>')
-ncl = util.parsenclformat ([[
-<ncl>
- <regionBase>
-  <importNCL alias='x' documentURI='%s'/>
- </regionBase>
-</ncl>]], tmp)
-ncl, err = filter.apply (ncl)
-assert (ncl == nil)
-assert (err == errmsg.badparent ('importNCL', 'regionBase'))
-os.remove (tmp)
-
-
--- Missing 'alias'.
-
-ncl = dietncl.parsestring ([[
-<ncl>
- <head>
-  <importedDocumentBase>
-   <importNCL documentURI='x'/>
-  </importedDocumentBase>
- </head>
- <body/>
-</ncl>]])
-ncl, err = filter.apply (ncl)
-assert (ncl == nil)
-assert (err == errmsg.attrmissing ('importNCL', 'alias'))
-
-
--- Missing 'documentURI'.
-
-ncl = dietncl.parsestring ([[
-<ncl>
- <head>
-  <importedDocumentBase>
-   <importNCL alias='x'/>
-  </importedDocumentBase>
- </head>
- <body/>
-</ncl>]])
-ncl, err = filter.apply (ncl)
-assert (ncl == nil)
-assert (err == errmsg.attrmissing ('importNCL', 'documentURI'))
-
-
--- Missing both 'alias' and 'documentURI'.
-
-ncl = dietncl.parsestring ([[
-<ncl>
- <head>
-  <importedDocumentBase>
-   <importNCL/>
-  </importedDocumentBase>
- </head>
- <body/>
-</ncl>]])
-ncl, err = filter.apply (ncl)
-assert (ncl == nil)
-assert (err == errmsg.attrmissing ('importNCL', 'documentURI')
-           or err == errmsg.attrmissing ('importNCL', 'alias'))
 
 
 -- Invalid 'documentURI' (file not found).
