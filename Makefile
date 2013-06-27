@@ -38,6 +38,7 @@ TESTS =\
  test-xmlsugar-eval.lua\
  test-xmlsugar-insert.lua\
  test-xmlsugar-remove.lua\
+ test-xmlsugar-replace.lua\
  test-xmlsugar-children.lua\
  test-xmlsugar-attributes.lua\
  test-xmlsugar-equal.lua\
