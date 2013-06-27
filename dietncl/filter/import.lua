@@ -1,4 +1,4 @@
--- import.lua -- Resolve document importation.
+-- import.lua -- Resolves document importation.
 -- Copyright (C) 2013 PUC-Rio/Laboratorio TeleMidia
 --
 -- This file is part of DietNCL.
@@ -15,6 +15,10 @@
 --
 -- You should have received a copy of the GNU General Public License
 -- along with DietNCL.  If not, see <http://www.gnu.org/licenses/>.
+
+-- The 'import' filter resolves the external references and removes the
+-- <importNCL>, <importBase>, and <importedDocumentBase> elements from a
+-- given document.  This filter has no dependencies.
 
 require ('dietncl.xmlsugar')
 local xml     = xml
@@ -166,7 +170,7 @@ local function resolve_external_document (ncl, uri)
    return ext
 end
 
--- Resolve <importBase> element E.
+-- Resolves <importBase> element E.
 -- Returns true if successful, otherwise returns false plus error message.
 local function resolve_importbase (ncl, e)
    local parent                 -- pointer to E's parent
@@ -195,7 +199,7 @@ local function resolve_importbase (ncl, e)
    return true
 end
 
--- Resolve <importNCL> element E.
+-- Resolves <importNCL> element E.
 -- Returns true if successful, otherwise returns false plus error message.
 local function resolve_importncl (ncl, e)
    local parent                 -- pointer to E's parent
@@ -259,10 +263,6 @@ end
 
 -- Exported functions.
 
--- Resolves external document importation.
--- NCL is a pointer to syntactically correct document.
--- Returns an equivalent document containing no <importNCL>, <importBase>,
--- nor <importedDocumentBase> tags.
 function apply (ncl)
    local status
    local err
