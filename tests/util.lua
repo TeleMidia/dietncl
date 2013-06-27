@@ -38,3 +38,52 @@ end
 function parsenclformat (fmt, ...)
    return dietncl.parsestring ((fmt):format (...))
 end
+
+-- Checks whether tree E1 is equal to tree E2 ignoring element order.
+function uequal (e1, e2)
+   if e1:tag () ~= e2:tag () then
+      return false
+   end
+   for k,_ in e1:attributes () do
+      if e1[k] ~= e2[k] then
+         return false
+      end
+   end
+   for k,_ in e2:attributes () do
+      if e2[k] ~= e1[k] then
+         return false
+      end
+   end
+   if #e1 ~= #e2 then
+      return false
+   end
+   local n = #e1
+   if n == 0 then
+      return true
+   end
+   for i=1,n do
+      local found = false
+      for j=1,n do
+         if uequal (e1[i], e2[j]) then
+            found = true
+            break
+         end
+      end
+      if not found then
+         return false
+      end
+   end
+   for i=1,n do
+      local found = false
+      for j=1,n do
+         if uequal (e2[i], e1[j]) then
+            found = true
+            break
+         end
+      end
+      if not found then
+         return false
+      end
+   end
+   return true
+end
