@@ -23,9 +23,9 @@ local os      = os
 local assert  = assert
 module (...)
 
--- Writes the string S into a temporary file and Returns the name of this
--- file.  The caller must use os.remove() to remove the temporary file when
--- is no longer needed.
+-- Writes string S into a temporary file and returns the name of this file.
+-- The caller must use os.remove() to remove the temporary file when is no
+-- longer needed.
 function tmpfile (s)
    local tmp = os.tmpname ()
    local fp = assert (io.open (tmp, 'w'))
@@ -40,30 +40,22 @@ function parsenclformat (fmt, ...)
 end
 
 -- Checks whether tree E1 is equal to tree E2 ignoring element order.
-function uequal (e1, e2)
-   if e1:tag () ~= e2:tag () then
-      return false
-   end
+local function uequal_attributes (e1, e2)
    for k,_ in e1:attributes () do
       if e1[k] ~= e2[k] then
          return false
       end
    end
-   for k,_ in e2:attributes () do
-      if e2[k] ~= e1[k] then
-         return false
-      end
-   end
+   return true
+end
+
+local function uequal_children (e1, e2)
    if #e1 ~= #e2 then
       return false
    end
-   local n = #e1
-   if n == 0 then
-      return true
-   end
-   for i=1,n do
+   for i=1,#e1 do
       local found = false
-      for j=1,n do
+      for j=1,#e1 do
          if uequal (e1[i], e2[j]) then
             found = true
             break
@@ -73,17 +65,16 @@ function uequal (e1, e2)
          return false
       end
    end
-   for i=1,n do
-      local found = false
-      for j=1,n do
-         if uequal (e2[i], e1[j]) then
-            found = true
-            break
-         end
-      end
-      if not found then
-         return false
-      end
+   return true
+end
+
+function uequal (e1, e2)
+   if (e1:tag () ~= e2:tag ())
+      or (not uequal_attributes (e1, e2))
+      or (not uequal_attributes (e2, e1))
+      or (not uequal_children (e1, e2))
+      or (not uequal_children (e2, e1)) then
+      return false
    end
    return true
 end
