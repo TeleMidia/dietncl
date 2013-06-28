@@ -48,7 +48,7 @@ ncl = dietncl.parsestring ([[
 <ncl>
  <head>
   <regionBase device='3'>
-   <region id='r' top='30%' left='33px' height='40' zIndex='4' />
+   <region id='r' top='30%' left='33px' height='40' zIndex='4'/>
   </regionBase>
   <descriptorBase>
    <descriptor id='d' region='r'>
@@ -397,3 +397,99 @@ for _,a in ipairs ({'top', 'bottom', 'left', 'right'}) do
    out = util.parsenclformat (fmtout, a, a, d)
    assert (util.uequal (ncl, out))
 end
+
+
+-- A bigger sample.
+
+ncl = dietncl.parsestring ([[
+<ncl>
+ <head>
+  <descriptorBase>
+   <descriptor id='d1' region='r1b' transIn='t1' freeze='true'>
+    <descriptorParam name='zIndex' value='8'/>
+   </descriptor>
+   <descriptorSwitch id='ds'>
+    <defaultDescriptor descriptor='dsb'/>
+    <descriptor id='dsa' region='r2a' transIn='t2'/>
+    <descriptor id='dsb' region='r2b'/>
+    <bindRule constituent='dsa' rule='b1'/>
+    <bindRule constituent='dsb' rule='b2'/>
+   </descriptorSwitch>
+  </descriptorBase>
+  <regionBase id='rb1' device='1'>
+   <region id='r1a' top='35%' left='44px' width='33px' height='50%'>
+    <region id='r1b' top='15%' left='13px' width='15%' zIndex='3'/>
+   </region>
+  </regionBase>
+  <transitionBase>
+   <transition id='t1' type='barWipe' subtype='clockWipe'/>
+   <transition id='t2' type='fade' dur='3s'/>
+  </transitionBase>
+  <regionBase id='rb2'>
+   <region id='r2a' bottom='35%' right='44px' width='33px' height='50%'>
+    <region id='r2b' bottom='15%' right='13px' height='30px' zIndex='5'/>
+   </region>
+  </regionBase>
+  <ruleBase>
+   <rule id='b1' var='x' comparator='eq' value='30'/>
+   <rule id='b2' var='y' comparator='ne' value='35'/>
+  </ruleBase>
+ </head>
+ <body>
+  <media id='settings' type='application/x-ncl-settings'>
+   <property name='x' value='30'/>
+   <property name='y' value='35'/>
+  </media>
+ </body>
+</ncl>
+]])
+filter.apply (ncl)
+
+assert (util.uequal (ncl, dietncl.parsestring ([[
+<ncl>
+ <head>
+  <descriptorBase>
+   <descriptor id='d1' transIn='t1' freeze='true'>
+    <descriptorParam name='zIndex' value='8'/>
+    <descriptorParam name='top' value='42.5%'/>
+    <descriptorParam name='left' value='57px'/>
+    <descriptorParam name='width' value='4.95px'/>
+    <descriptorParam name='height' value='50%'/>
+    <descriptorParam name='device' value='1'/>
+   </descriptor>
+   <descriptorSwitch id='ds'>
+    <defaultDescriptor descriptor='dsb'/>
+    <descriptor id='dsa' transIn='t2'>
+     <descriptorParam name='bottom' value='35%'/>
+     <descriptorParam name='right' value='44px'/>
+     <descriptorParam name='width' value='33px'/>
+     <descriptorParam name='height' value='50%'/>
+    </descriptor>
+    <descriptor id='dsb'>
+     <descriptorParam name='bottom' value='42.5%'/>
+     <descriptorParam name='right' value='57px'/>
+     <descriptorParam name='zIndex' value='5'/>
+     <descriptorParam name='width' value='33px'/>
+     <descriptorParam name='height' value='30px'/>
+    </descriptor>
+    <bindRule constituent='dsa' rule='b1'/>
+    <bindRule constituent='dsb' rule='b2'/>
+   </descriptorSwitch>
+  </descriptorBase>
+  <transitionBase>
+   <transition id='t1' type='barWipe' subtype='clockWipe'/>
+   <transition id='t2' type='fade' dur='3s'/>
+  </transitionBase>
+  <ruleBase>
+   <rule id='b1' var='x' comparator='eq' value='30'/>
+   <rule id='b2' var='y' comparator='ne' value='35'/>
+  </ruleBase>
+ </head>
+ <body>
+  <media id='settings' type='application/x-ncl-settings'>
+   <property name='x' value='30'/>
+   <property name='y' value='35'/>
+  </media>
+ </body>
+</ncl>
+]])))
