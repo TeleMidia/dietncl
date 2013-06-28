@@ -59,7 +59,7 @@ y2 = assert (f ())
 assert (y2.id == 'y2' and y2.a == '4')
 assert (f () == nil)
 
-f = assert (root:gmatch (nil, nil, '4'))
+f = assert (root:gmatch (nil, '.', '^4$', 3))
 y2 = assert (f ())
 assert (y2.id == 'y2' and y2.a == '4')
 

@@ -269,37 +269,73 @@ end
 -- TAG is a tag name or nil (any).
 -- ATTRIBUTE is an attribute name or nil (any).
 -- VALUE is a value string or nil (any).
+--
+-- REGEXP is an (optional) integer between 0-7 that determines whether TAG,
+-- ATTR, and VALUE are to be interpret as regular expressions: if the third
+-- bit of REGEXP is set, treat TAG as regexp; if its second bit is set,
+-- treat ATTR as regexp; if its first bit is set, treat VALUE as regexp.
 
-local function domatch (e, tag, attr, value)
-   local t = {}
+local function eq (s, pattern, regexp)
+   if regexp then
+      return s:match (pattern) ~= nil
+   else
+      return s == pattern
+   end
+end
+
+local function domatch0 (e, tag, attr, value,
+                         cmptag, cmpattr, cmpval, result)
+
+   if tag and not cmptag (e:tag (), tag) then
+      return                    -- fail
+   end
+
+   if not attr then
+      cmpattr = function (...) return true end
+   end
+
+   if not value then
+      cmpval = function (...) return true end
+   end
+
+   local list = {}
+   for k,_ in e:attributes () do
+      if cmpattr (k, attr) then
+         list[#list+1] = k
+      end
+   end
+
+   if attr and #list == 0 then
+      return                    -- fail
+   end
+
+   if value then
+      for _,attr in ipairs (list) do
+         assert (e[attr])
+         if cmpval (e[attr], value) then
+            goto success
+         end
+      end
+      return                    -- fail
+   end
+
+   ::success::
+   table.insert (result, e)
+end
+
+local function domatch (e, tag, attr, value, regexp)
+   local result = {}            -- list of matches
    local match = function (e)
-      if tag and e:tag () ~= tag then
-         return
-      end
-      if attr then
-         if not e[attr] then
-            return
-         end
-         if value and e[attr] ~= value then
-            return
-         end
-      else
-         if value then
-            local found = false
-            for _,v in e:attributes () do
-               if v == value then
-                  found = true
-               end
-            end
-            if not found then
-               return
-            end
-         end
-      end
-      t[#t+1] = e               -- success
+      local re = regexp or 0
+      local bit = bit32.extract
+      domatch0 (e, tag, attr, value,
+                function (x,y) return eq (x, y, bit (re, 2) ~= 0) end,
+                function (x,y) return eq (x, y, bit (re, 1) ~= 0) end,
+                function (x,y) return eq (x, y, bit (re, 0) ~= 0) end,
+                result)
    end
    xml.walk (e, match)
-   return t
+   return result
 end
 
 function xml.match (...)

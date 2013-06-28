@@ -18,6 +18,9 @@
 
 require ('dietncl.xmlsugar')
 
+-- 
+-- -- Match plain strings.
+
 root = xml.eval ('<root/>')
 assert (root:match ('x') == nil)
 
@@ -59,3 +62,44 @@ assert (t[3]:tag () == 'y' and t[3].id == 'y3')
 t = {root:match (nil, 'a', '4')}
 assert (#t == 1)
 assert (t[1]:tag () == 'y' and t[1].id == 'y2')
+
+
+-- Match regexps.
+
+root = xml.eval ('<root/>')
+assert (root:match ('r', nil, nil, 4))
+assert (root:match ('x', nil, nil, 4) == nil)
+
+t = {root:match ('ro.t', nil, nil, 4)}
+assert (t[1]:tag () == 'root' and #t == 1)
+
+root = xml.eval ("<root abc='xyz'/>")
+assert (root:match ('root', 'abc', 'xyz', 0))
+assert (root:match ('roo', 'abc', 'xyz', 0) == nil)
+assert (root:match ('root', 'ab', 'xyz', 0) == nil)
+assert (root:match ('root', 'abc', 'xy', 0) == nil)
+
+assert (root:match ('root', 'abc', 'xyz', 0)) -- 000
+assert (root:match ('root', 'abc', 'xy.', 1)) -- 001
+assert (root:match ('root', 'ab.', 'xyz', 2)) -- 010
+assert (root:match ('root', 'ab.', 'xy.', 3)) -- 011
+assert (root:match ('roo.', 'abc', 'xyz', 4)) -- 100
+assert (root:match ('roo.', 'abc', 'xy.', 5)) -- 101
+assert (root:match ('roo.', 'ab.', 'xyz', 6)) -- 110
+assert (root:match ('roo.', 'ab.', 'xy.', 7)) -- 111
+
+root = xml.eval ([[
+<root>
+ <x/>
+ <y id='y1' a='3'/>
+ <z>
+  <w a='3'>
+   <y id='y2' a='4'/>
+  </w>
+ </z>
+ <y id='y33'/>
+</root>]])
+t = {root:match (nil, '^[^a]*$', '^[a-z][0-9]$', 3)}
+assert (#t == 2)
+assert (t[1].id == 'y1')
+assert (t[2].id == 'y2')
