@@ -18,7 +18,7 @@
 
 require ('dietncl.xmlsugar')
 
-local root = xml.eval ('<root/>')
+root = xml.eval ('<root/>')
 assert (root:match ('x') == nil)
 
 t = {root:match ('root')}

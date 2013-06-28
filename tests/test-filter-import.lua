@@ -17,8 +17,8 @@
 -- along with DietNCL.  If not, see <http://www.gnu.org/licenses/>.
 
 require ('dietncl')
-local filter = require ('dietncl.filter.import')
-local util   = require ('util')
+filter = require ('dietncl.filter.import')
+util   = require ('util')
 
 
 --========================================================================--

@@ -18,7 +18,7 @@
 
 require ('dietncl.xmlsugar')
 
-local e = xml.new ('e')
+e = xml.new ('e')
 e:setuserdata ('x', 1)
 e:setuserdata ('y', 2)
 e:setuserdata ('z', 3)

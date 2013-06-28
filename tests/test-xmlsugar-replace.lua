@@ -18,19 +18,19 @@
 
 require ('dietncl.xmlsugar')
 
-local root = xml.new ('root')
-local x = xml.new ('x')
-local y = xml.new ('y')
-local z = xml.new ('z')
-local w = xml.new ('w')
+root = xml.new ('root')
+x = xml.new ('x')
+y = xml.new ('y')
+z = xml.new ('z')
+w = xml.new ('w')
 
 assert (root:insert (x) == 1)
 assert (x:insert (y) == 1)
 assert (x:insert (z) == 2)
 
 -- Old denotes a position.
-local w = xml.new ('w')
-local rep, pos = x:replace (1, w)
+w = xml.new ('w')
+rep, pos = x:replace (1, w)
 assert (rep == y and pos == 1)
 assert (y:parent () == nil)
 assert (w:parent () == x)

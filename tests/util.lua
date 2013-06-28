@@ -17,7 +17,6 @@
 -- along with DietNCL.  If not, see <http://www.gnu.org/licenses/>.
 
 local dietncl = require ('dietncl')
-
 local io      = io
 local os      = os
 local assert  = assert
@@ -26,6 +25,7 @@ module (...)
 -- Writes string S into a temporary file and returns the name of this file.
 -- The caller must use os.remove() to remove the temporary file when is no
 -- longer needed.
+
 function tmpfile (s)
    local tmp = os.tmpname ()
    local fp = assert (io.open (tmp, 'w'))
@@ -35,11 +35,13 @@ function tmpfile (s)
 end
 
 -- Parses the formatted NCL string FMT and returns the resulting document.
+
 function parsenclformat (fmt, ...)
    return dietncl.parsestring ((fmt):format (...))
 end
 
 -- Checks whether tree E1 is equal to tree E2 ignoring element order.
+
 local function uequal_attributes (e1, e2)
    for k,_ in e1:attributes () do
       if e1[k] ~= e2[k] then

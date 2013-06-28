@@ -17,8 +17,8 @@
 -- along with DietNCL.  If not, see <http://www.gnu.org/licenses/>.
 
 require ('dietncl')
-local filter = require ('dietncl.filter.region')
-local util   = require ('util')
+filter = require ('dietncl.filter.region')
+util   = require ('util')
 
 
 -- Single region base; no descriptors.
@@ -169,7 +169,7 @@ assert (util.uequal (ncl, dietncl.parsestring ([[
 
 -- Valid and invalid combinations of t,b,l,r.
 
-local function doapply (attr, dim, regval, parval, dimval)
+function doapply (attr, dim, regval, parval, dimval)
    return filter.apply (util.parsenclformat ([[
 <ncl>
  <head>
@@ -187,14 +187,14 @@ local function doapply (attr, dim, regval, parval, dimval)
 ]], attr, parval, dim, dimval, attr, regval))
 end
 
-local function check_success (regval, parval, dimval)
+function check_success (regval, parval, dimval)
    assert (doapply ('top', 'height', regval, parval, dimval))
    assert (doapply ('bottom', 'height', regval, parval, dimval))
    assert (doapply ('left', 'width', regval, parval, dimval))
    assert (doapply ('right', 'width', regval, parval, dimval))
 end
 
-local function check_fail (regval, parval, dimval)
+function check_fail (regval, parval, dimval)
    assert (doapply ('top', 'height', regval, parval, dimval) == nil)
    assert (doapply ('bottom', 'height', regval, parval, dimval) == nil)
    assert (doapply ('left', 'width', regval, parval, dimval) == nil)

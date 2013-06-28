@@ -20,10 +20,12 @@ require ('dietncl')
 
 assert (dietncl.parsestring ('') == nil)
 
-local file, err = io.open ('tests/test-init-parse-sample.ncl', 'r')
+file, err = io.open ('tests/test-init-parse-sample.ncl', 'r')
 assert (file ~= nil)
-local ncl = dietncl.parsestring (file:read ('*a'))
+
+ncl = dietncl.parsestring (file:read ('*a'))
 file:close ()
+
 assert (ncl:getuserdata ('pathname') == nil)
 assert (ncl:tag () == 'ncl')
 assert (ncl.id == 'test-init-parse-sample')

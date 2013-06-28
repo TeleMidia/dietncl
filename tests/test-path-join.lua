@@ -16,7 +16,7 @@
 -- You should have received a copy of the GNU General Public License
 -- along with DietNCL.  If not, see <http://www.gnu.org/licenses/>.
 
-local path = require ('dietncl.path')
+path = require ('dietncl.path')
 
 assert (path.join ('', ''))
 assert (path.join ('a', 'b') == 'a/b')

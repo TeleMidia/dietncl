@@ -18,7 +18,7 @@
 
 require ('dietncl.xmlsugar')
 
-local root = xml.eval ([[
+root = xml.eval ([[
 <root a="1" b="2" c="3" d="4">
  <x/>
  <y/>
@@ -26,8 +26,8 @@ local root = xml.eval ([[
  <w/>
 </root>
 ]])
-local list = { a=1, b=2, c=3, d=4 }
-local i = 0
+list = { a=1, b=2, c=3, d=4 }
+i = 0
 for k,v in root:attributes () do
    assert (list[k] == tonumber (v))
    i = i + 1

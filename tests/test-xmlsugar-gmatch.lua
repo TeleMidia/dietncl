@@ -18,8 +18,8 @@
 
 require ('dietncl.xmlsugar')
 
-local root = xml.eval ('<root/>')
-local f = assert (root:gmatch ('x'))
+root = xml.eval ('<root/>')
+f = assert (root:gmatch ('x'))
 assert (f () == nil)
 assert (f () == nil)
 assert (f () == nil)
@@ -64,7 +64,7 @@ y2 = assert (f ())
 assert (y2.id == 'y2' and y2.a == '4')
 
 f = assert (root:gmatch ())
-local t = { 'root', 'x', 'y', 'z', 'w', 'y', 'y' }
+t = { 'root', 'x', 'y', 'z', 'w', 'y', 'y' }
 for i=1,#t do
    assert ((f ()):tag () == t[i])
 end

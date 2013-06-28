@@ -20,8 +20,8 @@ require ('dietncl')
 
 assert (dietncl.parse ('') == nil)
 
-local pathname = 'tests/test-init-parse-sample.ncl'
-local ncl = dietncl.parse ('tests/test-init-parse-sample.ncl')
+pathname = 'tests/test-init-parse-sample.ncl'
+ncl = dietncl.parse ('tests/test-init-parse-sample.ncl')
 assert (ncl:getuserdata ('pathname') == pathname)
 assert (ncl:tag () == 'ncl')
 assert (ncl.id == 'test-init-parse-sample')

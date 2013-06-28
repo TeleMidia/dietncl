@@ -18,11 +18,12 @@
 
 require ('dietncl.xmlsugar')
 
-local root = xml.new ('root')
+root = xml.new ('root')
 for i=1,100 do
    root:insert (xml.new (tostring (i)))
 end
-local i = 1
+
+i = 1
 for e in root:children () do
    assert (e:parent () == root)
    assert (e:tag () == tostring (i))

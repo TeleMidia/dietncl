@@ -24,10 +24,8 @@ require ('dietncl.xmlsugar')
 local xml     = xml
 local dietncl = require ('dietncl')
 local path    = require ('dietncl.path')
-
-local assert = assert
-local ipairs = ipairs
-local table  = table
+local assert  = assert
+local ipairs  = ipairs
 module (...)
 
 -- List of possible <importBase> parents.
@@ -45,6 +43,7 @@ for _,s in ipairs (importbase_parent_list) do
 end
 
 -- Returns true if tag-name TAG is a possible <importBase> parent.
+
 local function is_importbase_parent (tag)
    return _importbase_parent_list[tag]
 end
@@ -70,6 +69,7 @@ local idref_attribute_table = {
 
 -- Concatenates the string 'ALIAS#' to the XML-ID or XML-IDREF attributes of
 -- all elements in tree E.
+
 local function update_id_and_idref (e, alias)
    local tag = e:tag ()
    if e.id then
@@ -114,6 +114,7 @@ end
 -- Otherwise, the parameters REGION an BASEID are ignored.
 --
 -- Returns true if successful, otherwise returns false plus error message.
+
 local function import_base (e, ext, alias, region, baseid)
    local ncl                    -- pointer to NCL document
    local tag                    -- tag-name of base E
@@ -153,6 +154,7 @@ end
 -- NCL is the pointer to the host document.
 -- Returns a pointer to the external document if successful,
 -- otherwise returns nil plus error message.
+
 local function resolve_external_document (ncl, uri)
    local pathname = uri
    if path.relative (uri) then
@@ -172,6 +174,7 @@ end
 
 -- Resolves <importBase> element E.
 -- Returns true if successful, otherwise returns false plus error message.
+
 local function resolve_importbase (ncl, e)
    local parent                 -- pointer to E's parent
    local ext                    -- pointer to external document
@@ -201,6 +204,7 @@ end
 
 -- Resolves <importNCL> element E.
 -- Returns true if successful, otherwise returns false plus error message.
+
 local function resolve_importncl (ncl, e)
    local parent                 -- pointer to E's parent
    local ext                    -- pointer to external document

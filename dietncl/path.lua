@@ -19,6 +19,8 @@
 local package = _G.package
 module (...)
 
+-- Returns the character at position I in string S.
+
 local function at (s, i)
    return s:sub (i,i)
 end
@@ -27,6 +29,7 @@ end
 local iswindows = at (package.config, 1) == '\\'
 
 -- Returns true if char C is a path separator.
+
 local function isslash (c)
    if iswindows then
       return c == '/' or c == '\\'
@@ -36,6 +39,7 @@ local function isslash (c)
 end
 
 -- Returns the length of file system prefix in path name P.
+
 local function filesystem_prefix_len (p)
    if iswindows and (at (p, 1)):match ('[a-zA-Z]') and at (p, 2) ':' then
       return 2
@@ -47,6 +51,7 @@ end
 -- Exported functions.
 
 -- Returns true if path name P is absolute.
+
 function absolute (p)
    if isslash (at (p, 1)) then
       return true
@@ -58,12 +63,14 @@ function absolute (p)
 end
 
 -- Returns true if path name P is relative.
+
 function relative (p)
    return not absolute (p)
 end
 
 -- Returns the dirname and basename parts of path name P.
 -- If there is no dirname part, the first returned value will be empty.
+
 function split (p)
    local base = filesystem_prefix_len (p)
    local i = #p
@@ -74,6 +81,7 @@ function split (p)
 end
 
 -- Returns the result of concatenating path names P and Q.
+
 function join (p, q)
    if #p == 0 then
       return q

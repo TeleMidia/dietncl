@@ -24,9 +24,10 @@ module (...)
 
 -- Exported functions.
 
--- Parses the NCL string S.
+-- Parses document string S.
 -- Returns a new NCL handle if successful if successful,
 -- otherwise returns nil plus error message.
+
 function parsestring (s)
    local ncl, err = xml.eval (assert (s))
    if ncl == nil then
@@ -35,9 +36,10 @@ function parsestring (s)
    return ncl
 end
 
--- Parses the NCL document at path name PATHNAME.
+-- Parses document at path name PATHNAME.
 -- Returns a new NCL handle if successful if successful,
 -- otherwise returns nil plus error message.
+
 function parse (pathname)
    local ncl, err = xml.load (assert (pathname))
    if ncl == nil then

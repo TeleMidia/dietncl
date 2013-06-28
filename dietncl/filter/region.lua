@@ -30,11 +30,13 @@ local tonumber = tonumber
 module (...)
 
 -- Returns the number value of pixel value S.
+
 function pixeltonumber (s)
    return tonumber (s:match ('^(%d+)$') or s:match ('^(%d+)[Pp][Xx]$'))
 end
 
 -- Returns number value of percent value S.
+
 function percenttonumber (s)
    local x = tonumber (s:match ('^(%d*%.?%d*)%%$'))
    if x == nil then
@@ -45,6 +47,7 @@ function percenttonumber (s)
 end
 
 -- Some helper functions.
+
 function topercent (n) return (n * 100)..'%' end
 function topixel (n) return n..'px' end
 function ispixel (s) return pixeltonumber (s) ~= nil end
@@ -91,6 +94,7 @@ function ispercent (s) return percenttonumber (s) ~= nil end
 -- Updates width or height attribute ATTR of region REGION based on the
 -- value of the corresponding attributes in its parent.
 -- Returns true if successful, otherwise returns false plus error message.
+
 local function update_wh (region, attr)
    local parent                 -- pointer to parent
    local regval                 -- value of ATTR in REGION
@@ -119,6 +123,7 @@ end
 -- Updates top, bottom, left, or right attribute ATTR of region REGION based
 -- on the value of the corresponding attributes in the parent region.
 -- Returns true if successful, otherwise returns false plus error message.
+
 local function update_tblr_tail (parent, region, attr, dim)
    local regval = region[attr]
    local parval = parent[attr] or '100%'
@@ -196,6 +201,7 @@ local attribute_to_update_function = {
 
 -- Un-nests all regions rooted at parent region REGION.
 -- Returns true if successful, otherwise returns false plus error message.
+
 local function unnest (region)
    while #region > 0 do
       local parent              -- pointer to parent
@@ -224,6 +230,7 @@ end
 -- If there is no parameter with name NAME in descriptor DESC, inserts into
 -- descriptor DESC a new parameter with name NAME and value VALUE; otherwise
 -- do nothing.
+
 local function insert_parameter (desc, name, value)
    if desc:match ('descriptorParam', 'name', name) then
       return                    -- nothing to do
