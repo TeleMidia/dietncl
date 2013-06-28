@@ -267,8 +267,8 @@ local function domatch (e, tag, attribute, value)
       else
          if value then
             local found = false
-            for attr in e:attributes () do
-               if e[attr] == value then
+            for _,v in e:attributes () do
+               if v == value then
                   found = true
                end
             end

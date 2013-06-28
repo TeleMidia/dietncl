@@ -18,11 +18,11 @@
 
 require ('dietncl.xmlsugar')
 
-local root = xml.eval ('<root />')
+local root = xml.eval ('<root/>')
 local clone = root:clone ()
 assert (root ~= clone and clone:tag () == 'root' and #clone == #root)
 
-root = xml.eval ("<root a='1' b='2' c='3' />")
+root = xml.eval ("<root a='1' b='2' c='3'/>")
 clone = root:clone ()
 assert (root ~= clone and clone:tag () == 'root' and #clone == #root)
 assert (clone.a == '1' and clone.b == '2' and clone.c == '3')

@@ -16,7 +16,7 @@
 -- You should have received a copy of the GNU General Public License
 -- along with DietNCL.  If not, see <http://www.gnu.org/licenses/>.
 
-local _G = _G
+local package = _G.package
 module (...)
 
 local function at (s, i)
@@ -24,7 +24,7 @@ local function at (s, i)
 end
 
 -- True if we're on MS Windows.
-local iswindows = at (_G.package.config, 1) == '\\'
+local iswindows = at (package.config, 1) == '\\'
 
 -- Returns true if char C is a path separator.
 local function isslash (c)

@@ -18,7 +18,7 @@
 
 require ('dietncl.xmlsugar')
 
-e1 = xml.eval ('<root />')
+e1 = xml.eval ('<root/>')
 assert (e1:equal (e1))
 
 e2 = xml.eval ('<root></root>')
@@ -27,15 +27,15 @@ assert (e1:equal (e2))
 e2 = xml.eval ('<ROOT/>')
 assert (not e1:equal (e2))
 
-e2 = xml.eval ("<root x='y' />")
+e2 = xml.eval ("<root x='y'/>")
 assert (not e1:equal (e2))
 
 e1 = xml.eval ([[
 <root>
  <a x='1'>
-  <b y='2' />
+  <b y='2'/>
  </a>
- <c z='3' />
+ <c z='3'/>
 </root>]])
 
 e2 = xml.eval ([[

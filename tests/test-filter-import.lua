@@ -115,7 +115,7 @@ ncl = util.parsenclformat ([[
  </head>
 </ncl>]], tmp, tmp, tmp, tmp)
 
-ncl = filter.apply (ncl)
+filter.apply (ncl)
 assert (ncl:equal (dietncl.parsestring ([[
 <ncl>
  <head>
@@ -186,7 +186,7 @@ ncl = util.parsenclformat ([[
  <body/>
 </ncl>]], tmp, tmp, tmp)
 
-ncl = filter.apply (ncl)
+filter.apply (ncl)
 assert (ncl:equal (dietncl.parsestring ([[
 <ncl>
  <head>
@@ -300,7 +300,7 @@ ncl = dietncl.parsestring (([[
  <body/>
 </ncl>]]):format (tmp1, tmp3, tmp3))
 
-ncl = filter.apply (ncl)
+filter.apply (ncl)
 assert (ncl:equal (dietncl.parsestring ([[
 <ncl>
  <head>
@@ -470,7 +470,7 @@ ncl = util.parsenclformat ([[
  </body>
 </ncl>]], tmp)
 
-ncl = filter.apply (ncl)
+filter.apply (ncl)
 assert (ncl:equal (ncl, dietncl.parsestring ([[
 <ncl>
  <head>

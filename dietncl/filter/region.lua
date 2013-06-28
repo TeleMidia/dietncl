@@ -23,7 +23,6 @@
 
 require ('dietncl.xmlsugar')
 local xml      = xml
-local _G       = _G
 local assert   = assert
 local math     = math
 local pairs    = pairs
@@ -249,10 +248,10 @@ function apply (ncl)
    end
 
    for desc in ncl:gmatch ('descriptor', 'region') do
-      local region = ncl:match ('region', 'id', desc.region)
-      for attr in region:attributes () do
-         if attr ~= 'id' then
-            insert_parameter (desc, attr, region[attr])
+      local region = assert (ncl:match ('region', 'id', desc.region))
+      for k,v in region:attributes () do
+         if k ~= 'id' then
+            insert_parameter (desc, k, v)
          end
       end
       local parent = region:parent ()
