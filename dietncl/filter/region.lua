@@ -23,6 +23,7 @@
 
 require ('dietncl.xmlsugar')
 local xml      = xml
+local aux      = require ('dietncl.nclaux')
 local assert   = assert
 local math     = math
 local pairs    = pairs
@@ -227,20 +228,6 @@ local function unnest (region)
    end
 end
 
--- If there is no parameter with name NAME in descriptor DESC, inserts into
--- descriptor DESC a new parameter with name NAME and value VALUE; otherwise
--- do nothing.
-
-local function insert_parameter (desc, name, value)
-   if desc:match ('descriptorParam', 'name', name) then
-      return                    -- nothing to do
-   end
-   local param = xml.new ('descriptorParam')
-   param.name = name
-   param.value = value
-   desc:insert (param)
-end
-
 
 -- Exported functions.
 
@@ -258,13 +245,13 @@ function apply (ncl)
       local region = assert (ncl:match ('region', 'id', desc.region))
       for k,v in region:attributes () do
          if k ~= 'id' then
-            insert_parameter (desc, k, v)
+            aux.insert_descparam (desc, k, v)
          end
       end
       local parent = region:parent ()
       assert (parent:tag () == 'regionBase')
       if parent.device then
-         insert_parameter (desc, 'device', parent.device)
+         aux.insert_descparam (desc, 'device', parent.device)
       end
       desc.region = nil
    end
