@@ -18,9 +18,9 @@
 
 -- The 'transition' filter removes the <transition> and <transitionBase>
 -- elements from a given NCL document.  It proceeds by expanding the
--- definition of each transition into the referrer <property>, <descriptor>,
--- or <descriptorParam> elements.  This filter depends on the 'import'
--- filter.
+-- definition of each transition into the associated <property>,
+-- <descriptor>, or <descriptorParam> elements.  This filter depends on the
+-- 'import' filter.
 
 require ('dietncl.xmlsugar')
 local xml    = xml
