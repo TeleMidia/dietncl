@@ -25,7 +25,7 @@ module (...)
 -- Exported functions.
 
 -- Parses document string S.
--- Returns a new NCL handle if successful if successful,
+-- Returns a new document handle if successful,
 -- otherwise returns nil plus error message.
 
 function parsestring (s)
@@ -37,7 +37,7 @@ function parsestring (s)
 end
 
 -- Parses document at path name PATHNAME.
--- Returns a new NCL handle if successful if successful,
+-- Returns a new document handle if successful,
 -- otherwise returns nil plus error message.
 
 function parse (pathname)

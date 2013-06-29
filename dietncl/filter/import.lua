@@ -50,11 +50,11 @@ end
 
 -- List of XML-IDREF attributes indexed by tag-name.
 --
--- IMPORTANT: We do not list the descriptor attributes 'transIn' and
--- 'transOut' here because these require a special treatment -- i.e., their
--- value is not XML-IDREFs in the strict sense; their value is a semicolon
--- separated list of XML-IDREFs.  (Cf. the update_id_and_idref() function
--- for details.)
+-- We do not list the descriptor attributes 'transIn' and 'transOut' here
+-- because they are not XML-IDREF attributes in the strict sense; their
+-- value is a semicolon separated list of IDREFs.  Cf. function
+-- update_id_and_idref() for details.
+
 local idref_attribute_table = {
    bind             = {'component'},
    bindRule         = {'constituent', 'rule'},
@@ -79,7 +79,6 @@ local function update_id_and_idref (e, alias)
    if tag == 'descriptor' then
       --
       -- Special treatment for 'transIn' and 'transOut'.
-      -- This is nasty, I know...
       --
       for _,s in ipairs ({ 'transIn', 'transOut' }) do
          if e[s] then
