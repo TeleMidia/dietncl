@@ -226,6 +226,7 @@ local function unnest (region)
       parent:insert (child)
       unnest (child)
    end
+   return true
 end
 
 
