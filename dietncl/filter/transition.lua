@@ -81,8 +81,8 @@ local default_subtype_list = {
    audioVisualFade    = 'crossfade',
 }
 
--- Expands the definition of transition with XML-ID ID in document NCL.
--- Returns the inline definition of the given transition.
+-- Returns the inline definition of transition with XML-ID ID in the given
+-- NCL document.
 
 local function expand (ncl, id)
    local trans
@@ -126,7 +126,7 @@ function apply (ncl)
    end
 
    for _,e in ipairs (list) do
-      local new                 -- new, expanded value
+      local new                 -- new, inline value
       assert (e.value)
       for s in e.value:gmatch ('([^;%s]+)') do
          if not s:match ('^%s*%b()%s*$') then
