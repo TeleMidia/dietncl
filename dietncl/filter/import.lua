@@ -238,7 +238,7 @@ local function resolve_importncl (ncl, e)
 
    -- Import the components (media, contexts, or switches) of the external
    -- document that are referenced by the host document.
-   for x in ncl:gmatch (nil, 'refer') do
+   for x in ncl:gmatch (nil, 'refer', '^'..e.alias..'#.*$', 1) do
       local tag = x:tag ()
       assert (tag == 'media' or tag == 'context' or tag == 'switch')
 
@@ -246,11 +246,7 @@ local function resolve_importncl (ncl, e)
          goto continue          -- nothing to do
       end
 
-      local refer = x.refer:match ('^'..e.alias..'#(.*)$')
-      if refer == nil then
-         goto continue          -- nothing to do
-      end
-
+      local refer = assert (x.refer:match ('^'..e.alias..'#(.*)$'))
       local y = ext:match (tag, 'id', refer)
       y = y:clone ()
       y.id = x.id
