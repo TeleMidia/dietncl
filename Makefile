@@ -48,6 +48,7 @@ TESTS =\
  test-xmlsugar-userdata.lua\
  test-init-parse.lua\
  test-init-parsestring.lua\
+ test-nclaux-gen-id.lua\
  test-filter-import.lua\
  test-filter-region.lua\
  test-filter-transition.lua
