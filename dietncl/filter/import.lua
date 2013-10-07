@@ -26,6 +26,7 @@ local dietncl = require ('dietncl')
 local path    = require ('dietncl.path')
 local assert  = assert
 local ipairs  = ipairs
+
 module (...)
 
 -- List of possible <importBase> parents.
@@ -142,6 +143,7 @@ local function import_base (e, ext, alias, region, baseid)
       base = base:clone ()
       update_id_and_idref (base, alias)
       for x in base:children () do
+         xml.remove (base, x)
          e:insert (x)
       end
    end
