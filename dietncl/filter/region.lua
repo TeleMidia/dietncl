@@ -16,10 +16,15 @@
 -- You should have received a copy of the GNU General Public License
 -- along with DietNCL.  If not, see <http://www.gnu.org/licenses/>.
 
--- The 'region' filter removes all regions from a given NCL document.  It
+
+                          -- The REGION Filter --
+
+-- The "region" filter removes all regions from a given NCL document.  It
 -- proceeds by transforming each region into a set of equivalent parameters
--- of the associated descriptors.  This filter depends on the 'import'
--- filter.
+-- of the associated descriptors.
+--
+-- This filter depends on the "import" filter, i.e., it assumes that the
+-- given document has no import declaration.
 
 require ('dietncl.xmlsugar')
 local xml      = xml

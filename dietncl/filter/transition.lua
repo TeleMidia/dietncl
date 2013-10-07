@@ -16,11 +16,16 @@
 -- You should have received a copy of the GNU General Public License
 -- along with DietNCL.  If not, see <http://www.gnu.org/licenses/>.
 
--- The 'transition' filter removes the <transition> and <transitionBase>
+
+                        -- The TRANSITION filter --
+
+-- The "transition" filter removes the <transition> and <transitionBase>
 -- elements from a given NCL document.  It proceeds by expanding the
 -- definition of each transition into the associated <property>,
--- <descriptor>, or <descriptorParam> elements.  This filter depends on the
--- 'import' filter.
+-- <descriptor>, or <descriptorParam> elements.
+--
+-- This filter depends on the "import" filter, i.e., it assumes that the
+-- given document has no import declaration.
 
 require ('dietncl.xmlsugar')
 local xml    = xml
