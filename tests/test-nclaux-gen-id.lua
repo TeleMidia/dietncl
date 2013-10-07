@@ -35,9 +35,14 @@ ncl = dietncl.parsestring ([[
 
 aux.gen_id (ncl)
 
-prefix = ncl:getuserdata ('gen-id-prefix')
+id, prefix, serial = aux.get_last_gen_id (ncl)
+assert (id == prefix..serial)
+assert (serial == 0)
 assert (#prefix == string.len ('xxxxxxxxxx') + 1)
 
 for i=1,999 do
    assert (aux.gen_id (ncl) == prefix..i)
+   _, _prefix, _serial = aux.get_last_gen_id (ncl)
+   assert (_prefix == prefix)
+   assert (_serial == i)
 end
