@@ -19,8 +19,16 @@
 local dietncl = require ('dietncl')
 local io      = io
 local os      = os
+local math    = math
 local assert  = assert
 module (...)
+
+-- Compares two float numbers using the given epsilon (defaults to .00001).
+
+function feq (x, y, ...)
+   local epsilon = ... or .00001
+   return math.abs (x - y) < epsilon
+end
 
 -- Writes string S into a temporary file and returns the name of this file.
 -- The caller must use os.remove() to remove the temporary file when is no
