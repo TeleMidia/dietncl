@@ -183,12 +183,16 @@ end
 
 function xml.children (e)
    checkxml (e)
-   local i=1
+   local t = {}
+   for i=1,#e do
+      t[i] = e[i]
+   end
+   local i = 1
    return function ()
-      if i <= #e then
-         local child = e[i]
+      if i <= #t then
+         local x = t[i]
          i = i + 1
-         return child
+         return x
       end
       return nil
    end
@@ -249,6 +253,7 @@ function xml.clone (e)
    end
    for i=1,#e do
       t[i] = (e[i]:clone ())
+      setparent (t[i], t)
    end
    return t
 end
@@ -265,7 +270,7 @@ function xml.walk (e, action)
 end
 
 -- Looks for all elements that match the triple (tag,attribute,value) of
--- tree E and returns an array containing the matched elements.
+-- tree E and returns the matched elements.
 -- TAG is a tag name or nil (any).
 -- ATTRIBUTE is an attribute name or nil (any).
 -- VALUE is a value string or nil (any).

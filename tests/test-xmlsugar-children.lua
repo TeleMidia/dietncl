@@ -23,9 +23,20 @@ for i=1,100 do
    root:insert (xml.new (tostring (i)))
 end
 
-i = 1
+i = 0
 for e in root:children () do
+   i = i + 1
    assert (e:parent () == root)
    assert (e:tag () == tostring (i))
-   i = i + 1
 end
+assert (i == 100)
+
+-- Remove elements while iterating.
+i = 0
+for e in root:children () do
+   i = i + 1
+   root:remove (e)
+   assert (#root == 100 - i)
+end
+assert (i == 100)
+assert (#root == 0)

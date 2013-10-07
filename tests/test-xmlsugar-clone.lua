@@ -20,12 +20,19 @@ require ('dietncl.xmlsugar')
 
 root = xml.eval ('<root/>')
 clone = root:clone ()
-assert (root ~= clone and clone:tag () == 'root' and #clone == #root)
+assert (root ~= clone)
+assert (clone:tag () == 'root')
+assert (clone:parent () == nil)
+assert ( #clone == #root)
 
 root = xml.eval ("<root a='1' b='2' c='3'/>")
 clone = root:clone ()
-assert (root ~= clone and clone:tag () == 'root' and #clone == #root)
-assert (clone.a == '1' and clone.b == '2' and clone.c == '3')
+assert (root ~= clone)
+assert  (clone:tag () == 'root')
+assert (#clone == #root)
+assert (clone.a == '1')
+assert (clone.b == '2')
+assert (clone.c == '3')
 
 s = [[
 <root>
@@ -48,6 +55,13 @@ assert (root:equal (clone))
 function compar (a, b)
    assert (a ~= b)
    assert (a:tag () == b:tag ())
+   if a:parent () == nil then
+      assert (b:parent () == nil)
+   else
+      assert (b:parent () ~= nil)
+      assert (a:parent():tag () == b:parent():tag ())
+      assert (#(a:parent ()) == #(b:parent ()))
+   end
    assert (#a == #b)
    for k,v in a:attributes () do
       assert (b[k] == v)
