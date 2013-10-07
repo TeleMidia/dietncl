@@ -18,12 +18,39 @@
 
 require ('dietncl.xmlsugar')
 local xml    = xml
+local math   = math
+
 local assert = assert
+local tonumber = tonumber
 local type   = type
+
 module (...)
 
 
 -- Exported functions.
+
+-- Returns the number of seconds denoted by NCL time string STR or nil,
+-- if STR is not a valid NCL time string.
+
+function timetoseconds (str)
+   local h, m, s, f = 0, 0, str:match ('^(%d*)%.?(%d*)s')
+
+   -- Try the alternate syntax.
+   if s == nil and f == nil then
+      h, m, s = str:match ('^(%d-):?(%d-):?([%d.]*)$')
+      if s == nil then
+         return nil             -- invalid str
+      end
+      h, m = tonumber (h) or 0, tonumber (m) or 0
+      s, f = s:match ('^(%d*)%.?(%d*)$')
+   end
+
+   s, f = tonumber (s) or 0, tonumber (f) or 0
+   if f > 0 then
+      f = f / math.pow (10, math.floor (math.log (f, 10) + 1))
+   end
+   return 60*60*h + 60*m + s + f
+end
 
 -- Returns a new XML-ID string not defined in document NCL.
 
