@@ -16,9 +16,14 @@
 -- You should have received a copy of the GNU General Public License
 -- along with DietNCL.  If not, see <http://www.gnu.org/licenses/>.
 
--- The 'import' filter resolves the external references and removes the
+
+                          -- The IMPORT Filter --
+
+-- The "import" filter resolves the external references and removes the
 -- <importNCL>, <importBase>, and <importedDocumentBase> elements from a
--- given document.  This filter has no dependencies.
+-- given document.
+--
+-- This filter has no dependencies.
 
 require ('dietncl.xmlsugar')
 local xml     = xml
