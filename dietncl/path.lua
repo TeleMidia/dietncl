@@ -17,7 +17,6 @@
 -- along with DietNCL.  If not, see <http://www.gnu.org/licenses/>.
 
 local package = _G.package
-local print = print
 module (...)
 
 -- Returns the character at position I in string S.
