@@ -448,3 +448,29 @@ assert (ncl:equal (dietncl.parsestring ([[
   </link>
  </body>
 </ncl>]])))
+
+-- Expand simple conditions and simple actions.
+print (('-'):rep (80))
+
+ncl = dietncl.parsestring ([[
+<ncl>
+ <head>
+  <connectorBase>
+   <causalConnector id='c'>
+    <simpleCondition role='onBegin' max='unbounded'/>
+    <simpleAction role='start' max='unbounded'/>
+   </causalConnector>
+  </connectorBase>
+ </head>
+ <body>
+  <media id='m'/>
+  <link xconnector='c'>
+   <bind role='onBegin' component='m'/>
+   <bind role='onBegin' component='m'/>
+   <bind role='start' component='m'/>
+   <bind role='start' component='m'/>
+  </link>
+ </body>
+</ncl>]])
+
+filter.apply(ncl)
