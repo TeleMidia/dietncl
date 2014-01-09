@@ -17,6 +17,7 @@
 -- along with DietNCL.  If not, see <http://www.gnu.org/licenses/>.
 
 local package = _G.package
+local print = print
 module (...)
 
 -- Returns the character at position I in string S.
@@ -41,7 +42,7 @@ end
 -- Returns the length of file system prefix in path name P.
 
 local function filesystem_prefix_len (p)
-   if iswindows and (at (p, 1)):match ('[a-zA-Z]') and at (p, 2) ':' then
+   if iswindows and (at (p, 1)):match ('[a-zA-Z]') and at (p, 2) == ':' then
       return 2
    end
    return 0
