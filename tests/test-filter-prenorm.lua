@@ -450,7 +450,6 @@ assert (ncl:equal (dietncl.parsestring ([[
 </ncl>]])))
 
 -- Expand simple conditions and simple actions.
-print (('-'):rep (80))
 
 ncl = dietncl.parsestring ([[
 <ncl>

@@ -200,31 +200,21 @@ local function remove_compound_delay (ncl)
    return ncl
 end
 
--- This function duplicates a simple condition or a simple action.
+-- This auxiliary function duplicates a simple condition or a simple action.
 
-local function duplicator (bind, conn)
-    for x in conn:gmatch('simpleCondition') do
+local function duplicator (bind, conn, ...)
+    for x in conn:gmatch(...) do
                if x.role==bind.role then
-                  print(bind.role)
                   local duplicate = x:clone ()
                   local parent = x:parent ()
                   local x, pos =  parent:findchild (x)
                   parent:insert (pos + 1, duplicate)
                end
-            end
-            
-            for x in conn:gmatch('simpleAction') do
-               if x.role==bind.role then
-                  print(bind.role)
-                  local duplicate = x:clone ()
-                  local parent = x:parent ()
-                  local x, pos =  parent:findchild (x)
-                  parent:insert (pos + 1, duplicate)
-               end
-            end
+	end
 end
 
 -- Make sure that simple conditions and simple actions of all connectors are referenced by exactly one bind in the associated links.
+-- Restriction (4).
 
 local function make_condition_action_bijection (ncl)
    for link in ncl:gmatch('link') do
@@ -237,11 +227,11 @@ local function make_condition_action_bijection (ncl)
             roleTable[bind.role]=0
          else
             roleTable[bind.role]=roleTable[bind.role]+1
-            duplicator(bind, conn)
+            duplicator(bind, conn, 'simpleCondition')
+	    duplicator(bind, conn, 'simpleAction')
          end
       
       end
-      
       print(conn, link)
    end
 end
