@@ -1,5 +1,5 @@
 -- test-xmlsugar-children.lua -- Checks xmlsugar.children.
--- Copyright (C) 2013 PUC-Rio/Laboratorio TeleMidia
+-- Copyright (C) 2013-2014 PUC-Rio/Laboratorio TeleMidia
 --
 -- This file is part of DietNCL.
 --

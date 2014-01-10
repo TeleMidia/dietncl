@@ -1,5 +1,5 @@
 # Makefile -- Builds DietNCL.
-# Copyright (C) 2013 PUC-Rio/Laboratorio TeleMidia
+# Copyright (C) 2013-2014 PUC-Rio/Laboratorio TeleMidia
 #
 # This file is part of DietNCL.
 #
@@ -62,6 +62,12 @@ DIETNCL_DIR = dietncl
 TESTS_DIR   = tests
 
 all:
+
+COPYRIGHT_YEAR = 2014
+update-copyright:
+	@sed -i -e\
+	 's@\(^[-[/*# \t]*Copyright (C) 2013\)-\?[0-9]*\( PUC-Rio/Laboratorio TeleMidia\)$$@\1-$(COPYRIGHT_YEAR)\2@'\
+	 `git ls-files`
 
 # Adapted from GNU Automake 1.12.6.
 tty_colors = \
