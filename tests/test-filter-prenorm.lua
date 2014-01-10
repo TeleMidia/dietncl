@@ -1,5 +1,5 @@
 -- test-filter-prenorm.lua -- Checks filter.prenorm.
--- Copyright (C) 2013-2014 PUC-Rio/Laboratorio TeleMidia
+-- Copyright (C) 2013 PUC-Rio/Laboratorio TeleMidia
 --
 -- This file is part of DietNCL.
 --
@@ -450,14 +450,15 @@ assert (ncl:equal (dietncl.parsestring ([[
 </ncl>]])))
 
 -- Expand simple conditions and simple actions.
+print (('-'):rep (80))
 
 ncl = dietncl.parsestring ([[
 <ncl>
  <head>
   <connectorBase>
    <causalConnector id='c'>
-    <simpleCondition role='onBegin' max='unbounded'/>
-    <simpleAction role='start' max='unbounded'/>
+    <simpleCondition role='onBegin' max='2'/>
+    <simpleAction role='start' max='1'/>
    </causalConnector>
   </connectorBase>
  </head>

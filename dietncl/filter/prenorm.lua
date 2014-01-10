@@ -1,5 +1,5 @@
 -- prenorm.lua -- Simplifies links and connectors.
--- Copyright (C) 2013-2014 PUC-Rio/Laboratorio TeleMidia
+-- Copyright (C) 2013 PUC-Rio/Laboratorio TeleMidia
 --
 -- This file is part of DietNCL.
 --
@@ -50,6 +50,8 @@ local assert = assert
 local ipairs = ipairs
 
 local print  = print
+local tonumber=tonumber
+local type=type
 
 module (...)
 
@@ -78,7 +80,7 @@ local function make_bijection (ncl)
          parent:insert (dup)
       end
 
-      ::continue::
+      :: continue ::
    end
    return ncl
 end
@@ -142,10 +144,10 @@ local function remove_params (ncl)
             bindref[k] = bindparam.value
             bind:remove (bindparam)
 
-            ::continue::
+            :: continue ::
          end
 
-         ::continue::
+         :: continue ::
       end
 
       -- Remove the connector parameters from conn that are not used by some
@@ -156,7 +158,7 @@ local function remove_params (ncl)
             goto continue       -- do nothing
          end
          conn:remove (p)
-         ::continue::
+         :: continue ::
       end
 
       -- Remove all link-parameters from link.
@@ -213,8 +215,36 @@ local function duplicator (bind, conn, ...)
 	end
 end
 
--- Make sure that simple conditions and simple actions of all connectors are referenced by exactly one bind in the associated links.
+-- This function returns a list indicating the value max/min of each simple condition and simple action.
+
+local function capture_max_min(link, conn)
+	local limit={}
+	 for x in link:gmatch('bind') do
+		for condition in conn:gmatch('simpleCondition', 'role', x.role) do
+			if condition.max==nil then
+				limit[x.role]=condition.min
+			elseif condition.min==nil then
+				limit[x.role]=condition.max
+			end
+		end
+	
+		for action in conn:gmatch('simpleAction', 'role', x.role) do
+			if action.max==nil then
+				limit[x.role]=action.min
+			elseif action.min==nil then
+				limit[x.role]=action.max
+			end
+		end
+	
+	end
+	
+	return limit
+end
+
 -- Restriction (4).
+-- Make sure that simple conditions and simple actions of all connectors are referenced by exactly one bind in the associated links.
+-- This function assumes that NCL satisfies restriction (3).
+
 
 local function make_condition_action_bijection (ncl)
    for link in ncl:gmatch('link') do
@@ -222,19 +252,37 @@ local function make_condition_action_bijection (ncl)
       local conn = ncl:match ('causalConnector', 'id', link.xconnector)
       local roleTable={}
       
-      for bind in link:gmatch('bind') do
-         if not roleTable[bind.role] then
+      local list={}
+      
+      list=capture_max_min(link, conn)
+      
+      for bind in link:gmatch('bind') do	
+	if type(list[bind.role])=="number" and list[bind.role]==0 then
+		xml.remove(bind:parent(), bind)
+		goto continue
+	end
+	
+	if not roleTable[bind.role] then
             roleTable[bind.role]=0
          else
             roleTable[bind.role]=roleTable[bind.role]+1
             duplicator(bind, conn, 'simpleCondition')
 	    duplicator(bind, conn, 'simpleAction')
-         end
-      
-      end
+	end
+	 
+	 if type(tonumber(list[bind.role]))=="number" then
+		list[bind.role]=tonumber(list[bind.role])-1
+	 end
+	
+	:: continue ::
+	
+	end	 
+	 
+   
       print(conn, link)
-   end
+   end      
 end
+
 
 
 -- Exported functions.
