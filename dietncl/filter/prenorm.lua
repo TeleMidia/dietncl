@@ -78,7 +78,7 @@ local function make_bijection (ncl)
          parent:insert (dup)
       end
 
-      :: continue ::
+      ::continue::
    end
    return ncl
 end
@@ -142,10 +142,10 @@ local function remove_params (ncl)
             bindref[k] = bindparam.value
             bind:remove (bindparam)
 
-            :: continue ::
+            ::continue::
          end
 
-         :: continue ::
+         ::continue::
       end
 
       -- Remove the connector parameters from conn that are not used by some
@@ -156,7 +156,7 @@ local function remove_params (ncl)
             goto continue       -- do nothing
          end
          conn:remove (p)
-         :: continue ::
+         ::continue::
       end
 
       -- Remove all link-parameters from link.

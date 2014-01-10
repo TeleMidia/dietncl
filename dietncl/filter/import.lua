@@ -259,7 +259,7 @@ local function resolve_importncl (ncl, e)
       update_id_and_idref (y, e.alias)
 
       xml.replace (x:parent (), x, y)
-      :: continue ::
+      ::continue::
    end
 
    xml.remove (parent, e)
