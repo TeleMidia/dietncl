@@ -1,5 +1,5 @@
 # Makefile -- Builds DietNCL.
-# Copyright (C) 2013 PUC-Rio/Laboratorio TeleMidia
+# Copyright (C) 2013-2014 PUC-Rio/Laboratorio TeleMidia
 #
 # This file is part of DietNCL.
 #
@@ -16,52 +16,51 @@
 # You should have received a copy of the GNU General Public License
 # along with DietNCL.  If not, see <http://www.gnu.org/licenses/>.
 
+BUGSTO = gflima@telemidia.puc-rio.br
 sinclude config
-PREFIX       ?= /usr
-BIN_DIR      ?= $(PREFIX)/bin
 LUA          ?= lua
-LUA_LIBDIR   ?= $(PREFIX)/lib/lua/5.1
-LUA_SHAREDIR ?= $(PREFIX)/share/lua/5.1
-DIETNCL_TOOL ?= dietncl
 COLOR_TESTS  ?= yes
 
-BUGSTO = gflima@telemidia.puc-rio.br
 TESTS_ENVIRONMENT =\
- LUA_PATH="$(PWD)/tests/?.lua;$(PWD)/?.lua;$(PWD)/?/init.lua;;$$LUA_PATH"\
- $(LUA)
+ LUA_PATH="./tests/?.lua;./?.lua;./?/init.lua;$$LUA_PATH;;" $(LUA)\
+ $(NULL)
 
+TESTS_DIR = tests
 TESTS =\
- test-path-absolute.lua\
- test-path-relative.lua\
- test-path-split.lua\
- test-path-join.lua\
- test-xmlsugar-eval.lua\
- test-xmlsugar-insert.lua\
- test-xmlsugar-remove.lua\
- test-xmlsugar-replace.lua\
- test-xmlsugar-children.lua\
- test-xmlsugar-attributes.lua\
- test-xmlsugar-equal.lua\
- test-xmlsugar-clone.lua\
- test-xmlsugar-match.lua\
- test-xmlsugar-gmatch.lua\
- test-xmlsugar-userdata.lua\
+ test-filter-import.lua\
+ test-filter-prenorm.lua\
+ test-filter-region.lua\
+ test-filter-transition.lua\
  test-init-parse.lua\
  test-init-parsestring.lua\
  test-nclaux-gen-id.lua\
  test-nclaux-timetoseconds.lua\
- test-filter-import.lua\
- test-filter-region.lua\
- test-filter-transition.lua\
- test-filter-prenorm.lua
+ test-path-absolute.lua\
+ test-path-join.lua\
+ test-path-relative.lua\
+ test-path-split.lua\
+ test-xmlsugar-attributes.lua\
+ test-xmlsugar-children.lua\
+ test-xmlsugar-clone.lua\
+ test-xmlsugar-equal.lua\
+ test-xmlsugar-eval.lua\
+ test-xmlsugar-gmatch.lua\
+ test-xmlsugar-insert.lua\
+ test-xmlsugar-match.lua\
+ test-xmlsugar-remove.lua\
+ test-xmlsugar-replace.lua\
+ test-xmlsugar-userdata.lua\
 
-XFAIL_TESTS =
-
-TOPDIR      = .
-DIETNCL_DIR = dietncl
-TESTS_DIR   = tests
+XFAIL_TESTS =\
+ $(NULL)
 
 all:
+
+COPYRIGHT_YEAR = 2014
+update-copyright:
+	@sed -i -e\
+	 's@\(^[-[/*# \t]*Copyright (C) 2013\)-\?[0-9]*\( PUC-Rio/Laboratorio TeleMidia\)$$@\1-$(COPYRIGHT_YEAR)\2@'\
+	 `git ls-files`
 
 # Adapted from GNU Automake 1.12.6.
 tty_colors = \

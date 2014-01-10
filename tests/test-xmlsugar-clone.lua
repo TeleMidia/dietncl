@@ -1,5 +1,5 @@
 -- test-xmlsugar-clone.lua -- Checks xmlsugar.clone.
--- Copyright (C) 2013 PUC-Rio/Laboratorio TeleMidia
+-- Copyright (C) 2013-2014 PUC-Rio/Laboratorio TeleMidia
 --
 -- This file is part of DietNCL.
 --
