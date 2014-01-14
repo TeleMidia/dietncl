@@ -457,7 +457,7 @@ ncl = dietncl.parsestring ([[
  <head>
   <connectorBase>
    <causalConnector id='c'>
-    <simpleCondition role='onBegin' max='2'/>
+    <simpleCondition role='onBegin' max='unbounded'/>
     <simpleAction role='start' max='1'/>
    </causalConnector>
   </connectorBase>
@@ -467,10 +467,13 @@ ncl = dietncl.parsestring ([[
   <link xconnector='c'>
    <bind role='onBegin' component='m'/>
    <bind role='onBegin' component='m'/>
+   <bind role='onBegin' component='m'/>
+   <bind role='onBegin' component='m'/>
+   <bind role='onBegin' component='m'/>
    <bind role='start' component='m'/>
    <bind role='start' component='m'/>
   </link>
  </body>
 </ncl>]])
 
-filter.apply(ncl)
+filter.apply (ncl)

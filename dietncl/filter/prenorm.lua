@@ -202,24 +202,109 @@ local function remove_compound_delay (ncl)
    return ncl
 end
 
--- This auxiliary function duplicates a simple condition or a simple action.
+-- This function expands alias, expressing attributes eventType, actionType
+-- and transition of all simpleConditions and simpleActions whose roles are
+-- reserved action/condition role values associated to event state machines.
 
-local function duplicator (bind, conn, ...)
+local function expand_alias(conn, ...)
+	local event_list={}
+
+	-- Event Types listed by role.
+	-- Simple conditions Event Types.
+	event_list['onBegin']='presentation'
+	event_list['onEnd']='presentation'
+	event_list['onAbort']='presentation'
+	event_list['onPause']='presentation'
+	event_list['onResume']='presentation'
+	event_list['onSelection']='selection'
+	event_list['onBeginSelection']='selection'
+	event_list['onEndSelection']='selection'
+	event_list['onAbortSelection']='selection'
+	event_list['onPauseSelection']='selection'
+	event_list['onResumeSelection']='selection'
+	event_list['onBeginAttribution']='attribution'
+	event_list['onResumeAttribution']='attribution'
+	event_list['onEndAttribution']='attribution'
+	event_list['onPauseAttribution']='attribution'
+	event_list['onAbortAttribution']='attribution'
+	-- Simple actions Event Types.
+	event_list['start']='presentation'
+	event_list['stop']='presentation'
+	event_list['abort']='presentation'
+	event_list['pause']='presentation'
+	event_list['resume']='presentation'
+	event_list['set']='attribution'
+
+	-- Transition Values (Simple Conditions) listed by role.
+	local trans_list={}
+	trans_list['onBegin']='starts'
+	trans_list['onEnd']='stops'
+	trans_list['onAbort']='aborts'
+	trans_list['onPause']='pauses'
+	trans_list['onResume']='resumes'
+	trans_list['onSelection']='stops'
+	trans_list['onBeginSelection']='starts'
+	trans_list['onEndSelection']='stops'
+	trans_list['onAbortSelection']='paborts'
+	trans_list['onPauseSelection']='pauses'
+	trans_list['onResumeSelection']='resumes'
+	trans_list['onBeginAttribution']='starts'
+	trans_list['onResumeAttribution']='resumes'
+	trans_list['onEndAttribution']='stops'
+	trans_list['onPauseAttribution']='pauses'
+	trans_list['onAbortAttribution']='aborts'
+
+	-- Action Types (simple Actions) listed by role.
+	local action_list={}
+	action_list['start']='start'
+	action_list['stop']='stop'
+	action_list['abort']='abort'
+	action_list['pause']='pause'
+	action_list['resume']='resume'
+	action_list['set']='start'
+
+
+	for z in conn:gmatch(...) do
+		if event_list[z.role] then
+			z.eventType=event_list[z.role]
+			if trans_list[z.role] then
+				z.transition=trans_list[z.role]
+			else
+				z.actionType=action[z.role]
+			end
+		end
+	end
+
+
+
+end
+
+
+-- This auxiliary function duplicates a simple condition or a simple action.
+-- n represents the number os positions occupied by duplicates of a common
+-- simple action/condition parent.
+
+local function duplicator (bind, conn, ncl, n, ...)
+
     for x in conn:gmatch(...) do
                if x.role==bind.role then
+				  expand_alias(conn, ...)
                   local duplicate = x:clone ()
+				  duplicate.role=aux.gen_id(ncl)
                   local parent = x:parent ()
                   local x, pos =  parent:findchild (x)
-                  parent:insert (pos + 1, duplicate)
+                  parent:insert (pos + n + 1, duplicate)
                end
 	end
 end
 
 -- This function returns a list indicating the value max/min of each simple condition and simple action.
+-- Since all NCL 3.0 programs are errors exempt, checking max and min values is optional.
 
 local function capture_max_min(link, conn)
 	local limit={}
-	 for x in link:gmatch('bind') do
+
+	for x in link:gmatch('bind') do
 		for condition in conn:gmatch('simpleCondition', 'role', x.role) do
 			if condition.max==nil then
 				limit[x.role]=condition.min
@@ -227,7 +312,7 @@ local function capture_max_min(link, conn)
 				limit[x.role]=condition.max
 			end
 		end
-	
+
 		for action in conn:gmatch('simpleAction', 'role', x.role) do
 			if action.max==nil then
 				limit[x.role]=action.min
@@ -235,11 +320,15 @@ local function capture_max_min(link, conn)
 				limit[x.role]=action.max
 			end
 		end
-	
+
 	end
-	
+
+	-- not possible to determine if limit[x.role] is a max or min value.
+	-- This function only assures that all max values are respected.
+
 	return limit
 end
+
 
 -- Restriction (4).
 -- Make sure that simple conditions and simple actions of all connectors are referenced by exactly one bind in the associated links.
@@ -248,39 +337,44 @@ end
 
 local function make_condition_action_bijection (ncl)
    for link in ncl:gmatch('link') do
-      
+
       local conn = ncl:match ('causalConnector', 'id', link.xconnector)
       local roleTable={}
-      
       local list={}
-      
+	  local nc=0
+	  local ns=0
+
+
       list=capture_max_min(link, conn)
-      
-      for bind in link:gmatch('bind') do	
-	if type(list[bind.role])=="number" and list[bind.role]==0 then
-		xml.remove(bind:parent(), bind)
-		goto continue
-	end
-	
-	if not roleTable[bind.role] then
+
+      for bind in link:gmatch('bind') do
+		if type(list[bind.role])=="number" and list[bind.role]==0 then
+			xml.remove(bind:parent(), bind)
+			goto continue
+		end
+
+		if not roleTable[bind.role] then
             roleTable[bind.role]=0
-         else
+		else
             roleTable[bind.role]=roleTable[bind.role]+1
-            duplicator(bind, conn, 'simpleCondition')
-	    duplicator(bind, conn, 'simpleAction')
-	end
-	 
-	 if type(tonumber(list[bind.role]))=="number" then
-		list[bind.role]=tonumber(list[bind.role])-1
-	 end
-	
+            duplicator(bind, conn, ncl, nc, 'simpleCondition')
+			duplicator(bind, conn, ncl, ns, 'simpleAction')
+		end
+
+		if type(tonumber(list[bind.role]))=="number" then
+			list[bind.role]=tonumber(list[bind.role])-1
+		end
+
+		nc=nc+1
+		ns=ns+1
+
 	:: continue ::
-	
-	end	 
-	 
-   
+
+	end
+
+
       print(conn, link)
-   end      
+   end
 end
 
 
