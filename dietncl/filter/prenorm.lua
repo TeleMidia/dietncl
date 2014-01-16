@@ -362,14 +362,13 @@ local function make_condition_action_bijection (ncl)
 
 	end
 
-	make_compound(bind, conn, 'simpleCondition')
-	make_compound(bind, conn,'simpleAction')
+	make_compound(conn, 'simpleCondition')
+	make_compound(conn,'simpleAction')
 
 	print(conn,  link)
 
    end
 end
-
 
 
 -- Exported functions.
