@@ -457,21 +457,35 @@ ncl = dietncl.parsestring ([[
  <head>
   <connectorBase>
    <causalConnector id='c'>
-    <simpleCondition role='onBegin' max='unbounded'/>
-    <simpleAction role='start' max='1'/>
+    <compoundCondition operator='or'>
+     <compoundCondition operator='and'>
+      <simpleCondition role='onEnd' delay='30s'/>
+     </compoundCondition>
+     <simpleCondition role='onBegin' delay='5s'/>
+    </compoundCondition>
+    <compoundAction operator='seq'>
+     <compoundAction operator='seq'>
+      <compoundAction operator='seq'>
+       <simpleAction role='start' delay='31s'/>
+      </compoundAction>
+     </compoundAction>
+     <simpleAction role='stop' delay='10s'/>
+    </compoundAction>
    </causalConnector>
   </connectorBase>
  </head>
  <body>
   <media id='m'/>
   <link xconnector='c'>
-   <bind role='onBegin' component='m'/>
-   <bind role='onBegin' component='m'/>
-   <bind role='onBegin' component='m'/>
-   <bind role='onBegin' component='m'/>
+   <bind role='onEnd' component='m'/>
+   <bind role='onEnd' component='m'/>
+   <bind role='onEnd' component='m'/>
    <bind role='onBegin' component='m'/>
    <bind role='start' component='m'/>
    <bind role='start' component='m'/>
+   <bind role='start' component='m'/>
+   <bind role='start' component='m'/>
+   <bind role='stop' component='m'/>
   </link>
  </body>
 </ncl>]])

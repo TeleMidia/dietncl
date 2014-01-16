@@ -263,19 +263,49 @@ local function expand_alias(conn, ...)
 	action_list['resume']='resume'
 	action_list['set']='start'
 
-
 	for z in conn:gmatch(...) do
 		if event_list[z.role] then
 			z.eventType=event_list[z.role]
 			if trans_list[z.role] then
 				z.transition=trans_list[z.role]
 			else
-				z.actionType=action[z.role]
+				z.actionType=action_list[z.role]
 			end
 		end
 	end
 
+end
 
+-- This function replace each simple condition (or action) that is referenced
+-- by more than one bind by an equivalent compound condition (or action).
+
+local function make_compound(conn, ...)
+
+	local root
+	local superior={}
+	local str=...
+
+	for x in conn:gmatch(...) do
+			if not superior[x.eventType] and x.eventType and (x:parent())==causalConnector then
+				if str=='simpleCondition' then
+					root=xml.new('compoundCondition')
+					root.operator='and'
+					superior[x.eventType]=root
+				elseif str=='simpleAction' and x.eventType then
+					root=xml.new('compoundAction')
+					root.operator='par'
+					superior[x.eventType]=root
+				end
+				conn:insert(superior[x.eventType])
+
+			end
+
+			if superior[x.eventType] then
+				x=xml.remove(x:parent(), x)
+				superior[x.eventType]:insert(x)
+			end
+
+	end
 
 end
 
@@ -286,51 +316,28 @@ end
 
 local function duplicator (bind, conn, ncl, n, ...)
 
+	local roleTab={}
+	local deter=...
+
     for x in conn:gmatch(...) do
-               if x.role==bind.role then
-				  expand_alias(conn, ...)
-                  local duplicate = x:clone ()
-				  duplicate.role=aux.gen_id(ncl)
-                  local parent = x:parent ()
-                  local x, pos =  parent:findchild (x)
-                  parent:insert (pos + n + 1, duplicate)
-               end
-	end
-end
-
--- This function returns a list indicating the value max/min of each simple condition and simple action.
--- Since all NCL 3.0 programs are errors exempt, checking max and min values is optional.
-
-local function capture_max_min(link, conn)
-	local limit={}
-
-	for x in link:gmatch('bind') do
-		for condition in conn:gmatch('simpleCondition', 'role', x.role) do
-			if condition.max==nil then
-				limit[x.role]=condition.min
-			elseif condition.min==nil then
-				limit[x.role]=condition.max
-			end
+		if x.role==bind.role then
+			expand_alias(conn, ...)
+			local duplicate = x:clone ()
+			duplicate.role=aux.gen_id(ncl)
+			bind.role=duplicate.role
+			local parent = x:parent ()
+			local x, pos =  parent:findchild (x)
+			parent:insert (pos + n + 1, duplicate)
+			n=n+1
 		end
-
-		for action in conn:gmatch('simpleAction', 'role', x.role) do
-			if action.max==nil then
-				limit[x.role]=action.min
-			elseif action.min==nil then
-				limit[x.role]=action.max
-			end
-		end
-
 	end
 
-	-- not possible to determine if limit[x.role] is a max or min value.
-	-- This function only assures that all max values are respected.
+	return n
 
-	return limit
 end
 
 
--- Restriction (4).
+-- Main function for restriction (4).
 -- Make sure that simple conditions and simple actions of all connectors are referenced by exactly one bind in the associated links.
 -- This function assumes that NCL satisfies restriction (3).
 
@@ -340,40 +347,26 @@ local function make_condition_action_bijection (ncl)
 
       local conn = ncl:match ('causalConnector', 'id', link.xconnector)
       local roleTable={}
-      local list={}
 	  local nc=0
-	  local ns=0
-
-
-      list=capture_max_min(link, conn)
+	  local na=0
 
       for bind in link:gmatch('bind') do
-		if type(list[bind.role])=="number" and list[bind.role]==0 then
-			xml.remove(bind:parent(), bind)
-			goto continue
-		end
 
 		if not roleTable[bind.role] then
-            roleTable[bind.role]=0
+			roleTable[bind.role]=0
 		else
-            roleTable[bind.role]=roleTable[bind.role]+1
-            duplicator(bind, conn, ncl, nc, 'simpleCondition')
-			duplicator(bind, conn, ncl, ns, 'simpleAction')
+			roleTable[bind.role]=roleTable[bind.role]+1
+			nc=duplicator(bind, conn, ncl, nc, 'simpleCondition')
+			na=duplicator(bind, conn, ncl, na, 'simpleAction')
 		end
-
-		if type(tonumber(list[bind.role]))=="number" then
-			list[bind.role]=tonumber(list[bind.role])-1
-		end
-
-		nc=nc+1
-		ns=ns+1
-
-	:: continue ::
 
 	end
 
+	make_compound(bind, conn, 'simpleCondition')
+	make_compound(bind, conn,'simpleAction')
 
-      print(conn, link)
+	print(conn,  link)
+
    end
 end
 
