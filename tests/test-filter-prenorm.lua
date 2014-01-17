@@ -38,7 +38,7 @@ assert (ncl:equal (dietncl.parsestring (str)))
 
 
 -- Single, pre-normalized link-connector pair: do nothing.
-
+--[==[
 str = [[
 <ncl>
  <head>
@@ -487,6 +487,34 @@ ncl = dietncl.parsestring ([[
    <bind role='start' component='m'/>
    <bind role='stop' component='m'/>
   </link>
+ </body>
+</ncl>]])
+
+filter.apply (ncl)
+]==]--
+
+-- Test for restriction (5).
+
+print (('-'):rep (80))
+
+ncl = dietncl.parsestring ([[
+<ncl>
+ <head>
+  <connectorBase>
+   <causalConnector id='c'>
+    <simpleCondition role='onBegin' delay='5s'/>
+	<simpleCondition role='onSelection'/>
+	<simpleCondition role='onEnd'/>
+    <simpleAction role='start' delay='10s'/>
+   </causalConnector>
+  </connectorBase>
+ </head>
+ <body>
+  <media id='m'/>
+  <link xconnector='c'>
+   <bind role='onBegin'/>
+   <bind role='onSelection'/>
+   <bind role='start'/>
  </body>
 </ncl>]])
 

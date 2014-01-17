@@ -50,7 +50,6 @@ local assert = assert
 local ipairs = ipairs
 
 local print  = print
-local tonumber=tonumber
 local type=type
 
 module (...)
@@ -365,10 +364,142 @@ local function make_condition_action_bijection (ncl)
 	make_compound(conn, 'simpleCondition')
 	make_compound(conn,'simpleAction')
 
-	print(conn,  link)
-
    end
 end
+
+local function update_binds(attrR1, attrR2, conn, ncl, cond)
+	local binds={}
+	local property
+	local parent
+
+	for link in ncl:gmatch('link') do
+		if link.xconnector==conn.id then
+			for bind in link:gmatch('bind') do
+				if bind.role==cond.role then
+					property=xml.new('property')
+					property.name=aux.gen_id(ncl)
+					parent=link:parent()
+					parent:insert(property)
+					binds[1]=xml.new('bind')
+					binds[1].role=attrR1
+					binds[1].component=(link:parent()).id
+					binds[1].interface=property.name
+					binds[2]=binds[1]:clone()
+					binds[2].role=attrR2
+					link:insert(binds[1])
+					link:insert(binds[2])
+				end
+			end
+		end
+	end
+
+end
+
+
+local function turn_unary_binary(conn, ncl, ...)
+	local compound
+	local stat
+	local attr={}
+	local deter, test=...
+
+	for condition in conn:gmatch(...) do
+		compound=xml.new('compoundCondition')
+		compound.operator='and'
+		stat=xml.new('assessmentStatement')
+		stat.operator='eq'
+		attr[1]=xml.new('attributeStatement')
+		attr[1].role=aux.gen_id(ncl)
+		attr[1].eventType='attribution'
+		attr[2]=xml.new('attributeStatement')
+		attr[2].role=aux.gen_id(ncl)
+		attr[2].eventType='attribution'
+		(condition:parent()):insert(compound)
+		condition=xml.remove(condition:parent(), condition)
+		compound:insert(stat)
+		stat:insert(attr[1])
+		stat:insert(attr[2])
+		compound:insert(condition)
+		if deter=='compoundCondition' then
+			for cond in condition:gmatch('simpleCondition') do
+				update_binds(attr[1].role, attr[2].role, conn, ncl, cond)
+			end
+		else
+			update_binds(attr[1].role, attr[2].role, conn, ncl, condition)
+		end
+	end
+end
+
+local function correct_isolation(conn, ncl)
+	local stat
+	local attr={}
+	local root
+
+	for comp in conn:gmatch('compoundCondition') do
+		local counter=0
+		for cond in comp:gmatch('compoundCondition') do
+			counter=counter+1
+		end
+		if counter==1 then
+			root=xml.new('compoundCondition')
+			root.operator='and'
+			stat=xml.new('assessmentStatement')
+			stat.operator='eq'
+			attr[1]=xml.new('attributeStatement')
+			attr[1].role=aux.gen_id(ncl)
+			attr[1].eventType='attribution'
+			attr[2]=xml.new('attributeStatement')
+			attr[2].role=aux.gen_id(ncl)
+			attr[2].eventType='attribution'
+			comp=xml.remove(comp:parent(), comp)
+			root:insert(comp)
+			--print(root)
+			comp=xml.remove(comp:parent(), comp)
+			root:insert(stat)
+			stat:insert(attr[1])
+			stat:insert(attr[2])
+			conn:insert(root)
+			for cond in comp:gmatch('simpleCondition') do
+				update_binds(attr[1].role, attr[2].role, conn, ncl, cond)
+			end
+		end
+	end
+end
+
+
+
+local function turn_binary_ternary(conn)
+	local counter=2
+	local root
+
+
+	for comp in conn:gmatch('compoundCondition') do
+		if counter==2 then
+			counter=0
+			root=xml.new('compoundCondition')
+			root.operator='and'
+			conn:insert(root)
+		else
+			comp=xml.remove(conn, comp)
+			root:insert(comp)
+			counter=counter+1
+		end
+	end
+
+end
+
+
+local function make_compound_tree(ncl)
+
+	for conn in ncl:gmatch('causalConnector') do
+		turn_unary_binary(conn, ncl, 'simpleCondition')
+		turn_binary_ternary(conn)
+		--correct_isolation(conn, ncl)
+	end
+	print(ncl)
+
+end
+
+
 
 
 -- Exported functions.
@@ -378,5 +509,6 @@ function apply (ncl)
    remove_params (ncl)
    remove_compound_delay (ncl)
    make_condition_action_bijection (ncl)
+   make_compound_tree (ncl)
    return ncl
 end
