@@ -367,6 +367,9 @@ local function make_condition_action_bijection (ncl)
    end
 end
 
+-- This function updates the binds of links after insertion of the respective
+-- simpleCondition has been inserted into a new compoundCondition.
+
 local function update_binds(attrR1, attrR2, conn, ncl, cond)
 	local binds={}
 	local property
@@ -396,11 +399,15 @@ local function update_binds(attrR1, attrR2, conn, ncl, cond)
 end
 
 
+-- This function turns unary elements (i.e. simpleCondition) into binary ones
+-- by adding the unary into a new compound element together with a new tautological
+-- assessment statement.
+
 local function turn_unary_binary(conn, ncl, ...)
 	local compound
 	local stat
 	local attr={}
-	local deter, test=...
+	local deter
 
 	for condition in conn:gmatch(...) do
 		compound=xml.new('compoundCondition')
@@ -419,15 +426,11 @@ local function turn_unary_binary(conn, ncl, ...)
 		stat:insert(attr[1])
 		stat:insert(attr[2])
 		compound:insert(condition)
-		if deter=='compoundCondition' then
-			for cond in condition:gmatch('simpleCondition') do
-				update_binds(attr[1].role, attr[2].role, conn, ncl, cond)
-			end
-		else
-			update_binds(attr[1].role, attr[2].role, conn, ncl, condition)
-		end
+		update_binds(attr[1].role, attr[2].role, conn, ncl, condition)
 	end
 end
+
+-- In development. This function isn't working properly yet.
 
 local function correct_isolation(conn, ncl)
 	local stat
@@ -465,7 +468,8 @@ local function correct_isolation(conn, ncl)
 	end
 end
 
-
+-- This function turns binary elements into ternary ones inserting them
+-- into a new compound element.
 
 local function turn_binary_ternary(conn)
 	local counter=2
@@ -487,6 +491,7 @@ local function turn_binary_ternary(conn)
 
 end
 
+-- Main function for restriction (5).
 
 local function make_compound_tree(ncl)
 
