@@ -430,64 +430,54 @@ local function turn_unary_binary(conn, ncl, ...)
 	end
 end
 
--- In development. This function isn't working properly yet.
-
-local function correct_isolation(conn, ncl)
-	local stat
-	local attr={}
-	local root
-
-	for comp in conn:gmatch('compoundCondition') do
-		local counter=0
-		for cond in comp:gmatch('compoundCondition') do
-			counter=counter+1
-		end
-		if counter==1 then
-			root=xml.new('compoundCondition')
-			root.operator='and'
-			stat=xml.new('assessmentStatement')
-			stat.operator='eq'
-			attr[1]=xml.new('attributeStatement')
-			attr[1].role=aux.gen_id(ncl)
-			attr[1].eventType='attribution'
-			attr[2]=xml.new('attributeStatement')
-			attr[2].role=aux.gen_id(ncl)
-			attr[2].eventType='attribution'
-			comp=xml.remove(comp:parent(), comp)
-			root:insert(comp)
-			--print(root)
-			comp=xml.remove(comp:parent(), comp)
-			root:insert(stat)
-			stat:insert(attr[1])
-			stat:insert(attr[2])
-			conn:insert(root)
-			for cond in comp:gmatch('simpleCondition') do
-				update_binds(attr[1].role, attr[2].role, conn, ncl, cond)
-			end
-		end
-	end
-end
-
 -- This function turns binary elements into ternary ones inserting them
 -- into a new compound element.
 
-local function turn_binary_ternary(conn)
+local function turn_binary_ternary(conn, ncl)
 	local counter=2
+	local test=0
 	local root
-
+	local remain
+	local stat
+	local attr={}
 
 	for comp in conn:gmatch('compoundCondition') do
 		if counter==2 then
+			if root then
+				conn:insert(root)
+			end
 			counter=0
 			root=xml.new('compoundCondition')
 			root.operator='and'
-			conn:insert(root)
-		else
-			comp=xml.remove(conn, comp)
-			root:insert(comp)
-			counter=counter+1
+			remain=nil
 		end
+		remain=xml.remove(conn, comp)
+		root:insert(remain)
+		counter=counter+1
+		test=test+1
 	end
+
+	--print(counter)
+
+	if counter==1 and test>2 then
+		root=xml.new('compoundCondition')
+		root.operator='and'
+		conn:insert(root)
+		remain=xml.remove(remain:parent(), remain)
+		root:insert(remain)
+		stat=xml.new('assessmentStatement')
+		stat.operator='eq'
+		attr[1]=xml.new('attributeStatement')
+		attr[1].role=aux.gen_id(ncl)
+		attr[1].eventType='attribution'
+		attr[2]=xml.new('attributeStatement')
+		attr[2].role=aux.gen_id(ncl)
+		attr[2].eventType='attribution'
+		root:insert(stat)
+		stat:insert(attr[1])
+		stat:insert(attr[2])
+	end
+
 
 end
 
@@ -497,8 +487,7 @@ local function make_compound_tree(ncl)
 
 	for conn in ncl:gmatch('causalConnector') do
 		turn_unary_binary(conn, ncl, 'simpleCondition')
-		turn_binary_ternary(conn)
-		--correct_isolation(conn, ncl)
+		turn_binary_ternary(conn, ncl)
 	end
 	print(ncl)
 
