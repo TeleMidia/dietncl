@@ -1,5 +1,5 @@
 -- prenorm.lua -- Simplifies links and connectors.
--- Copyright (C) 2013 PUC-Rio/Laboratorio TeleMidia
+-- Copyright (C) 2013-2014 PUC-Rio/Laboratorio TeleMidia
 --
 -- This file is part of DietNCL.
 --
@@ -42,17 +42,17 @@
 -- This filter depends on the "import" filter, i.e., it assumes that the
 -- given document has no import declaration.
 
-require ('dietncl.xmlsugar')
-local xml    = xml
-local aux    = require ('dietncl.nclaux')
+local filter = {}
 
 local assert = assert
 local ipairs = ipairs
+local print = print
+local tonumber = tonumber
+local type = type
 
-local print  = print
-local type=type
-
-module (...)
+local xml = require ('dietncl.xmlsugar')
+local aux = require ('dietncl.nclaux')
+_ENV = nil
 
 -- Makes sure that each connector is referenced by exactly one link.
 -- Returns the updated document.
@@ -285,7 +285,7 @@ local function make_compound(conn, ...)
 	local str=...
 
 	for x in conn:gmatch(...) do
-			if not superior[x.eventType] and x.eventType and (x:parent())==causalConnector then
+			if not superior[x.eventType] and x.eventType and (x:parent())=='causalConnector' then
 				if str=='simpleCondition' then
 					root=xml.new('compoundCondition')
 					root.operator='and'
@@ -509,7 +509,7 @@ end
 
 -- Exported functions.
 
-function apply (ncl)
+function filter.apply (ncl)
    make_bijection (ncl)
    remove_params (ncl)
    remove_compound_delay (ncl)
@@ -517,3 +517,5 @@ function apply (ncl)
    make_compound_tree (ncl)
    return ncl
 end
+
+return filter

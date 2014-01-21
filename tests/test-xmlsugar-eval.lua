@@ -16,13 +16,16 @@
 -- You should have received a copy of the GNU General Public License
 -- along with DietNCL.  If not, see <http://www.gnu.org/licenses/>.
 
-require ('dietncl.xmlsugar')
+local assert = assert
+
+local xml = require ('dietncl.xmlsugar')
+_ENV = nil
 
 assert (xml.eval ('') == nil)
 assert (xml.eval ('x') == nil)
 assert (xml.eval (nil) == nil)
 
-root = xml.eval ([[
+local root = xml.eval ([[
 <root>
  <x/>
  <y>
@@ -41,7 +44,7 @@ root = xml.eval ([[
 assert (root)
 assert (root:parent () == nil and #root == 4)
 
-function check (e, tag, parent, n)
+local function check (e, tag, parent, n)
    assert (e:tag () == tag and e:parent () == parent and #e == n)
 end
 
@@ -50,13 +53,13 @@ check (root[2], 'y', root, 3)
 check (root[3], 'z', root, 0)
 check (root[4], 'w', root, 0)
 
-y = root[2]
+local y = root[2]
 check (y[1], 'a', y, 0)
 check (y[2], 'b', y, 0)
 check (y[3], 'c', y, 1)
 
-c = y[3]
+local c = y[3]
 check (c[1], 'r', c, 1)
 
-r = c[1]
+local r = c[1]
 check (r[1], 's', r, 0)

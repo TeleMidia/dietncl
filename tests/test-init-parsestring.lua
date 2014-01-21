@@ -16,14 +16,14 @@
 -- You should have received a copy of the GNU General Public License
 -- along with DietNCL.  If not, see <http://www.gnu.org/licenses/>.
 
-require ('dietncl')
+local dietncl = require ('dietncl')
 
 assert (dietncl.parsestring ('') == nil)
 
-file, err = io.open ('tests/test-init-parse-sample.ncl', 'r')
+local file, err = io.open ('tests/test-init-parse-sample.ncl', 'r')
 assert (file ~= nil)
 
-ncl = dietncl.parsestring (file:read ('*a'))
+local ncl = dietncl.parsestring (file:read ('*a'))
 file:close ()
 
 assert (ncl:getuserdata ('pathname') == nil)

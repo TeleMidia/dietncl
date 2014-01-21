@@ -16,12 +16,14 @@
 -- You should have received a copy of the GNU General Public License
 -- along with DietNCL.  If not, see <http://www.gnu.org/licenses/>.
 
-require ('dietncl')
+local assert = assert
+local dietncl = require ('dietncl')
+_ENV = nil
 
 assert (dietncl.parse ('') == nil)
 
-pathname = 'tests/test-init-parse-sample.ncl'
-ncl = dietncl.parse ('tests/test-init-parse-sample.ncl')
+local pathname = 'tests/test-init-parse-sample.ncl'
+local ncl = dietncl.parse ('tests/test-init-parse-sample.ncl')
 assert (ncl:getuserdata ('pathname') == pathname)
 assert (ncl:tag () == 'ncl')
 assert (ncl.id == 'test-init-parse-sample')

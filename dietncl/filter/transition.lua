@@ -27,13 +27,15 @@
 -- This filter depends on the "import" filter, i.e., it assumes that the
 -- given document has no import declaration.
 
-require ('dietncl.xmlsugar')
-local xml    = xml
-local aux    = require ('dietncl.nclaux')
+local filter = {}
+
 local assert = assert
 local ipairs = ipairs
 local table  = table
-module (...)
+
+local xml = require ('dietncl.xmlsugar')
+local aux = require ('dietncl.nclaux')
+_ENV = nil
 
 -- List of non-descriptor attributes that may point to transitions.
 local query = {
@@ -110,7 +112,7 @@ end
 
 -- Exported functions.
 
-function apply (ncl)
+function filter.apply (ncl)
    for desc in ncl:gmatch ('descriptor', 'trans[IO].*', nil, 2) do
       if desc.transIn then
          aux.insert_descparam (desc, 'transIn', desc.transIn)
@@ -152,3 +154,5 @@ function apply (ncl)
 
    return ncl
 end
+
+return filter

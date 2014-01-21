@@ -16,15 +16,18 @@
 -- You should have received a copy of the GNU General Public License
 -- along with DietNCL.  If not, see <http://www.gnu.org/licenses/>.
 
-require ('dietncl')
-filter = require ('dietncl.filter.transition')
-util   = require ('util')
+local assert = assert
+
+local dietncl = require ('dietncl')
+local filter = require ('dietncl.filter.transition')
+local util = require ('util')
+_ENV = nil
 
 
 -- Ignore the content of expanded transitions; i.e., everything between
 -- balanced parenthesis.
 
-ncl = dietncl.parsestring ([[
+local ncl = dietncl.parsestring ([[
 <ncl>
  <head>
   <descriptorBase>

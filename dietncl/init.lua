@@ -16,19 +16,16 @@
 -- You should have received a copy of the GNU General Public License
 -- along with DietNCL.  If not, see <http://www.gnu.org/licenses/>.
 
-require ('dietncl.xmlsugar')
-local xml    = xml
+local dietncl = {}
 local assert = assert
-module (...)
-
-
--- Exported functions.
+local xml = require ('dietncl.xmlsugar')
+_ENV = nil
 
 -- Parses document string S.
 -- Returns a new document handle if successful,
 -- otherwise returns nil plus error message.
 
-function parsestring (s)
+function dietncl.parsestring (s)
    local ncl, err = xml.eval (assert (s))
    if ncl == nil then
       return nil, err
@@ -40,7 +37,7 @@ end
 -- Returns a new document handle if successful,
 -- otherwise returns nil plus error message.
 
-function parse (pathname)
+function dietncl.parse (pathname)
    local ncl, err = xml.load (assert (pathname))
    if ncl == nil then
       return nil, err
@@ -48,3 +45,5 @@ function parse (pathname)
    ncl:setuserdata ('pathname', pathname)
    return ncl
 end
+
+return dietncl

@@ -16,14 +16,18 @@
 -- You should have received a copy of the GNU General Public License
 -- along with DietNCL.  If not, see <http://www.gnu.org/licenses/>.
 
-require ('dietncl.xmlsugar')
+local assert = assert
+local tostring = tostring
 
-root = xml.new ('root')
+local xml = require ('dietncl.xmlsugar')
+_ENV = nil
+
+local root = xml.new ('root')
 for i=1,100 do
    root:insert (xml.new (tostring (i)))
 end
 
-i = 0
+local i = 0
 for e in root:children () do
    i = i + 1
    assert (e:parent () == root)
@@ -32,7 +36,7 @@ end
 assert (i == 100)
 
 -- Remove elements while iterating.
-i = 0
+local i = 0
 for e in root:children () do
    i = i + 1
    root:remove (e)

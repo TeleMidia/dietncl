@@ -16,21 +16,24 @@
 -- You should have received a copy of the GNU General Public License
 -- along with DietNCL.  If not, see <http://www.gnu.org/licenses/>.
 
-require ('dietncl.xmlsugar')
+local assert = assert
 
-e1 = xml.eval ('<root/>')
+local xml = require ('dietncl.xmlsugar')
+_ENV = nil
+
+local e1 = xml.eval ('<root/>')
 assert (e1:equal (e1))
 
-e2 = xml.eval ('<root></root>')
+local e2 = xml.eval ('<root></root>')
 assert (e1:equal (e2))
 
-e2 = xml.eval ('<ROOT/>')
+local e2 = xml.eval ('<ROOT/>')
 assert (not e1:equal (e2))
 
-e2 = xml.eval ("<root x='y'/>")
+local e2 = xml.eval ("<root x='y'/>")
 assert (not e1:equal (e2))
 
-e1 = xml.eval ([[
+local e1 = xml.eval ([[
 <root>
  <a x='1'>
   <b y='2'/>
@@ -38,7 +41,7 @@ e1 = xml.eval ([[
  <c z='3'/>
 </root>]])
 
-e2 = xml.eval ([[
+local e2 = xml.eval ([[
 <!-- xyz -->
 <root>
  <a x='1'>

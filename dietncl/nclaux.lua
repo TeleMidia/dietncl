@@ -16,23 +16,20 @@
 -- You should have received a copy of the GNU General Public License
 -- along with DietNCL.  If not, see <http://www.gnu.org/licenses/>.
 
-require ('dietncl.xmlsugar')
-local xml    = xml
-local math   = math
+local nclaux = {}
 
 local assert = assert
+local math = math
 local tonumber = tonumber
-local type   = type
+local type = type
 
-module (...)
-
-
--- Exported functions.
+local xml = require ('dietncl.xmlsugar')
+_ENV = nil
 
 -- Returns the number of seconds denoted by NCL time string STR or nil,
 -- if STR is not a valid NCL time string.
 
-function timetoseconds (str)
+function nclaux.timetoseconds (str)
    local h, m, s, f = 0, 0, str:match ('^(%d*)%.?(%d*)s')
 
    -- Try the alternate syntax.
@@ -58,7 +55,7 @@ local GEN_ID_REP_CHAR = '_'
 local GEN_ID_USERDATA_PREFIX = 'gen-id-prefix'
 local GEN_ID_USERDATA_SERIAL = 'gen-id-serial'
 
-function gen_id (ncl)
+function nclaux.gen_id (ncl)
    local prefix = ncl:getuserdata (GEN_ID_USERDATA_PREFIX)
    local serial = ncl:getuserdata (GEN_ID_USERDATA_SERIAL)
 
@@ -95,7 +92,7 @@ end
 --  (3) the serial of the last XML-ID.
 -- Otherwise, it returns nil.
 
-function get_last_gen_id (ncl)
+function nclaux.get_last_gen_id (ncl)
    local prefix
    local serial
 
@@ -114,7 +111,7 @@ end
 -- and value VALUE.  If DESC already contains a parameter with the given
 -- name, do nothing.
 
-function insert_descparam (desc, name, value)
+function nclaux.insert_descparam (desc, name, value)
    if desc:match ('descriptorParam', 'name', name) then
       return                    -- avoid redefinition
    end
@@ -123,3 +120,5 @@ function insert_descparam (desc, name, value)
    param.value = value
    desc:insert (param)
 end
+
+return nclaux

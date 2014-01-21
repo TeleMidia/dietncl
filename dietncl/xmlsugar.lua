@@ -16,10 +16,26 @@
 -- You should have received a copy of the GNU General Public License
 -- along with DietNCL.  If not, see <http://www.gnu.org/licenses/>.
 
-xml = require ('LuaXml')
-TAG          = xml.TAG
-xml.PARENT   = -1
+local xml = require ('LuaXml')
+
+-- Workaround bugs in LuaXml eval() and tag().
+_G.xml = xml
+_G.TAG = xml.TAG
+
+local assert = assert
+local bit = bit32.extract
+local getmetatable = getmetatable
+local ipairs = ipairs
+local next = next
+local pcall = pcall
+local table = table
+local type = type
+_ENV = nil
+
+xml.PARENT = -1
 xml.USERDATA = -2
+xml._eval = xml.eval
+xml._load = xml.load
 
 -- Checks whether E is a LuaXML element and returns E.
 
@@ -45,16 +61,12 @@ local function sugarize (e)
    return e
 end
 
-
--- Exported functions.
-
 -- Parses the XML string S.
 -- Returns a new XML handle if successful,
 -- otherwise returns nil plus error message.
 
-local _eval = xml.eval
 function xml.eval (s)
-   local status, e = pcall (_eval, s)
+   local status, e = pcall (xml._eval, s)
    if status == false or e == nil then
       return nil, e
    end
@@ -65,9 +77,8 @@ end
 -- Returns a new XML handle if successful,
 -- otherwise returns nil plus error message.
 
-local _load = xml.load
 function xml.load (s)
-   local status, e = pcall (_load, s)
+   local status, e = pcall (xml._load, s)
    if status == false or e == nil then
       return nil, e
    end
@@ -332,7 +343,6 @@ local function domatch (e, tag, attr, value, regexp)
    local result = {}            -- list of matches
    local match = function (e)
       local re = regexp or 0
-      local bit = bit32.extract
       domatch0 (e, tag, attr, value,
                 function (x,y) return eq (x, y, bit (re, 2) ~= 0) end,
                 function (x,y) return eq (x, y, bit (re, 1) ~= 0) end,
@@ -344,7 +354,7 @@ local function domatch (e, tag, attr, value, regexp)
 end
 
 function xml.match (...)
-   return table.unpack (domatch (...))
+  return table.unpack (domatch (...))
 end
 
 -- Returns an iterator function that, each time is called, returns the next
@@ -365,3 +375,5 @@ function xml.gmatch (...)
       return nil
    end
 end
+
+return xml

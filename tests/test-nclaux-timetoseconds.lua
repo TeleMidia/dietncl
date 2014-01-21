@@ -16,10 +16,13 @@
 -- You should have received a copy of the GNU General Public License
 -- along with DietNCL.  If not, see <http://www.gnu.org/licenses/>.
 
-require ('dietncl')
-aux = require ('dietncl.nclaux')
-util = require ('util')
-feq = util.feq
+local assert = assert
+
+local dietncl = require ('dietncl')
+local aux = require ('dietncl.nclaux')
+local util = require ('util')
+local feq = util.feq
+_ENV = nil
 
 
 -- Some invalid calls.

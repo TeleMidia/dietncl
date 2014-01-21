@@ -16,10 +16,10 @@
 -- You should have received a copy of the GNU General Public License
 -- along with DietNCL.  If not, see <http://www.gnu.org/licenses/>.
 
-require ('dietncl.xmlsugar')
+local xml = require ('dietncl.xmlsugar')
 
--- 
--- -- Match plain strings.
+
+-- Match plain strings.
 
 root = xml.eval ('<root/>')
 assert (root:match ('x') == nil)

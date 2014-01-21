@@ -16,13 +16,16 @@
 -- You should have received a copy of the GNU General Public License
 -- along with DietNCL.  If not, see <http://www.gnu.org/licenses/>.
 
-require ('dietncl.xmlsugar')
+local assert = assert
 
-root = xml.new ('root')
-x = xml.new ('x')
-y = xml.new ('y')
-z = xml.new ('z')
-w = xml.new ('w')
+local xml = require ('dietncl.xmlsugar')
+_ENV = nil
+
+local root = xml.new ('root')
+local x = xml.new ('x')
+local y = xml.new ('y')
+local z = xml.new ('z')
+local w = xml.new ('w')
 
 assert (root:insert (x) == 1)
 assert (x:insert (y) == 1)

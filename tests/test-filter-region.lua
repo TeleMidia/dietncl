@@ -16,14 +16,18 @@
 -- You should have received a copy of the GNU General Public License
 -- along with DietNCL.  If not, see <http://www.gnu.org/licenses/>.
 
-require ('dietncl')
-filter = require ('dietncl.filter.region')
-util   = require ('util')
+local assert = assert
+local ipairs = ipairs
+
+local dietncl = require ('dietncl')
+local filter = require ('dietncl.filter.region')
+local util = require ('util')
+_ENV = nil
 
 
 -- Single region base; no descriptors.
 
-ncl = dietncl.parsestring ([[
+local ncl = dietncl.parsestring ([[
 <ncl>
  <head>
   <regionBase>
@@ -169,7 +173,7 @@ assert (util.uequal (ncl, dietncl.parsestring ([[
 
 -- Valid and invalid combinations of t,b,l,r.
 
-function doapply (attr, dim, regval, parval, dimval)
+local function doapply (attr, dim, regval, parval, dimval)
    return filter.apply (util.parsenclformat ([[
 <ncl>
  <head>
@@ -187,14 +191,14 @@ function doapply (attr, dim, regval, parval, dimval)
 ]], attr, parval, dim, dimval, attr, regval))
 end
 
-function check_success (regval, parval, dimval)
+local function check_success (regval, parval, dimval)
    assert (doapply ('top', 'height', regval, parval, dimval))
    assert (doapply ('bottom', 'height', regval, parval, dimval))
    assert (doapply ('left', 'width', regval, parval, dimval))
    assert (doapply ('right', 'width', regval, parval, dimval))
 end
 
-function check_fail (regval, parval, dimval)
+local function check_fail (regval, parval, dimval)
    assert (doapply ('top', 'height', regval, parval, dimval) == nil)
    assert (doapply ('bottom', 'height', regval, parval, dimval) == nil)
    assert (doapply ('left', 'width', regval, parval, dimval) == nil)
@@ -213,7 +217,7 @@ check_success ('1%', '1%', '1%')  -- %  %  %  -> %   (CASE4)
 
 -- CASE1: t,b,l,r in pixels and w,l in pixels.
 
-fmtin = [[
+local fmtin = [[
 <ncl>
  <head>
   <regionBase>
@@ -229,7 +233,7 @@ fmtin = [[
 </ncl>
 ]]
 
-fmtout = [[
+local fmtout = [[
 <ncl>
  <head>
   <descriptorBase>
@@ -250,8 +254,7 @@ fmtout = [[
 
 for _,a in ipairs ({'top', 'bottom', 'left', 'right'}) do
    ncl = filter.apply (util.parsenclformat (fmtin, a, a))
-   out = util.parsenclformat (fmtout, a, a)
-   assert (util.uequal (ncl, out))
+   assert (util.uequal (ncl, util.parsenclformat (fmtout, a, a)))
 end
 
 
@@ -294,8 +297,7 @@ fmtout = [[
 
 for _,a in ipairs ({'top', 'bottom', 'left', 'right'}) do
    ncl = filter.apply (util.parsenclformat (fmtin, a, a))
-   out = util.parsenclformat (fmtout, a, a)
-   assert (util.uequal (ncl, out))
+   assert (util.uequal (ncl, util.parsenclformat (fmtout, a, a)))
 end
 
 
@@ -344,8 +346,7 @@ for _,a in ipairs ({'top', 'bottom', 'left', 'right'}) do
       d = 42
    end
    ncl = filter.apply (util.parsenclformat (fmtin, a, a))
-   out = util.parsenclformat (fmtout, a, a, d)
-   assert (util.uequal (ncl, out))
+   assert (util.uequal (ncl, util.parsenclformat (fmtout, a, a, d)))
 end
 
 
@@ -394,8 +395,7 @@ for _,a in ipairs ({'top', 'bottom', 'left', 'right'}) do
       d = 42
    end
    ncl = filter.apply (util.parsenclformat (fmtin, a, a))
-   out = util.parsenclformat (fmtout, a, a, d)
-   assert (util.uequal (ncl, out))
+   assert (util.uequal (ncl, util.parsenclformat (fmtout, a, a, d)))
 end
 
 

@@ -16,31 +16,34 @@
 -- You should have received a copy of the GNU General Public License
 -- along with DietNCL.  If not, see <http://www.gnu.org/licenses/>.
 
-require ('dietncl.xmlsugar')
+local assert = assert
 
-root = xml.new ('root')
-x = xml.new ('x')
-y = xml.new ('y')
-z = xml.new ('z')
-w = xml.new ('w')
+local xml = require ('dietncl.xmlsugar')
+_ENV = nil
+
+local root = xml.new ('root')
+local x = xml.new ('x')
+local y = xml.new ('y')
+local z = xml.new ('z')
+local w = xml.new ('w')
 
 assert (root:insert (x) == 1)
 assert (x:insert (y) == 1)
 assert (x:insert (z) == 2)
 
 -- Old denotes a position.
-w = xml.new ('w')
-rep, pos = x:replace (1, w)
+local w = xml.new ('w')
+local rep, pos = x:replace (1, w)
 assert (rep == y and pos == 1)
 assert (y:parent () == nil)
 assert (w:parent () == x)
 
-rep, pos = root:replace (1, y)
+local rep, pos = root:replace (1, y)
 assert (rep == x and pos == 1)
 assert (root:replace (1, x) == y)
 
 -- Old denotes an element.
-rep, pos = x:replace (z, y)
+local rep, pos = x:replace (z, y)
 assert (rep == z and pos == 2)
 assert (x[2] == y)
 assert (y:parent () == x)

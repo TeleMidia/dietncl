@@ -16,9 +16,13 @@
 -- You should have received a copy of the GNU General Public License
 -- along with DietNCL.  If not, see <http://www.gnu.org/licenses/>.
 
-require ('dietncl.xmlsugar')
+local assert = assert
+local tonumber = tonumber
 
-root = xml.eval ([[
+local xml = require ('dietncl.xmlsugar')
+_ENV = nil
+
+local root = xml.eval ([[
 <root a="1" b="2" c="3" d="4">
  <x/>
  <y/>
@@ -26,8 +30,8 @@ root = xml.eval ([[
  <w/>
 </root>
 ]])
-list = { a=1, b=2, c=3, d=4 }
-i = 0
+local list = { a=1, b=2, c=3, d=4 }
+local i = 0
 for k,v in root:attributes () do
    assert (list[k] == tonumber (v))
    i = i + 1

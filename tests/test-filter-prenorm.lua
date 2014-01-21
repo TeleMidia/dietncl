@@ -1,5 +1,5 @@
 -- test-filter-prenorm.lua -- Checks filter.prenorm.
--- Copyright (C) 2013 PUC-Rio/Laboratorio TeleMidia
+-- Copyright (C) 2013-2014 PUC-Rio/Laboratorio TeleMidia
 --
 -- This file is part of DietNCL.
 --
@@ -16,15 +16,20 @@
 -- You should have received a copy of the GNU General Public License
 -- along with DietNCL.  If not, see <http://www.gnu.org/licenses/>.
 
-require ('dietncl')
-aux    = require ('dietncl.nclaux')
-filter = require ('dietncl.filter.prenorm')
-util   = require ('util')
+local assert = assert
+local ipairs = ipairs
+local print = print
+
+local dietncl = require ('dietncl')
+local aux = require ('dietncl.nclaux')
+local filter = require ('dietncl.filter.prenorm')
+local util = require ('util')
+_ENV = nil
 
 
 -- No connectors: do nothing.
 
-str = [[
+local str = [[
 <ncl>
  <head>
   <regionBase/>
@@ -32,7 +37,7 @@ str = [[
  <body/>
 </ncl>]]
 
-ncl = dietncl.parsestring (str)
+local ncl = dietncl.parsestring (str)
 filter.apply (ncl)
 assert (ncl:equal (dietncl.parsestring (str)))
 
@@ -109,7 +114,7 @@ assert (ncl:equal (dietncl.parsestring ([[
 
 -- Eliminate connector reuse.
 
-function check_bijection (ncl)
+local function check_bijection (ncl)
    local connlist = {ncl:match ('causalConnector')}
    local linklist = {ncl:match ('link')}
 

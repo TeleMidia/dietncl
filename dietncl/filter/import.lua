@@ -25,14 +25,15 @@
 --
 -- This filter has no dependencies.
 
-require ('dietncl.xmlsugar')
-local xml     = xml
-local dietncl = require ('dietncl')
-local path    = require ('dietncl.path')
+local filter = {}
+
 local assert  = assert
 local ipairs  = ipairs
 
-module (...)
+local dietncl = require ('dietncl')
+local xml = require ('dietncl.xmlsugar')
+local path = require ('dietncl.path')
+_ENV = nil
 
 -- List of possible <importBase> parents.
 local importbase_parent_list = {
@@ -171,7 +172,7 @@ local function resolve_external_document (ncl, uri)
    if ext == nil then
       return nil, err
    end
-   ext, err = apply (ext)
+   ext, err = filter.apply (ext)
    if ext == nil then
       return nil, err
    end
@@ -266,10 +267,7 @@ local function resolve_importncl (ncl, e)
    return true
 end
 
-
--- Exported functions.
-
-function apply (ncl)
+function filter.apply (ncl)
    local status
    local err
 
@@ -294,3 +292,5 @@ function apply (ncl)
 
    return ncl
 end
+
+return filter

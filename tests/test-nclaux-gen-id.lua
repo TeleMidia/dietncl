@@ -16,9 +16,10 @@
 -- You should have received a copy of the GNU General Public License
 -- along with DietNCL.  If not, see <http://www.gnu.org/licenses/>.
 
-require ('dietncl')
-aux = require ('dietncl.nclaux')
-ncl = dietncl.parsestring ([[
+local dietncl = require ('dietncl')
+local aux = require ('dietncl.nclaux')
+
+local ncl = dietncl.parsestring ([[
 <ncl>
  <head>
   <regionBase>
@@ -35,14 +36,14 @@ ncl = dietncl.parsestring ([[
 
 aux.gen_id (ncl)
 
-id, prefix, serial = aux.get_last_gen_id (ncl)
+local id, prefix, serial = aux.get_last_gen_id (ncl)
 assert (id == prefix..serial)
 assert (serial == 0)
 assert (#prefix == string.len ('xxxxxxxxxx') + 1)
 
 for i=1,999 do
    assert (aux.gen_id (ncl) == prefix..i)
-   _, _prefix, _serial = aux.get_last_gen_id (ncl)
+   local _, _prefix, _serial = aux.get_last_gen_id (ncl)
    assert (_prefix == prefix)
    assert (_serial == i)
 end

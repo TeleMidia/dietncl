@@ -16,9 +16,13 @@
 -- You should have received a copy of the GNU General Public License
 -- along with DietNCL.  If not, see <http://www.gnu.org/licenses/>.
 
-require ('dietncl')
-filter = require ('dietncl.filter.import')
-util   = require ('util')
+local assert = assert
+local os = os
+
+local dietncl = require ('dietncl')
+local filter = require ('dietncl.filter.import')
+local util = require ('util')
+_ENV = nil
 
 
 --========================================================================--
@@ -28,7 +32,7 @@ util   = require ('util')
 
 -- Invalid 'documentURI' (file not found).
 
-ncl = dietncl.parsestring ([[
+local ncl = dietncl.parsestring ([[
 <ncl>
  <head>
   <connectorBase>
@@ -37,11 +41,11 @@ ncl = dietncl.parsestring ([[
  </head>
  <body/>
 </ncl>]])
-ncl, err = filter.apply (ncl)
+local ncl, err = filter.apply (ncl)
 assert (ncl == nil)
 assert (err:match ('!!!NON_EXISTENT!!!'))
 
-tmp = util.tmpfile ([[
+local tmp = util.tmpfile ([[
 <ncl>
  <head>
   <connectorBase>
@@ -51,7 +55,7 @@ tmp = util.tmpfile ([[
  <body/>
 </ncl>]])
 
-ncl = util.parsenclformat ([[
+local ncl = util.parsenclformat ([[
 <ncl>
  <head>
   <regionBase>
@@ -60,7 +64,7 @@ ncl = util.parsenclformat ([[
  </head>
  <body/>
 </ncl>]], tmp)
-ncl, err = filter.apply (ncl)
+local ncl, err = filter.apply (ncl)
 assert (ncl == nil)
 assert (err:match ('/!!!NON_EXISTENT!!!'))
 os.remove (tmp)
@@ -225,7 +229,7 @@ os.remove (tmp)
 
 -- Recursive resolution.
 
-tmp1 = util.tmpfile ([[
+local tmp1 = util.tmpfile ([[
 <ncl>
  <head>
   <descriptorBase>
@@ -248,7 +252,7 @@ tmp1 = util.tmpfile ([[
  <body/>
 </ncl>]])
 
-tmp2 = util.tmpfile ([[
+local tmp2 = util.tmpfile ([[
 <ncl>
  <head>
   <connectorBase>
@@ -261,7 +265,7 @@ tmp2 = util.tmpfile ([[
  <body/>
 </ncl>]])
 
-tmp3 = util.tmpfile (([[
+local tmp3 = util.tmpfile (([[
 <ncl>
  <head>
   <connectorBase>
@@ -358,7 +362,7 @@ ncl = dietncl.parsestring ([[
  </head>
  <body/>
 </ncl>]])
-ncl, err = filter.apply (ncl)
+local ncl, err = filter.apply (ncl)
 assert (ncl == nil)
 assert (err:match ('!!!NON_EXISTENT!!!'))
 

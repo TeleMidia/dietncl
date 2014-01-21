@@ -26,24 +26,26 @@
 -- This filter depends on the "import" filter, i.e., it assumes that the
 -- given document has no import declaration.
 
-require ('dietncl.xmlsugar')
-local xml      = xml
-local aux      = require ('dietncl.nclaux')
+local filter = {}
+
 local assert   = assert
 local math     = math
 local pairs    = pairs
 local tonumber = tonumber
-module (...)
+
+local xml = require ('dietncl.xmlsugar')
+local aux = require ('dietncl.nclaux')
+_ENV = nil
 
 -- Returns the number value of pixel value S.
 
-function pixeltonumber (s)
+local function pixeltonumber (s)
    return tonumber (s:match ('^(%d+)$') or s:match ('^(%d+)[Pp][Xx]$'))
 end
 
 -- Returns number value of percent value S.
 
-function percenttonumber (s)
+local function percenttonumber (s)
    local x = tonumber (s:match ('^(%d*%.?%d*)%%$'))
    if x == nil then
       return nil
@@ -54,10 +56,10 @@ end
 
 -- Some helper functions.
 
-function topercent (n) return (n * 100)..'%' end
-function topixel (n) return n..'px' end
-function ispixel (s) return pixeltonumber (s) ~= nil end
-function ispercent (s) return percenttonumber (s) ~= nil end
+local function topercent (n) return (n * 100)..'%' end
+local function topixel (n) return n..'px' end
+local function ispixel (s) return pixeltonumber (s) ~= nil end
+local function ispercent (s) return percenttonumber (s) ~= nil end
 
 -- The following functions (update_*) update the width, height, top, bottom,
 -- left, and right attributes of a given region based on the value of the
@@ -234,10 +236,7 @@ local function unnest (region)
    return true
 end
 
-
--- Exported functions.
-
-function apply (ncl)
+function filter.apply (ncl)
    for base in ncl:gmatch ('regionBase') do
       for i=1,#base do
          local status, err = unnest (base[i])
@@ -268,3 +267,5 @@ function apply (ncl)
 
    return ncl
 end
+
+return filter

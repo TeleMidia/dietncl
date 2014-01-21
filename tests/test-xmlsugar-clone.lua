@@ -16,10 +16,13 @@
 -- You should have received a copy of the GNU General Public License
 -- along with DietNCL.  If not, see <http://www.gnu.org/licenses/>.
 
-require ('dietncl.xmlsugar')
+local assert = assert
 
-root = xml.eval ('<root/>')
-clone = root:clone ()
+local xml = require ('dietncl.xmlsugar')
+_ENV = nil
+
+local root = xml.eval ('<root/>')
+local clone = root:clone ()
 assert (root ~= clone)
 assert (clone:tag () == 'root')
 assert (clone:parent () == nil)
@@ -34,7 +37,7 @@ assert (clone.a == '1')
 assert (clone.b == '2')
 assert (clone.c == '3')
 
-s = [[
+local s = [[
 <root>
  <a value='a'/>
  <b>
@@ -52,7 +55,7 @@ root = xml.eval (s)
 
 clone = root:clone ()
 assert (root:equal (clone))
-function compar (a, b)
+local function compar (a, b)
    assert (a ~= b)
    assert (a:tag () == b:tag ())
    if a:parent () == nil then
