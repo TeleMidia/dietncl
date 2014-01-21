@@ -430,38 +430,20 @@ local function turn_unary_binary(conn, ncl, ...)
 	end
 end
 
--- This function turns binary elements into ternary ones inserting them
--- into a new compound element.
+local function correct_singularity(conn, ncl, test, counter, root, remain, ...)
 
-local function turn_binary_ternary(conn, ncl)
-	local counter=2
-	local test=0
-	local root
-	local remain
 	local stat
 	local attr={}
+	local cmtype={}
+	cmtype['compoundCondition']='simpleCondition'
+	cmtype['compoundAction']='simpleAction'
 
-	for comp in conn:gmatch('compoundCondition') do
-		if counter==2 then
-			if root then
-				conn:insert(root)
-			end
-			counter=0
-			root=xml.new('compoundCondition')
-			root.operator='and'
-			remain=nil
-		end
-		remain=xml.remove(conn, comp)
-		root:insert(remain)
-		counter=counter+1
-		test=test+1
-	end
-
-	--print(counter)
-
-	if counter==1 and test>2 then
-		root=xml.new('compoundCondition')
-		root.operator='and'
+	if test<3 and counter==1 then
+		remain=xml.remove(remain:parent(), remain)
+		conn:insert(remain)
+	elseif test<3 and test>0 and root:parent()==nil then
+		conn:insert(root)
+	elseif counter==1 and test>2 then
 		conn:insert(root)
 		remain=xml.remove(remain:parent(), remain)
 		root:insert(remain)
@@ -476,8 +458,41 @@ local function turn_binary_ternary(conn, ncl)
 		root:insert(stat)
 		stat:insert(attr[1])
 		stat:insert(attr[2])
+		for condition in conn:gmatch(cmtype[...]) do
+			update_binds(attr[1].role, attr[2].role, conn, ncl, condition)
+		end
 	end
 
+end
+
+-- This function turns binary elements into ternary ones inserting them
+-- into a new compound element.
+
+local function turn_binary_ternary(conn, ncl, ...)
+	local counter=2
+	local test=0
+
+	local root
+	local remain
+
+	for comp in conn:gmatch(...) do
+		if counter==2 then
+			if root then
+				conn:insert(root)
+			end
+			counter=0
+			root=xml.new(...)
+			root.operator='and'
+			remain=nil
+		end
+
+		remain=xml.remove(conn, comp)
+		root:insert(remain)
+		counter=counter+1
+		test=test+1
+	end
+
+	correct_singularity(conn, ncl, test, counter, root, remain, ...)
 
 end
 
@@ -487,8 +502,11 @@ local function make_compound_tree(ncl)
 
 	for conn in ncl:gmatch('causalConnector') do
 		turn_unary_binary(conn, ncl, 'simpleCondition')
-		turn_binary_ternary(conn, ncl)
+		turn_binary_ternary(conn, ncl, 'compoundCondition')
+		turn_binary_ternary(conn, ncl, 'compoundAction')
+		turn_binary_ternary(conn, ncl, 'compoundStatement')
 	end
+
 	print(ncl)
 
 end

@@ -512,6 +512,19 @@ ncl = dietncl.parsestring ([[
 	<simpleCondition role='onEnd'/>
     <simpleAction role='start' delay='10s'/>
    </causalConnector>
+
+   <causalConnector id='a'>
+	<simpleCondition role='onEnd'/>
+	<compoundAction operator='seq'>
+       <simpleAction role='start' delay='31s'/>
+	</compoundAction>
+	<compoundAction operator='seq'>
+       <simpleAction role='stop' delay='31s'/>
+	</compoundAction>
+	<compoundAction operator='seq'>
+       <simpleAction role='pause' delay='31s'/>
+	</compoundAction>
+   </causalConnector>
   </connectorBase>
  </head>
  <body>
@@ -520,6 +533,13 @@ ncl = dietncl.parsestring ([[
    <bind role='onBegin'/>
    <bind role='onSelection'/>
    <bind role='start'/>
+  </link>
+  <link xconnector='a'>
+   <bind role='onEnd'>
+   <bind role='start'/>
+   <bind role='stop'/>
+   <bind role='pause'/>
+  </link>
  </body>
 </ncl>]])
 
