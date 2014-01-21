@@ -430,6 +430,9 @@ local function turn_unary_binary(conn, ncl, ...)
 	end
 end
 
+-- This function turns binary compound elements into ternary ones inserting them
+-- into a new compound element together with a tautological statement.
+
 local function correct_singularity(conn, ncl, test, counter, root, remain, ...)
 
 	local stat

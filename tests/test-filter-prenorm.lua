@@ -535,7 +535,7 @@ ncl = dietncl.parsestring ([[
    <bind role='start'/>
   </link>
   <link xconnector='a'>
-   <bind role='onEnd'>
+   <bind role='onEnd'/>
    <bind role='start'/>
    <bind role='stop'/>
    <bind role='pause'/>
