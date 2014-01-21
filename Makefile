@@ -57,10 +57,13 @@ XFAIL_TESTS =\
 all:
 
 COPYRIGHT_YEAR = 2014
+COPYRIGHT_HOLDER = PUC-Rio/Laboratorio\sTeleMidia
+update_copyright_ :=\
+  s:(\W*Copyright\s\(C\)\s\d+)-?\d*(\s$(COPYRIGHT_HOLDER)\b)\
+   :$$1-$(COPYRIGHT_YEAR)$$2:x
+
 update-copyright:
-	@sed -i -e\
-	 's@\(^[-[/*# \t]*Copyright (C) 2013\)-\?[0-9]*\( PUC-Rio/Laboratorio TeleMidia\)$$@\1-$(COPYRIGHT_YEAR)\2@'\
-	 `git ls-files`
+	perl -i'~' -wpl -e '$(update_copyright_)' `git ls-files`
 
 # Adapted from GNU Automake 1.12.6.
 tty_colors = \
