@@ -28,7 +28,11 @@ TESTS_ENVIRONMENT =\
 TESTS_DIR = tests
 TESTS =\
  test-filter-import.lua\
- test-filter-prenorm.lua\
+ test-filter-prenorm1.lua\
+ test-filter-prenorm2.lua\
+ test-filter-prenorm3.lua\
+ test-filter-prenorm4.lua\
+ test-filter-prenorm5.lua\
  test-filter-region.lua\
  test-filter-transition.lua\
  test-init-parse.lua\
@@ -50,11 +54,13 @@ TESTS =\
  test-xmlsugar-remove.lua\
  test-xmlsugar-replace.lua\
  test-xmlsugar-userdata.lua\
+ $(NULL)
 
 XFAIL_TESTS =\
  $(NULL)
 
 all:
+.PHONY: all
 
 COPYRIGHT_YEAR = 2014
 COPYRIGHT_HOLDER = PUC-Rio/Laboratorio\sTeleMidia
@@ -62,6 +68,7 @@ update_copyright_ :=\
   s:(\W*Copyright\s\(C\)\s\d+)-?\d*(\s$(COPYRIGHT_HOLDER)\b)\
    :$$1-$(COPYRIGHT_YEAR)$$2:x
 
+.PHONY: update-copyright
 update-copyright:
 	perl -i'~' -wpl -e '$(update_copyright_)' `git ls-files`
 
@@ -78,6 +85,8 @@ test "X$(COLOR_TESTS)" != Xno \
   blu='[1;34m'; \
   std='[m'; \
 }
+
+.PHONY: check
 check:
 	@failed=0; all=0; xfail=0; xpass=0; skip=0;\
 	list=' $(TESTS) ';\
