@@ -113,7 +113,7 @@ end
 -- Exported functions.
 
 function filter.apply (ncl)
-   for desc in ncl:gmatch ('descriptor', 'trans[IO].*', nil, 2) do
+   for desc in ncl:gmatch ('descriptor', '^trans[IO].*$', nil, 2) do
       if desc.transIn then
          aux.insert_descparam (desc, 'transIn', desc.transIn)
       end
