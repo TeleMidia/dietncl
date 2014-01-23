@@ -1,31 +1,27 @@
--- transition.lua -- Removes transition elements.
--- Copyright (C) 2013-2014 PUC-Rio/Laboratorio TeleMidia
---
--- This file is part of DietNCL.
---
--- DietNCL is free software: you can redistribute it and/or modify
--- it under the terms of the GNU General Public License as published by
--- the Free Software Foundation, either version 3 of the License, or
--- (at your option) any later version.
---
--- DietNCL is distributed in the hope that it will be useful,
--- but WITHOUT ANY WARRANTY; without even the implied warranty of
--- MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
--- GNU General Public License for more details.
---
--- You should have received a copy of the GNU General Public License
--- along with DietNCL.  If not, see <http://www.gnu.org/licenses/>.
+--[[ filter.transition -- Removes transition elements.
+     Copyright (C) 2013-2014 PUC-Rio/Laboratorio TeleMidia
 
+This file is part of DietNCL.
 
-                        -- The TRANSITION filter --
+DietNCL is free software: you can redistribute it and/or modify it under
+the terms of the GNU General Public License as published by the Free
+Software Foundation, either version 3 of the License, or (at your
+option) any later version.
 
--- The "transition" filter removes the <transition> and <transitionBase>
+DietNCL is distributed in the hope that it will be useful, but WITHOUT
+ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or
+FITNESS FOR A PARTICULAR PURPOSE.  See the GNU General Public License
+for more details.
+
+You should have received a copy of the GNU General Public License along
+with DietNCL.  If not, see <http://www.gnu.org/licenses/>.  ]]--
+
+-- The TRANSITION filter removes the <transition> and <transitionBase>
 -- elements from a given NCL document.  It proceeds by expanding the
 -- definition of each transition into the associated <property>,
 -- <descriptor>, or <descriptorParam> elements.
 --
--- This filter depends on the "import" filter, i.e., it assumes that the
--- given document has no import declaration.
+-- Depends: IMPORT.
 
 local filter = {}
 
@@ -88,9 +84,10 @@ local default_subtype_list = {
    audioVisualFade    = 'crossfade',
 }
 
+---
 -- Returns the inline definition of transition with XML-ID ID in the given
 -- NCL document.
-
+--
 local function expand (ncl, id)
    local trans
    trans = ncl:match ('transition', 'id', id)
@@ -108,9 +105,6 @@ local function expand (ncl, id)
       trans.borderWidth   or '0',
       trans.borderColor   or 'black')
 end
-
-
--- Exported functions.
 
 function filter.apply (ncl)
    for desc in ncl:gmatch ('descriptor', '^trans[IO].*$', nil, 2) do

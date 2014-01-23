@@ -1,20 +1,19 @@
--- test-filter-import.lua -- Checks filter.import.
--- Copyright (C) 2013-2014 PUC-Rio/Laboratorio TeleMidia
---
--- This file is part of DietNCL.
---
--- DietNCL is free software: you can redistribute it and/or modify
--- it under the terms of the GNU General Public License as published by
--- the Free Software Foundation, either version 3 of the License, or
--- (at your option) any later version.
---
--- DietNCL is distributed in the hope that it will be useful,
--- but WITHOUT ANY WARRANTY; without even the implied warranty of
--- MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
--- GNU General Public License for more details.
---
--- You should have received a copy of the GNU General Public License
--- along with DietNCL.  If not, see <http://www.gnu.org/licenses/>.
+--[[ Copyright (C) 2013-2014 PUC-Rio/Laboratorio TeleMidia
+
+This file is part of DietNCL.
+
+DietNCL is free software: you can redistribute it and/or modify it under
+the terms of the GNU General Public License as published by the Free
+Software Foundation, either version 3 of the License, or (at your
+option) any later version.
+
+DietNCL is distributed in the hope that it will be useful, but WITHOUT
+ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or
+FITNESS FOR A PARTICULAR PURPOSE.  See the GNU General Public License
+for more details.
+
+You should have received a copy of the GNU General Public License along
+with DietNCL.  If not, see <http://www.gnu.org/licenses/>.  ]]--
 
 local assert = assert
 local os = os
@@ -24,7 +23,6 @@ local filter = require ('dietncl.filter.import')
 local util = require ('util')
 _ENV = nil
 
-
 --========================================================================--
 --            Part I -- Checks the resolution of <importBase>             --
 --========================================================================--
@@ -78,7 +76,7 @@ os.remove (tmp)
 
 -- Simple resolution (non-recursive).
 
-tmp = util.tmpfile ([[
+local tmp = util.tmpfile ([[
 <ncl>
  <head>
   <descriptorBase>
@@ -101,7 +99,7 @@ tmp = util.tmpfile ([[
  <body/>
 </ncl>]])
 
-ncl = util.parsenclformat ([[
+local ncl = util.parsenclformat ([[
 <ncl>
  <head>
   <regionBase>
@@ -119,7 +117,7 @@ ncl = util.parsenclformat ([[
  </head>
 </ncl>]], tmp, tmp, tmp, tmp)
 
-filter.apply (ncl)
+assert (filter.apply (ncl))
 assert (ncl:equal (dietncl.parsestring ([[
 <ncl>
  <head>
@@ -148,7 +146,7 @@ os.remove (tmp)
 
 -- Simple resolution of external region bases to a local region.
 
-tmp = util.tmpfile ([[
+local tmp = util.tmpfile ([[
 <ncl>
  <head>
   <regionBase id='rb1' device='3'>
@@ -170,7 +168,7 @@ tmp = util.tmpfile ([[
  <body/>
 </ncl>]])
 
-ncl = util.parsenclformat ([[
+local ncl = util.parsenclformat ([[
 <ncl>
  <head>
   <regionBase id='rba'>
@@ -190,7 +188,7 @@ ncl = util.parsenclformat ([[
  <body/>
 </ncl>]], tmp, tmp, tmp)
 
-filter.apply (ncl)
+assert (filter.apply (ncl))
 assert (ncl:equal (dietncl.parsestring ([[
 <ncl>
  <head>
@@ -283,7 +281,7 @@ local tmp3 = util.tmpfile (([[
  <body/>
 </ncl>]]):format (tmp2, tmp1, tmp1, tmp1))
 
-ncl = dietncl.parsestring (([[
+local ncl = dietncl.parsestring (([[
 <ncl>
  <head>
   <descriptorBase>
@@ -304,7 +302,7 @@ ncl = dietncl.parsestring (([[
  <body/>
 </ncl>]]):format (tmp1, tmp3, tmp3))
 
-filter.apply (ncl)
+assert (filter.apply (ncl))
 assert (ncl:equal (dietncl.parsestring ([[
 <ncl>
  <head>
@@ -353,7 +351,7 @@ os.remove (tmp3)
 
 -- Invalid 'documentURI' (file not found).
 
-ncl = dietncl.parsestring ([[
+local ncl = dietncl.parsestring ([[
 <ncl>
  <head>
   <importedDocumentBase>
@@ -366,7 +364,7 @@ local ncl, err = filter.apply (ncl)
 assert (ncl == nil)
 assert (err:match ('!!!NON_EXISTENT!!!'))
 
-tmp = util.tmpfile ([[
+local tmp = util.tmpfile ([[
 <ncl>
  <head>
   <connectorBase>
@@ -376,7 +374,7 @@ tmp = util.tmpfile ([[
  <body/>
 </ncl>]])
 
-ncl = util.parsenclformat ([[
+local ncl = util.parsenclformat ([[
 <ncl>
  <head>
   <regionBase>
@@ -385,7 +383,8 @@ ncl = util.parsenclformat ([[
  </head>
  <body/>
 </ncl>]], tmp)
-ncl, err = filter.apply (ncl)
+
+local ncl, err = filter.apply (ncl)
 assert (ncl == nil)
 assert (err:match ('/!!!NON_EXISTENT!!!'))
 os.remove (tmp)
@@ -399,7 +398,7 @@ os.remove (tmp)
 
 -- Simple resolution (non-recursive)
 
-tmp = util.tmpfile ([[
+local tmp = util.tmpfile ([[
 <ncl>
  <head>
   <descriptorBase>
@@ -457,7 +456,7 @@ tmp = util.tmpfile ([[
  </body>
 </ncl>]])
 
-ncl = util.parsenclformat ([[
+local ncl = util.parsenclformat ([[
 <ncl>
  <head>
   <importedDocumentBase>
@@ -474,7 +473,7 @@ ncl = util.parsenclformat ([[
  </body>
 </ncl>]], tmp)
 
-filter.apply (ncl)
+assert (filter.apply (ncl))
 assert (ncl:equal (ncl, dietncl.parsestring ([[
 <ncl>
  <head>

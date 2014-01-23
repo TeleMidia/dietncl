@@ -62,8 +62,8 @@ XFAIL_TESTS =\
 all:
 .PHONY: all
 
-COPYRIGHT_YEAR = 2014
-COPYRIGHT_HOLDER = PUC-Rio/Laboratorio\sTeleMidia
+COPYRIGHT_YEAR := 2014
+COPYRIGHT_HOLDER := PUC-Rio/Laboratorio\sTeleMidia
 update_copyright_ :=\
   s:(\W*Copyright\s\(C\)\s\d+)-?\d*(\s$(COPYRIGHT_HOLDER)\b)\
    :$$1-$(COPYRIGHT_YEAR)$$2:x
@@ -71,6 +71,26 @@ update_copyright_ :=\
 .PHONY: update-copyright
 update-copyright:
 	perl -i'~' -wpl -e '$(update_copyright_)' `git ls-files`
+
+all_src := `git ls-files '*.lua'`
+dietncl_src := `git ls-files 'dietncl/*.lua'`
+
+sc_lua:
+	@./build-aux/sclua.pl $(all_src)
+
+sc_lua_copyright:
+	@./build-aux/sclua-copyright.pl $(all_src)
+
+sc_lua_column_76_ =\
+  /^.*$$/\
+    and length $$_ > 76\
+    and die "error:$$ARGV:$$.: line longer than 76 columns\n-->$$_\n";
+sc_lua_column_76:
+	@perl -wnle '$(sc_lua_column_76_)' $(dietncl_src)
+
+local-check = sc_lua sc_lua_copyright sc_lua_column_76
+.PHONY: check-syntax $(local-check)
+syntax-check: $(local-check)
 
 # Adapted from GNU Automake 1.12.6.
 tty_colors = \

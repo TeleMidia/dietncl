@@ -16,7 +16,6 @@ You should have received a copy of the GNU General Public License along
 with DietNCL.  If not, see <http://www.gnu.org/licenses/>.  ]]--
 
 local assert = assert
-
 local dietncl = require ('dietncl')
 local filter = require ('dietncl.filter.prenorm5')
 _ENV = nil

@@ -1,20 +1,19 @@
--- test-filter-region.lua -- Checks filter.region.
--- Copyright (C) 2013-2014 PUC-Rio/Laboratorio TeleMidia
---
--- This file is part of DietNCL.
---
--- DietNCL is free software: you can redistribute it and/or modify
--- it under the terms of the GNU General Public License as published by
--- the Free Software Foundation, either version 3 of the License, or
--- (at your option) any later version.
---
--- DietNCL is distributed in the hope that it will be useful,
--- but WITHOUT ANY WARRANTY; without even the implied warranty of
--- MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
--- GNU General Public License for more details.
---
--- You should have received a copy of the GNU General Public License
--- along with DietNCL.  If not, see <http://www.gnu.org/licenses/>.
+--[[ Copyright (C) 2013-2014 PUC-Rio/Laboratorio TeleMidia
+
+This file is part of DietNCL.
+
+DietNCL is free software: you can redistribute it and/or modify it under
+the terms of the GNU General Public License as published by the Free
+Software Foundation, either version 3 of the License, or (at your
+option) any later version.
+
+DietNCL is distributed in the hope that it will be useful, but WITHOUT
+ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or
+FITNESS FOR A PARTICULAR PURPOSE.  See the GNU General Public License
+for more details.
+
+You should have received a copy of the GNU General Public License along
+with DietNCL.  If not, see <http://www.gnu.org/licenses/>.  ]]--
 
 local assert = assert
 local ipairs = ipairs
@@ -39,7 +38,7 @@ local ncl = dietncl.parsestring ([[
 </ncl>
 ]])
 
-filter.apply (ncl)
+assert (filter.apply (ncl))
 assert (ncl:equal (dietncl.parsestring ([[
 <ncl>
  <head/>
@@ -48,7 +47,7 @@ assert (ncl:equal (dietncl.parsestring ([[
 
 -- Single region base; single descriptor.
 
-ncl = dietncl.parsestring ([[
+local ncl = dietncl.parsestring ([[
 <ncl>
  <head>
   <regionBase device='3'>
@@ -63,7 +62,7 @@ ncl = dietncl.parsestring ([[
 </ncl>
 ]])
 
-filter.apply (ncl)
+assert (filter.apply (ncl))
 assert (util.uequal (ncl, dietncl.parsestring ([[
 <ncl>
  <head>
@@ -83,7 +82,7 @@ assert (util.uequal (ncl, dietncl.parsestring ([[
 
 -- Multiple region bases; no nesting.
 
-ncl = dietncl.parsestring ([[
+local ncl = dietncl.parsestring ([[
 <ncl>
  <head>
   <regionBase device='16'>
@@ -105,7 +104,7 @@ ncl = dietncl.parsestring ([[
  </head>
 </ncl>]])
 
-filter.apply (ncl)
+assert (filter.apply (ncl))
 assert (util.uequal (ncl, dietncl.parsestring ([[
 <ncl>
  <head>
@@ -131,7 +130,7 @@ assert (util.uequal (ncl, dietncl.parsestring ([[
 
 -- w,h in pixels: do nothing.
 
-ncl = filter.apply (dietncl.parsestring ([[
+local ncl = filter.apply (dietncl.parsestring ([[
 <ncl>
  <head>
   <regionBase>
@@ -150,6 +149,7 @@ ncl = filter.apply (dietncl.parsestring ([[
  </head>
 </ncl>]]))
 
+assert (ncl)
 assert (util.uequal (ncl, dietncl.parsestring ([[
 <ncl>
  <head>
@@ -260,7 +260,7 @@ end
 
 -- CASE2: t,b,l,r in pixels and w,h in %.
 
-fmtin = [[
+local fmtin = [[
 <ncl>
  <head>
   <regionBase>
@@ -276,7 +276,7 @@ fmtin = [[
 </ncl>
 ]]
 
-fmtout = [[
+local fmtout = [[
 <ncl>
  <head>
   <descriptorBase>
@@ -303,7 +303,7 @@ end
 
 -- CASE3: child t,b,l,r in %, parent t,b,l,r in pixels, and w,h in pixels.
 
-fmtin = [[
+local fmtin = [[
 <ncl>
  <head>
   <regionBase>
@@ -319,7 +319,7 @@ fmtin = [[
 </ncl>
 ]]
 
-fmtout = [[
+local fmtout = [[
 <ncl>
  <head>
   <descriptorBase>
@@ -352,7 +352,7 @@ end
 
 -- CASE4: t,b,l,r in % and w,h in %.
 
-fmtin = [[
+local fmtin = [[
 <ncl>
  <head>
   <regionBase>
@@ -368,7 +368,7 @@ fmtin = [[
 </ncl>
 ]]
 
-fmtout = [[
+local fmtout = [[
 <ncl>
  <head>
   <descriptorBase>
@@ -401,7 +401,7 @@ end
 
 -- A bigger sample.
 
-ncl = dietncl.parsestring ([[
+local ncl = dietncl.parsestring ([[
 <ncl>
  <head>
   <descriptorBase>
@@ -443,8 +443,8 @@ ncl = dietncl.parsestring ([[
  </body>
 </ncl>
 ]])
-filter.apply (ncl)
 
+assert (filter.apply (ncl))
 assert (util.uequal (ncl, dietncl.parsestring ([[
 <ncl>
  <head>

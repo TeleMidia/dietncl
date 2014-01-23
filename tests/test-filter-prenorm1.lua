@@ -17,7 +17,6 @@ with DietNCL.  If not, see <http://www.gnu.org/licenses/>.  ]]--
 
 local assert = assert
 local ipairs = ipairs
-
 local dietncl = require ('dietncl')
 local filter = require ('dietncl.filter.prenorm1')
 
@@ -35,13 +34,13 @@ local str = [[
 </ncl>]]
 
 local ncl = dietncl.parsestring (str)
-filter.apply (ncl)
+assert (filter.apply (ncl))
 assert (ncl:equal (dietncl.parsestring (str)))
 
 
 -- Single, pre-normalized link-connector pair: do nothing.
 
-str = [[
+local str = [[
 <ncl>
  <head>
   <connectorBase>
@@ -60,14 +59,14 @@ str = [[
  </body>
 </ncl>]]
 
-ncl = dietncl.parsestring (str)
-filter.apply (ncl)
+local ncl = dietncl.parsestring (str)
+assert (filter.apply (ncl))
 assert (ncl:equal (dietncl.parsestring (str)))
 
 
 -- Remove unused connectors (all).
 
-ncl = dietncl.parsestring ([[
+local ncl = dietncl.parsestring ([[
 <ncl>
  <head>
   <connectorBase>
@@ -98,7 +97,7 @@ ncl = dietncl.parsestring ([[
  </body>
 </ncl>]])
 
-filter.apply (ncl)
+assert (filter.apply (ncl))
 assert (ncl:equal (dietncl.parsestring ([[
 <ncl>
  <head>
@@ -126,7 +125,7 @@ local function check_bijection (ncl)
    end
 end
 
-ncl = dietncl.parsestring ([[
+local ncl = dietncl.parsestring ([[
 <ncl>
  <head>
   <connectorBase>
@@ -158,10 +157,10 @@ ncl = dietncl.parsestring ([[
  </body>
 </ncl>]])
 
-filter.apply (ncl)
+assert (filter.apply (ncl))
 check_bijection (ncl)
 
-ncl = dietncl.parsestring ([[
+local ncl = dietncl.parsestring ([[
 <ncl>
  <head>
   <connectorBase>
@@ -218,5 +217,5 @@ ncl = dietncl.parsestring ([[
  </body>
 </ncl>]])
 
-filter.apply (ncl)
+assert (filter.apply (ncl))
 check_bijection (ncl)

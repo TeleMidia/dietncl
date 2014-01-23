@@ -1,34 +1,29 @@
--- import.lua -- Resolves document importation.
--- Copyright (C) 2013-2014 PUC-Rio/Laboratorio TeleMidia
---
--- This file is part of DietNCL.
---
--- DietNCL is free software: you can redistribute it and/or modify
--- it under the terms of the GNU General Public License as published by
--- the Free Software Foundation, either version 3 of the License, or
--- (at your option) any later version.
---
--- DietNCL is distributed in the hope that it will be useful,
--- but WITHOUT ANY WARRANTY; without even the implied warranty of
--- MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
--- GNU General Public License for more details.
---
--- You should have received a copy of the GNU General Public License
--- along with DietNCL.  If not, see <http://www.gnu.org/licenses/>.
+--[[ filter.import -- Resolves document importation.
+     Copyright (C) 2013-2014 PUC-Rio/Laboratorio TeleMidia
 
+This file is part of DietNCL.
 
-                          -- The IMPORT Filter --
+DietNCL is free software: you can redistribute it and/or modify it under
+the terms of the GNU General Public License as published by the Free
+Software Foundation, either version 3 of the License, or (at your
+option) any later version.
 
--- The "import" filter resolves the external references and removes the
+DietNCL is distributed in the hope that it will be useful, but WITHOUT
+ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or
+FITNESS FOR A PARTICULAR PURPOSE.  See the GNU General Public License
+for more details.
+
+You should have received a copy of the GNU General Public License along
+with DietNCL.  If not, see <http://www.gnu.org/licenses/>.  ]]--
+
+-- The IMPORT filter resolves the external references and removes the
 -- <importNCL>, <importBase>, and <importedDocumentBase> elements from a
 -- given document.
---
--- This filter has no dependencies.
 
 local filter = {}
 
-local assert  = assert
-local ipairs  = ipairs
+local assert = assert
+local ipairs = ipairs
 
 local dietncl = require ('dietncl')
 local xml = require ('dietncl.xmlsugar')
@@ -49,8 +44,9 @@ for _,s in ipairs (importbase_parent_list) do
    _importbase_parent_list[s] = true
 end
 
+---
 -- Returns true if tag-name TAG is a possible <importBase> parent.
-
+--
 local function is_importbase_parent (tag)
    return _importbase_parent_list[tag]
 end
@@ -74,9 +70,10 @@ local idref_attribute_table = {
    switch           = {'refer'},
 }
 
+---
 -- Concatenates the string 'ALIAS#' to the XML-ID or XML-IDREF attributes of
 -- all elements in tree E.
-
+--
 local function update_id_and_idref (e, alias)
    local tag = e:tag ()
    if e.id then
@@ -106,6 +103,7 @@ local function update_id_and_idref (e, alias)
    end
 end
 
+---
 -- Copies all elements of the specified base of external document EXT and
 -- inserts them into element E of the host document.  Moreover, prefix the
 -- string 'ALIAS#' to the XML-ID and XML-IDREF attributes of the copied
@@ -120,7 +118,7 @@ end
 -- Otherwise, the parameters REGION an BASEID are ignored.
 --
 -- Returns true if successful, otherwise returns false plus error message.
-
+--
 local function import_base (e, ext, alias, region, baseid)
    local ncl                    -- pointer to NCL document
    local tag                    -- tag-name of base E
@@ -157,11 +155,12 @@ local function import_base (e, ext, alias, region, baseid)
    return true
 end
 
+---
 -- Applies the import filter to the document at path name URI.
 -- NCL is the pointer to the host document.
 -- Returns a pointer to the external document if successful,
 -- otherwise returns nil plus error message.
-
+--
 local function resolve_external_document (ncl, uri)
    local pathname = uri
    if path.relative (uri) then
@@ -179,9 +178,10 @@ local function resolve_external_document (ncl, uri)
    return ext
 end
 
+---
 -- Resolves <importBase> element E.
 -- Returns true if successful, otherwise returns false plus error message.
-
+--
 local function resolve_importbase (ncl, e)
    local parent                 -- pointer to E's parent
    local ext                    -- pointer to external document
@@ -209,9 +209,10 @@ local function resolve_importbase (ncl, e)
    return true
 end
 
+----
 -- Resolves <importNCL> element E.
 -- Returns true if successful, otherwise returns false plus error message.
-
+--
 local function resolve_importncl (ncl, e)
    local parent                 -- pointer to E's parent
    local ext                    -- pointer to external document

@@ -16,13 +16,12 @@ for more details.
 You should have received a copy of the GNU General Public License along
 with DietNCL.  If not, see <http://www.gnu.org/licenses/>.  ]]--
 
-                        -- The PRENORM #5 Filter --
-
 -- The PRENORM1-5 filters simplify links and connectors from a given NCL
--- document.  This filter implements the fifth pre-normalization step: It
--- guarantees that the compound actions and compound statements of all
--- connectors are binary and its compound conditions are either binary or
--- ternary, and have exactly one child (assessment or compound) statement.
+-- document.  This filter, PRENORM5, implements the fifth pre-normalization
+-- step: It guarantees that the compound actions and compound statements of
+-- all connectors are binary and its compound conditions are either binary
+-- or ternary, and have exactly one child (assessment or compound)
+-- statement.
 --
 -- Depends: PRENORM1.
 
@@ -32,10 +31,10 @@ local xml = require ('dietncl.xmlsugar')
 local aux = require ('dietncl.nclaux')
 _ENV = nil
 
--- This function updates the binds of links after insertion of the
--- respective simpleCondition has been inserted into a new
--- compoundCondition.
-
+---
+-- Updates the binds of links after insertion of the respective
+-- simpleCondition has been inserted into a new compoundCondition.
+--
 local function update_binds (attrR1, attrR2, conn, ncl, cond)
    local binds={}
    local property
@@ -64,10 +63,11 @@ local function update_binds (attrR1, attrR2, conn, ncl, cond)
 end
 
 
--- This function turns unary elements (i.e. simpleCondition) into binary
--- ones by adding the unary into a new compound element together with a new
--- tautological assessment statement.
-
+---
+-- Turns unary elements (i.e. simpleCondition) into binary ones by adding
+-- the unary into a new compound element together with a new tautological
+-- assessment statement.
+--
 local function turn_unary_binary(conn, ncl, ...)
    local compound
    local stat
@@ -95,9 +95,10 @@ local function turn_unary_binary(conn, ncl, ...)
    end
 end
 
--- This function turns binary elements into ternary ones inserting them
--- into a new compound element.
-
+---
+-- Turns binary elements into ternary ones inserting them into a new
+-- compound element.
+--
 local function turn_binary_ternary(conn, ncl)
    local counter=2
    local test=0
@@ -145,8 +146,6 @@ local function turn_binary_ternary(conn, ncl)
 
 
 end
-
--- Main function for restriction (5).
 
 function filter.apply (ncl)
    for conn in ncl:gmatch('causalConnector') do

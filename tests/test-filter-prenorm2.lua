@@ -16,7 +16,6 @@ You should have received a copy of the GNU General Public License along
 with DietNCL.  If not, see <http://www.gnu.org/licenses/>.  ]]--
 
 local assert = assert
-
 local dietncl = require ('dietncl')
 local filter = require ('dietncl.filter.prenorm2')
 local aux = require ('dietncl.nclaux')
@@ -163,7 +162,7 @@ assert (ncl:equal (dietncl.parsestring ([[
     <simpleAction role='start'/>
    </causalConnector>
    <causalConnector id='c3'>
-    <connectorParam name="p" />
+    <connectorParam name="p"/>
     <compoundCondition operator='and'>
      <compoundCondition operator='and'>
       <compoundCondition operator='and'>
@@ -183,7 +182,7 @@ assert (ncl:equal (dietncl.parsestring ([[
   <link xconnector='c1'>
    <bind role='get' component='body' interface='p'/>
    <bind role='onSelection' component='x'>
-    <bindParam name="p" value="$get" />
+    <bindParam name="p" value="$get"/>
    </bind>
    <bind role='start' component='y'/>
   </link>

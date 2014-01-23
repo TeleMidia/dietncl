@@ -16,11 +16,10 @@ for more details.
 You should have received a copy of the GNU General Public License along
 with DietNCL.  If not, see <http://www.gnu.org/licenses/>.  ]]--
 
-                        -- The PRENORM #1 Filter --
-
 -- The PRENORM1-5 filters simplify links and connectors from a given NCL
--- document.  This filter implements the first pre-normalization step: It
--- guarantees that each connector is referenced by exactly one link.
+-- document.  This filter, PRENORM1, implements the first pre-normalization
+-- step: It guarantees that each connector is referenced by exactly one
+-- link.
 --
 -- Depends: IMPORT.
 
@@ -50,7 +49,6 @@ function filter.apply (ncl)
          list[i].xconnector = dup.id
          parent:insert (dup)
       end
-
       ::continue::
    end
    return ncl

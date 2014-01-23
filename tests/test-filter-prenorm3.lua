@@ -54,7 +54,7 @@ local ncl = dietncl.parsestring ([[
  </body>
 </ncl>]])
 
-filter.apply (ncl)
+assert (filter.apply (ncl))
 assert (ncl:equal (dietncl.parsestring ([[
 <ncl>
  <head>

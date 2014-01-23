@@ -16,18 +16,15 @@ for more details.
 You should have received a copy of the GNU General Public License along
 with DietNCL.  If not, see <http://www.gnu.org/licenses/>.  ]]--
 
-                        -- The PRENORM #2 Filter --
-
 -- The PRENORM1-5 filters simplify links and connectors from a given NCL
--- document.  This filter implements the second pre-normalization step: It
--- guarantees that all connectors and links contain no link, bind, or
--- connector parameters, i.e., no <linkParam>, <bindParm>, or
+-- document.  This filter, PRENORM2, implements the second pre-normalization
+-- step: It guarantees that all connectors and links contain no link, bind,
+-- or connector parameters, i.e., no <linkParam>, <bindParm>, or
 -- <connectorParam> elements (except if "pega-dali" is used).
 --
 -- Depends: PRENORM1.
 
 local filter = {}
-local print = print
 
 local xml = require ('dietncl.xmlsugar')
 _ENV = nil
@@ -60,7 +57,6 @@ function filter.apply (ncl)
             end
 
             -- Get the associated bind-parameter.
-
             local bindparam
             if #bind == 0 then
                local p = link:match ('linkParam', 'name', name)
@@ -76,7 +72,6 @@ function filter.apply (ncl)
             end
 
             -- If is an infamous "pega-dali", then don't delete.
-
             if bindparam.value:sub (1,1) == '$' then
                dont_delete[connparam] = true
                goto continue
@@ -84,29 +79,26 @@ function filter.apply (ncl)
 
             -- Replace bind's value for connector's value and remove the
             -- bind-parameter.
-
             bindref[k] = bindparam.value
             bind:remove (bindparam)
 
-               :: continue ::
+            ::continue::
          end
 
-            :: continue ::
+         ::continue::
       end
 
       -- Remove the connector parameters from conn that are not used by some
       -- infamous "pega-dali".
-
       for p in conn:gmatch ('connectorParam') do
          if dont_delete[p] then
             goto continue       -- do nothing
          end
          conn:remove (p)
-            :: continue ::
+         ::continue::
       end
 
       -- Remove all link-parameters from link.
-
       for p in link:gmatch ('linkParam') do
          link:remove (p)
       end

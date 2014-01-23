@@ -16,12 +16,10 @@ for more details.
 You should have received a copy of the GNU General Public License along
 with DietNCL.  If not, see <http://www.gnu.org/licenses/>.  ]]--
 
-                        -- The PRENORM #3 Filter --
-
 -- The PRENORM1-5 filters simplify links and connectors from a given NCL
--- document.  This filter implements the third pre-normalization step: It
--- guarantees that the compound conditions and compound actions of all
--- connectors have no "delay" attribute.
+-- document.  This filter, PRENORM3, implements the third pre-normalization
+-- step: It guarantees that the compound conditions and compound actions of
+-- all connectors have no "delay" attribute.
 --
 -- Depends: PRENORM1.
 

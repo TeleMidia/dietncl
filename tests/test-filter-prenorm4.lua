@@ -26,12 +26,8 @@ local str = [[
  <head>
   <connectorBase>
    <causalConnector id='c'>
-    <simpleCondition role='onBegin'
-                     transition='onBegin'
-                     eventType='presentation'/>
-    <simpleAction role='start'
-                  actionType='start'
-                  eventType='presentation'/>
+    <simpleCondition role='onBegin' transition='onBegin' eventType='presentation'/>
+    <simpleAction role='start' actionType='start' eventType='presentation'/>
    </causalConnector>
   </connectorBase>
  </head>
@@ -45,7 +41,7 @@ local str = [[
 </ncl>]]
 
 local ncl = dietncl.parsestring (str)
-filter.apply (ncl)
+assert (filter.apply (ncl))
 assert (ncl:equal (dietncl.parsestring (str)))
 
 local ncl = dietncl.parsestring ([[

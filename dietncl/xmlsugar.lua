@@ -1,20 +1,20 @@
--- xmlsugar.lua -- LuaXML sugar.
--- Copyright (C) 2013-2014 PUC-Rio/Laboratorio TeleMidia
---
--- This file is part of DietNCL.
---
--- DietNCL is free software: you can redistribute it and/or modify
--- it under the terms of the GNU General Public License as published by
--- the Free Software Foundation, either version 3 of the License, or
--- (at your option) any later version.
---
--- DietNCL is distributed in the hope that it will be useful,
--- but WITHOUT ANY WARRANTY; without even the implied warranty of
--- MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
--- GNU General Public License for more details.
---
--- You should have received a copy of the GNU General Public License
--- along with DietNCL.  If not, see <http://www.gnu.org/licenses/>.
+--[[ dietncl.xmlsugar -- LuaXML sugar.
+     Copyright (C) 2013-2014 PUC-Rio/Laboratorio TeleMidia
+
+This file is part of DietNCL.
+
+DietNCL is free software: you can redistribute it and/or modify it under
+the terms of the GNU General Public License as published by the Free
+Software Foundation, either version 3 of the License, or (at your
+option) any later version.
+
+DietNCL is distributed in the hope that it will be useful, but WITHOUT
+ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or
+FITNESS FOR A PARTICULAR PURPOSE.  See the GNU General Public License
+for more details.
+
+You should have received a copy of the GNU General Public License along
+with DietNCL.  If not, see <http://www.gnu.org/licenses/>.  ]]--
 
 local xml = require ('LuaXml')
 
@@ -37,22 +37,25 @@ xml.USERDATA = -2
 xml._eval = xml.eval
 xml._load = xml.load
 
+---
 -- Checks whether E is a LuaXML element and returns E.
-
+--
 local function checkxml (e)
    local t = getmetatable (e)
    assert (t and t.__index == xml)
    return e
 end
 
+---
 -- Sets PARENT to be the parent element of E.
-
+--
 local function setparent (e, parent)
    e[xml.PARENT] = parent
 end
 
+---
 -- Adds sugar to the LibXML tree rooted at E.
-
+--
 local function sugarize (e)
    for i=1,#e do
       setparent (e[i], e)
@@ -61,10 +64,11 @@ local function sugarize (e)
    return e
 end
 
+---
 -- Parses the XML string S.
 -- Returns a new XML handle if successful,
 -- otherwise returns nil plus error message.
-
+--
 function xml.eval (s)
    local status, e = pcall (xml._eval, s)
    if status == false or e == nil then
@@ -73,10 +77,11 @@ function xml.eval (s)
    return sugarize (e)
 end
 
+---
 -- Parses the XML document at path name S.
 -- Returns a new XML handle if successful,
 -- otherwise returns nil plus error message.
-
+--
 function xml.load (s)
    local status, e = pcall (xml._load, s)
    if status == false or e == nil then
@@ -85,17 +90,19 @@ function xml.load (s)
    return sugarize (e)
 end
 
+---
 -- Returns the parent of E.
-
+--
 function xml.parent(e)
    checkxml (e)
    return e[xml.PARENT]
 end
 
+---
 -- Searches for a given child element of E.
 -- CHILD is the searched element or its position in child list of E.
 -- Returns both the searched element and its position.
-
+--
 function xml.findchild (e, child)
    local pos
    if type (child) == 'number' then
@@ -114,9 +121,10 @@ function xml.findchild (e, child)
    return child, pos
 end
 
+---
 -- Inserts element CHILD at position POS in child list of E.
 -- If POS is nil, assume #E+1.
-
+--
 function xml.insert (e, pos, child)
    checkxml (e)
    if child == nil then
@@ -132,16 +140,18 @@ function xml.insert (e, pos, child)
    return pos
 end
 
+---
 -- Replacement for the original xml.append() function.
-
+--
 function xml.append (e, child)
    return xml.insert (e, child)
 end
 
+---
 -- Removes an element from child list of E.
 -- CHILD is the element to be removed or its position in child list of E
 -- Returns the removed element and its position in child list of E.
-
+--
 function xml.remove (e, child)
    checkxml (e)
    local child, pos = xml.findchild (e, child)
@@ -150,11 +160,12 @@ function xml.remove (e, child)
    return child, pos
 end
 
+---
 -- Replaces an element in child list of E.
 -- OLD is the element to be replaced or its position in child list of E.
 -- NEW is the replacement element.
 -- Returns the replaced element and its position in child of E.
-
+--
 function xml.replace (e, old, new)
    checkxml (e)
    checkxml (new)
@@ -166,9 +177,10 @@ function xml.replace (e, old, new)
    return old, pos
 end
 
+---
 -- Returns user data previously attached to element E.
 -- KEY is the key the user data was attached to.
-
+--
 function xml.getuserdata (e, key)
    checkxml (e)
    if e[xml.USERDATA] == nil then
@@ -177,10 +189,11 @@ function xml.getuserdata (e, key)
    return e[xml.USERDATA][key]
 end
 
+---
 -- Attaches user data to element E.
 -- KEY is the key to attach the user data to.
 -- USERDATA is a user data to attach to the element.
-
+--
 function xml.setuserdata (e, key, userdata)
    checkxml (e)
    if e[xml.USERDATA] == nil then
@@ -188,10 +201,10 @@ function xml.setuserdata (e, key, userdata)
    end
    e[xml.USERDATA][key] = userdata
 end
-
+---
 -- Returns an iterator function that, each time it is called, returns the
 -- next element in the child list of E.
-
+--
 function xml.children (e)
    checkxml (e)
    local t = {}
@@ -209,9 +222,10 @@ function xml.children (e)
    end
 end
 
+---
 -- Returns an iterator function that, each time it is called, returns the
 -- next attribute-value pair in the attribute table of E.
-
+--
 function xml.attributes (e)
    checkxml (e)
    local i = nil
@@ -225,8 +239,9 @@ function xml.attributes (e)
    end
 end
 
+---
 -- Checks whether tree E1 is equal to tree E2.
-
+--
 local function equal_attributes (e1, e2)
    for k,_ in e1:attributes () do
       if e1[k] ~= e2[k] then
@@ -254,8 +269,9 @@ function xml.equal (e1, e2)
    return true
 end
 
+---
 -- Returns an identical copy of tree E.
-
+--
 function xml.clone (e)
    checkxml (e)
    local t = xml.new (e:tag ())
@@ -269,9 +285,10 @@ function xml.clone (e)
    return t
 end
 
+---
 -- Walks across the elements of tree E.
 -- ACTION is a function to be called at each element.
-
+--
 function xml.walk (e, action)
    checkxml (e)
    action (e)
@@ -280,6 +297,7 @@ function xml.walk (e, action)
    end
 end
 
+---
 -- Looks for all elements that match the triple (tag,attribute,value) of
 -- tree E and returns the matched elements.
 -- TAG is a tag name or nil (any).
@@ -290,7 +308,7 @@ end
 -- ATTR, and VALUE are to be interpret as regular expressions: if the third
 -- bit of REGEXP is set, treat TAG as regexp; if its second bit is set,
 -- treat ATTR as regexp; if its first bit is set, treat VALUE as regexp.
-
+--
 local function eq (s, pattern, regexp)
    if regexp then
       return s:match (pattern) ~= nil
@@ -357,12 +375,13 @@ function xml.match (...)
   return table.unpack (domatch (...))
 end
 
+---
 -- Returns an iterator function that, each time is called, returns the next
 -- element of tree E that matches the triple (tag,attribute,value).
 -- TAG is a tag name or nil (any).
 -- ATTRIBUTE is an attribute name or nil (any).
 -- VALUE is a value string or nil (any).
-
+--
 function xml.gmatch (...)
    local t = domatch (...)
    local i = 1

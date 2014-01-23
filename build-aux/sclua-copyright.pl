@@ -1,4 +1,7 @@
---[[ Copyright (C) 2013-2014 PUC-Rio/Laboratorio TeleMidia
+#!/usr/bin/perl -0777 -wnl
+use strict;
+m|\Q--[[ \E([\w\d\-\.]+\s--\s[\w\d\- ]+\.\n\s\s\s\s\s)?
+\QCopyright (C) 2013-2014 PUC-Rio/Laboratorio TeleMidia
 
 This file is part of DietNCL.
 
@@ -15,30 +18,5 @@ for more details.
 You should have received a copy of the GNU General Public License along
 with DietNCL.  If not, see <http://www.gnu.org/licenses/>.  ]]--
 
-local assert = assert
-local tostring = tostring
-local xml = require ('dietncl.xmlsugar')
-_ENV = nil
-
-local root = xml.new ('root')
-for i=1,100 do
-   root:insert (xml.new (tostring (i)))
-end
-
-local i = 0
-for e in root:children () do
-   i = i + 1
-   assert (e:parent () == root)
-   assert (e:tag () == tostring (i))
-end
-assert (i == 100)
-
--- Remove elements while iterating.
-local i = 0
-for e in root:children () do
-   i = i + 1
-   root:remove (e)
-   assert (#root == 100 - i)
-end
-assert (i == 100)
-assert (#root == 0)
+\E|x
+    or die "error:$ARGV: bad license text\n";

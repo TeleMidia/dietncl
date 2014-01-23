@@ -16,11 +16,9 @@ for more details.
 You should have received a copy of the GNU General Public License along
 with DietNCL.  If not, see <http://www.gnu.org/licenses/>.  ]]--
 
-                        -- The PRENORM #4 Filter --
-
 -- The PRENORM1-5 filters simplify links and connectors from a given NCL
--- document.  This filter implements the fourth pre-normalization step: It
--- guarantees that the simple conditions and simple actions of all
+-- document.  This filter, PRENORM4, implements the fourth pre-normalization
+-- step: It guarantees that the simple conditions and simple actions of all
 -- connectors are referenced by exacbly one bind in the associated links.
 --
 -- Depends: PRENORM1.

@@ -1,30 +1,26 @@
--- region.lua -- Removes region elements.
--- Copyright (C) 2013-2014 PUC-Rio/Laboratorio TeleMidia
---
--- This file is part of DietNCL.
---
--- DietNCL is free software: you can redistribute it and/or modify
--- it under the terms of the GNU General Public License as published by
--- the Free Software Foundation, either version 3 of the License, or
--- (at your option) any later version.
---
--- DietNCL is distributed in the hope that it will be useful,
--- but WITHOUT ANY WARRANTY; without even the implied warranty of
--- MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
--- GNU General Public License for more details.
---
--- You should have received a copy of the GNU General Public License
--- along with DietNCL.  If not, see <http://www.gnu.org/licenses/>.
+--[[ filter.region -- Removes region elements.
+     Copyright (C) 2013-2014 PUC-Rio/Laboratorio TeleMidia
 
+This file is part of DietNCL.
 
-                          -- The REGION Filter --
+DietNCL is free software: you can redistribute it and/or modify it under
+the terms of the GNU General Public License as published by the Free
+Software Foundation, either version 3 of the License, or (at your
+option) any later version.
 
--- The "region" filter removes all regions from a given NCL document.  It
+DietNCL is distributed in the hope that it will be useful, but WITHOUT
+ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or
+FITNESS FOR A PARTICULAR PURPOSE.  See the GNU General Public License
+for more details.
+
+You should have received a copy of the GNU General Public License along
+with DietNCL.  If not, see <http://www.gnu.org/licenses/>.  ]]--
+
+-- The REGION filter removes all regions from a given NCL document.  It
 -- proceeds by transforming each region into a set of equivalent parameters
 -- of the associated descriptors.
 --
--- This filter depends on the "import" filter, i.e., it assumes that the
--- given document has no import declaration.
+-- Depends: IMPORT.
 
 local filter = {}
 
@@ -37,14 +33,16 @@ local xml = require ('dietncl.xmlsugar')
 local aux = require ('dietncl.nclaux')
 _ENV = nil
 
+---
 -- Returns the number value of pixel value S.
-
+--
 local function pixeltonumber (s)
    return tonumber (s:match ('^(%d+)$') or s:match ('^(%d+)[Pp][Xx]$'))
 end
 
+---
 -- Returns number value of percent value S.
-
+--
 local function percenttonumber (s)
    local x = tonumber (s:match ('^(%d*%.?%d*)%%$'))
    if x == nil then
@@ -53,8 +51,6 @@ local function percenttonumber (s)
       return x / 100
    end
 end
-
--- Some helper functions.
 
 local function topercent (n) return (n * 100)..'%' end
 local function topixel (n) return n..'px' end
@@ -99,10 +95,11 @@ local function ispercent (s) return percenttonumber (s) ~= nil end
 --                  %     %     %        %
 --                  -----------------------------
 
+---
 -- Updates width or height attribute ATTR of region REGION based on the
 -- value of the corresponding attributes in its parent.
 -- Returns true if successful, otherwise returns false plus error message.
-
+--
 local function update_wh (region, attr)
    local parent                 -- pointer to parent
    local regval                 -- value of ATTR in REGION
@@ -128,10 +125,11 @@ local function update_wh (region, attr)
    return true
 end
 
+---
 -- Updates top, bottom, left, or right attribute ATTR of region REGION based
 -- on the value of the corresponding attributes in the parent region.
 -- Returns true if successful, otherwise returns false plus error message.
-
+--
 local function update_tblr_tail (parent, region, attr, dim)
    local regval = region[attr]
    local parval = parent[attr] or '100%'
@@ -207,9 +205,10 @@ local attribute_to_update_function = {
    right  = update_tblr,
 }
 
+---
 -- Un-nests all regions rooted at parent region REGION.
 -- Returns true if successful, otherwise returns false plus error message.
-
+--
 local function unnest (region)
    while #region > 0 do
       local parent              -- pointer to parent
