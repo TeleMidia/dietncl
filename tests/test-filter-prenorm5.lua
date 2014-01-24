@@ -16,8 +16,10 @@ You should have received a copy of the GNU General Public License along
 with DietNCL.  If not, see <http://www.gnu.org/licenses/>.  ]]--
 
 local assert = assert
+
 local dietncl = require ('dietncl')
 local filter = require ('dietncl.filter.prenorm5')
+
 _ENV = nil
 
 local ncl = dietncl.parsestring ([[
@@ -28,6 +30,14 @@ local ncl = dietncl.parsestring ([[
     <simpleCondition role='onBegin' delay='5s'/>
      <simpleCondition role='onSelection'/>
      <simpleCondition role='onEnd'/>
+	 <compoundAction operator='par'>
+	 </compoundAction>
+	 <compoundAction operator='seq'>
+	 <simpleAction role='pause'/>
+	 </compoundAction>
+	 <compoundAction operator='par'>
+	 <simpleAction role='start'/>
+	 </compoundAction>
     <simpleAction role='start' delay='10s'/>
    </causalConnector>
   </connectorBase>
@@ -38,7 +48,9 @@ local ncl = dietncl.parsestring ([[
    <bind role='onBegin'/>
    <bind role='onSelection'/>
    <bind role='start'/>
+   <bind role='onEnd'>
  </body>
 </ncl>]])
 
-assert (filter.apply (ncl))
+assert(filter.apply(ncl))
+

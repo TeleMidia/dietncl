@@ -382,6 +382,7 @@ end
 -- ATTRIBUTE is an attribute name or nil (any).
 -- VALUE is a value string or nil (any).
 --
+
 function xml.gmatch (...)
    local t = domatch (...)
    local i = 1
