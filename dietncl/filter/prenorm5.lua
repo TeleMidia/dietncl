@@ -41,11 +41,12 @@ _ENV = nil
 
 local function correct_singularity (ncl, conn, root, test, counter, tag)
    local stat
+   
    if test[tag]<2 and test[tag]>0 then
       remain=xml.remove(root[tag], tag)
-	  conn:insert(remain)
-	  remain=xml.remove(root, tag)
-	  conn:insert(remain)
+      conn:insert(remain)
+      remain=xml.remove(root, tag)
+      conn:insert(remain)
    elseif counter[tag]==1 then
       stat=xml.new('assessmentStatement')
       stat.operator='eq'
@@ -57,57 +58,58 @@ local function correct_singularity (ncl, conn, root, test, counter, tag)
       attr[2].eventType='attribution'
       stat:insert(attr[1])
       stat:insert(attr[2])
-	  root[tag]:insert(stat)
-	  conn:insert(root[tag])
+      root[tag]:insert(stat)
+      conn:insert(root[tag])
    end
-
+   
 end
 
 ---
--- Turns binary elements into ternary ones inserting them into a new
--- compound element.
+-- Adds binary elements to binary chain of these same elements .
 --
 
-local function turn_binary_ternary (ncl, conn)
+local function make_binary_chain (ncl, conn)
    local counter={['compoundCondition']=2, ['compoundAction']=2, ['compoundStatement']=2}
    local test={['compoundCondition']=0, ['compoundAction']=0, ['compoundStatement']=0}
 
    local root={}
    local remain
 
-   for comp in conn:gmatch('^compound[AC].*$', nil, nil, 4) do
-        if counter[comp:tag()]==2 then
-           if root[comp:tag()] then		-- Ignores the first compound condition
-              conn:insert(root[comp:tag()]) -- Insertion of compound conditions (roots)
-           end
+   for comp in conn:gmatch('^compound[ACS].*$', nil, nil, 4) do
+	if counter[comp:tag()]==2 then
+	   if root[comp:tag()] then		   -- Ignores the first compound condition
+	      conn:insert(root[comp:tag()]) -- Insertion of compound conditions (roots)
+	   end
 
-		   if comp:tag() == 'compoundCondition' then
-             root[comp:tag()]=xml.new('compoundCondition')
-             root[comp:tag()].operator='and'
-             remain=nil
-		   elseif comp:tag() == 'compoundAction' then
-		     root[comp:tag()]=xml.new('compoundAction')
-             root[comp:tag()].operator='par'
-             remain=nil
-		   elseif comp:tag() == 'compoundStatement' then
-		     root[comp:tag()]=xml.new('compoundStatement')
-             root[comp:tag()].operator='and'
-             remain=nil
-		   end
+	    if comp:tag() == 'compoundCondition' then
+		root[comp:tag()]=xml.new('compoundCondition')
+		root[comp:tag()].operator='and'
+		remain=nil
+	    elseif comp:tag() == 'compoundAction' then
+		root[comp:tag()]=xml.new('compoundAction')
+		root[comp:tag()].operator='par'
+		remain=nil
+	    elseif comp:tag() == 'compoundStatement' then
+		root[comp:tag()]=xml.new('compoundStatement')
+		root[comp:tag()].operator='and'
+		remain=nil
+	    end
 
-		   counter[comp:tag()]=0
+		counter[comp:tag()]=0
 
-        end
-
-		remain=xml.remove(conn, comp)
-	    root[comp:tag()]:insert(remain)
-        counter[comp:tag()]=counter[comp:tag()]+1
-        test[comp:tag()]=test[comp:tag()]+1
+	end
+	
+	remain=xml.remove(comp:parent(), comp)
+	root[comp:tag()]:insert(remain)
+	counter[comp:tag()]=counter[comp:tag()]+1
+	test[comp:tag()]=test[comp:tag()]+1
    end
 
+   ---
    -- In case only one compound element is left (singularity case)
    -- The breakage procedure is valid only for n-ary compound elements
    -- as long as n>2.
+   --
 
    -- Check for compound elements (action, condition or statement) singularity
    correct_singularity(ncl, conn, root, test, counter, 'compoundAction')
@@ -121,52 +123,51 @@ end
 --
 
 function filter.apply (ncl)
-   local new_bind
    local compound
-   local stat
-   local role_table={}
+   local counter=2
+   local new_bind
    local property
    local parent
-   local counter=2
+   local role_table={}
+   local stat
 
    for conn in ncl:gmatch('causalConnector') do
 
-	 -- Turns unary elements (i.e. simpleCondition) into binary ones by adding
+     -- Turns unary elements (i.e. simpleCondition) into binary ones by adding
      -- the unary into a new compound element together with a new tautological
      -- assessment statement.
 
 	 for tag_cond in conn:gmatch('simpleCondition') do
 	     compound=xml.new('compoundCondition')
-         compound.operator='and'
+	     compound.operator='and'
 	     stat=xml.new('assessmentStatement')
-         stat.operator='eq'
-         attr[1]=xml.new('attributeStatement')
-         attr[1].role=aux.gen_id(ncl)
-         attr[1].eventType='attribution'
-         attr[2]=xml.new('attributeStatement')
-         attr[2].role=aux.gen_id(ncl)
-         attr[2].eventType='attribution'
-         (tag_cond:parent()):insert(compound)
-         tag_cond=xml.remove(tag_cond:parent(), tag_cond)
-         compound:insert(stat)
-         stat:insert(attr[1])
-         stat:insert(attr[2])
-         compound:insert(tag_cond)
+	     stat.operator='eq'
+	     attr[1]=xml.new('attributeStatement')
+	     attr[1].role=aux.gen_id(ncl)
+	     attr[1].eventType='attribution'
+	     attr[2]=xml.new('attributeStatement')
+	     attr[2].role=aux.gen_id(ncl)
+	     attr[2].eventType='attribution'
+	     (tag_cond:parent()):insert(compound)
+	     tag_cond=xml.remove(tag_cond:parent(), tag_cond)
+	     compound:insert(stat)
+	     stat:insert(attr[1])
+	     stat:insert(attr[2])
+	     compound:insert(tag_cond)
 	 end
 
-
-     -- Breakage procedure: creates a chain of binary compound conditions.
-	 turn_binary_ternary(ncl, conn)
+	-- Breakage procedure: creates a chain of binary compound conditions.
+	 make_binary_chain (ncl, conn)
 
 
 	-- Updates all binds of the respective links after breakage procedure.
-	 for parent_tag in conn:gmatch('^compound[ACS].*$', nil, nil, 4) do
-	   for link in ncl:gmatch('link') do
-	     if link.xconnector==conn.id then
-		   for tag in parent_tag:gmatch('^simple[ACS].*$', nil, nil, 4) do
-		     for bind in link:gmatch('bind') do
+	for parent_tag in conn:gmatch('^compound[ACS].*$', nil, nil, 4) do
+	  for link in ncl:gmatch('link') do
+	    if link.xconnector==conn.id then
+	      for tag in parent_tag:gmatch('^simple[ACS].*$', nil, nil, 4) do
+	        for bind in link:gmatch('bind') do
 
-               if bind.role==tag.role then
+			if bind.role==tag.role then
 			     for attr in (tag:parent():parent()):gmatch('attributeStatement') do
 
 				   -- Avoids duplicates of binds referring to the same attributeStatement.
@@ -178,31 +179,35 @@ function filter.apply (ncl)
 
 				   if counter == 2 then
 				     property=xml.new('property')
-                     property.name=aux.gen_id(ncl)
-                     parent=link:parent()
-                     parent:insert(property)
-					 counter=0
+				     property.name=aux.gen_id(ncl)
+				     parent=(link:parent()):insert(property)
+				     counter=0
 				   end
+				   
 				   new_bind=xml.new('bind')
-			       new_bind.component=(link:parent()).id
+				   
+				   if (link:parent()).id then
+			             new_bind.component=(link:parent()).id
+				   end
+				   
 				   new_bind.role=attr.role
-                   new_bind.interface=property.name
+		                   new_bind.interface=property.name
 				   counter=counter+1
 				   link:insert(new_bind)
 
 				   ::continue::
 
-				 end
-			   end
-
-             end
-		   end
-		 end
-	   end
-	 end
-
+				   end
+			     end
+		        end
+			
+		end
+	      end
+	    end
+	  end
+        
    end
-
+   print(ncl)
    return ncl
 
 end
