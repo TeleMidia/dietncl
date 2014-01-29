@@ -177,7 +177,7 @@ local ncl = dietncl.parsestring ([[
   <connectorBase>
    <causalConnector id='c'>
 
-	 <simpleCondition role='onBegin' delay='5s'/>
+     <simpleCondition role='onBegin' delay='5s'/>
      <simpleCondition role='onSelection'/>
      <simpleCondition role='onEnd'/>
      <simpleCondition role='onBeginSelect' key='PLAY' transition='starts' eventType='selection'/>
