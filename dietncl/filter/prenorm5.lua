@@ -42,7 +42,7 @@ _ENV = nil
 
 local function make_binary_tree (parent, ncl)
    local attr={}
-   local child={}
+   local child
    local root={['compoundCondition_operator'] = 'and', ['compoundAction_operator'] = 'par', ['compoundStatement_operator'] = 'and',
 				[1] = 'compoundCondition',              [2] = 'compoundAction',              [3] = 'compoundStatement'}
 
@@ -52,50 +52,57 @@ local function make_binary_tree (parent, ncl)
 		return
    elseif #parent == 1 then
 		-- Remove the parent
-		child[1] = xml.remove(parent, parent[1])
-		(parent:parent()):insert(child[1])
-		xml.remove(parent)
+		child = xml.remove(parent, parent[1])
+		(parent:parent()):insert(child)
+		xml.remove(parent:parent(), parent)
 
-		make_binary_chain (child[1])
+		make_binary_chain (child)
 
    elseif #parent == 2 then
 
 		for index, element in ipairs(parent) do
-		 -- In case of one compound element and one assessment statements.
+		 -- In case of one compound element and one assessment statement.
 		 if element:tag() == 'assessmentStatement' or element:tag() == 'compoundStatement' then
-		   child[index] = xml.remove(parent, element)
-		   element:insert(child[index])
+		   child = xml.remove(parent, element)
 		   goto finish
 		 end
 
-		 child[index] = element
-
 		 -- In case of one simple element and one assessment statement.
-		 if child[index]:tag() == 'simpleAction' or child[index]:tag() == 'simpleCondition' then
+		 if element:tag() == 'simpleAction' or element:tag() == 'simpleCondition' then
 		   goto finish
-         end
+                 end
 
 		 -- In case of two compound elements.
 		 if index == 2 then
-		   stat=xml.new('assessmentStatement')
-	       stat.operator='eq'
-	       attr[1]=xml.new('attributeStatement')
-	       attr[1].role=aux.gen_id(ncl)
-	       attr[1].eventType='attribution'
-	       attr[2]=xml.new('attributeStatement')
-	       attr[2].role=aux.gen_id(ncl)
-		   attr[2].eventType='attribution'
+		   stat = xml.new('assessmentStatement')
+	           stat.operator='eq'
+	           attr[1] = xml.new('attributeStatement')
+	           attr[1].role = aux.gen_id(ncl)
+	           attr[1].eventType = 'attribution'
+	           attr[2] = xml.new('attributeStatement')
+	           attr[2].role = aux.gen_id(ncl)
+		   attr[2].eventType = 'attribution'
 		   stat:insert(attr[1])
-	       stat:insert(attr[2])
-	       parent:insert(stat)
+	           stat:insert(attr[2])
+	           parent:insert(stat)
 		 end
 
 		end
-
+		
 		::finish::
-
-		make_binary_tree (parent[1])
-		make_binary_tree (parent[2])
+		
+		if child and #parent == 1 then
+		  parent[1]:insert(child)
+		  make_binary_tree (parent[1])
+		elseif stat then
+		-- Recursive call (compound statements excluded from recursive procedure).
+		  for child in ipairs(parent) do
+		     if not child == stat then
+		        make_binary_tree (child)
+		     end
+		  end
+		
+		end
 
    else
 
@@ -104,21 +111,28 @@ local function make_binary_tree (parent, ncl)
 		parent:insert(root[parent:tag()])
 
 		for index, element in ipairs(parent) do
-          -- Gather compound elements into a compound element.
-		  if index > 1  and element:tag() == root[parent:tag()] then
-		    child[index] = xml.remove(parent, element)
-			root[parent:tag()]:insert(child[index])
-		  else
+                  -- Gather compound elements into a compound element.
+		  if index > 1 and element:tag() == root[parent:tag()] then
+		    child = xml.remove(parent, element)
+		    root[parent:tag()]:insert(child)
+		  elseif element:tag() == 'assessmentStatement' then
 			-- Gather assessment statements into a compound statement.
 			if root['compoundStatement'] == nil then
 			  root['compoundStatement'] = xml.new('compoundStatement')
 			  root['compoundStatement'].operator = 'and'
 			  parent:insert(root['compoundStatement'])
-			else
-			  child[index] = xml.remove(parent, element)
-			  root['compoundStatement']:insert(child[index])
 			end
-
+			
+			child = xml.remove(parent, element)
+			root['compoundStatement']:insert(child)
+                  elseif element:tag() == 'compoundStatement' then
+		        if root['compoundStatement'] then
+			   for index, assessment in ipairs(root['compoundStatement']) do
+			      element = xml.remove(root['compoundStatement'])
+			      element:insert(assessment)
+			   end
+			end
+		  
 		  end
 
 		end
@@ -129,7 +143,7 @@ local function make_binary_tree (parent, ncl)
 		end
 
    end
-
+   
 end
 
 ---
