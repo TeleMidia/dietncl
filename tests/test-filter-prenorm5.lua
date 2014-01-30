@@ -26,26 +26,26 @@ local ncl = dietncl.parsestring ([[
 <ncl>
  <head>
   <connectorBase>
-  
+
    <causalConnector id='c'>
      <compoundCondition operator='and'>
       <compoundCondition operator='and'>
-           <simpleCondition role='onBegin' delay='5s'/>
-           <simpleCondition role='onSelection'/>
+          <simpleCondition role='onBegin' delay='5s'/>
+          <simpleCondition role='onSelection'/>
           <simpleCondition role='onEnd'/>
           <simpleCondition role='onBeginSelect' key='PLAY' transition='starts' eventType='selection'/>
           <simpleCondition role='onAbort' transition='aborts' eventType='presentation'/>
-          <compoundCondition operatolr='and'>
-	  <simpleCondition role='onResume'/>
-         </compoundCondition>
-       </compoundCondition>
-       <compoundCondition operator='and'>
+          <compoundCondition operator='and'>
+	        <simpleCondition role='onResume'/>
+          </compoundCondition>
+	  </compoundCondition>
+	  <compoundCondition operator='and'>
          <simpleCondition role='beginning' transition='presentation' eventType='presentation'/>
          <simpleCondition role='start_again' eventType='presentation' transition='presentation'/>
          <simpleCondition role='select' transition='starts' eventType='selection' key='ENTER'/>
          <assessmentStatement comparator='ne'>
-	 <attributeStatement role='R1' eventType='attribution'/>
-	 <attributeStatement role='R2' eventType='attribution'/>
+	        <attributeStatement role='R1' eventType='attribution'/>
+			<attributeStatement role='R2' eventType='attribution'/>
          </assessmentStatement/>
       </compoundCondition>
      </compoundCondition >
@@ -62,14 +62,14 @@ local ncl = dietncl.parsestring ([[
 	<assessmentStatement comparator='eq'>
 	   <attributeStatement role='R5' eventType='attribution'/>
 	   <attributeStatement role='R6' eventType='attribution'/>
-             </assessmentStatement/> 
+             </assessmentStatement/>
          </compoundCondition>
          <compoundCondition operator='and'>
             <simpleCondition role='onResume'/>
 	<assessmentStatement comparator='eq'>
 	   <attributeStatement role='R7' eventType='attribution'/>
 	   <attributeStatement role='R8' eventType='attribution'/>
-             </assessmentStatement/> 
+             </assessmentStatement/>
          </compoundCondition>
          <assessmentStatement comparator='eq'>
 	 <attributeStatement role='R9' eventType='attribution'/>
@@ -77,7 +77,7 @@ local ncl = dietncl.parsestring ([[
          </assessmentStatement/>
       </compoundCondition>
    </causalConnector>
-   
+
   </connectorBase>
  </head>
 
