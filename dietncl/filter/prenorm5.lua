@@ -31,8 +31,6 @@ local attr={}
 local print = print
 local ipairs = ipairs
 
-
-
 local xml = require ('dietncl.xmlsugar')
 local aux = require ('dietncl.nclaux')
 _ENV = nil
@@ -56,23 +54,27 @@ local function make_binary_tree (parent, ncl)
 		child = xml.remove (parent, parent[1])
 		parent:parent():insert(child)
 		xml.remove(parent:parent(), parent)
-		make_binary_tree (child, ncl)
-
+		if child:tag() == 'assessmentStatement' or 'compoundStatement' then
+		   return
+		else
+		   make_binary_tree (child, ncl)
+		end
+		
    elseif #parent == 2 then
 
 		if parent[1]:tag() == parent:tag() and parent[2]:tag() == parent:tag() then
 		   -- In case of two compound elements.
 		   stat = xml.new('assessmentStatement')
 		   stat.operator='eq'
-	       attr[1] = xml.new('attributeStatement')
-	       attr[1].role = aux.gen_id(ncl)
-	       attr[1].eventType = 'attribution'
-	       attr[2] = xml.new('attributeStatement')
-	       attr[2].role = aux.gen_id(ncl)
-		   attr[2].eventType = 'attribution'
+	           attr[1] = xml.new('attributeStatement')
+	           attr[1].role = aux.gen_id(ncl)
+	           attr[1].eventType = 'attribution'
+	           attr[2] = xml.new('attributeStatement')
+	           attr[2].role = aux.gen_id(ncl)
+	           attr[2].eventType = 'attribution'
 		   stat:insert(attr[1])
-	       stat:insert(attr[2])
-	       parent:insert(stat)
+	           stat:insert(attr[2])
+	           parent:insert(stat)
 		else
 
 		   for index, element in ipairs(parent) do
@@ -100,12 +102,11 @@ local function make_binary_tree (parent, ncl)
 
 		end
 
-   else
-
+   else       
+                -- Maintenance!
+	        -- Case 3: Code error, it's not working as it should. Review required.
 		root[parent:tag()] = xml.new(parent:tag())
 		root[parent:tag()].operator = parent.operator or (root[parent:tag()] .. '_operator')
-		parent:insert(root[parent:tag()])
-		--print(root[parent:tag()])
 
 		for index, element in ipairs(parent) do
 		  -- Gather compound elements into a compound element.
@@ -136,11 +137,18 @@ local function make_binary_tree (parent, ncl)
 		  end
 
 		end
-
-		make_binary_tree (root[parent:tag()], ncl)
-		make_binary_tree (parent[1], ncl)
+		
+		if root[parent:tag()] then
+		   parent:insert(root[parent:tag()])
+		end
 
    end
+                
+		for index, element in ipairs(parent) do
+		     if element:tag() == parent:tag() then
+			make_binary_tree(element, ncl)
+		     end
+		end
 
 end
 
@@ -181,7 +189,7 @@ function filter.apply (ncl)
 		stat:insert(attr[2])
 		compound:insert(tag_cond)
 	 end
-
+       
 
 	-- Breakage procedure: creates a chain of binary compound conditions.
 	for compound in conn:gmatch('^compound[AC].*$', nil, nil, 4) do
@@ -237,7 +245,7 @@ function filter.apply (ncl)
 
     end
 
-    --print(ncl)
+    print(ncl)
     return ncl
 
 end

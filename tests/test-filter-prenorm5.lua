@@ -132,6 +132,60 @@ local ncl = dietncl.parsestring ([[
 
 assert(filter.apply(ncl))
 
+--[=[local ncl = dietncl.parsestring ([[
+<ncl>
+ <head>
+  <connectorBase>
+
+   <causalConnector id='c'>
+     <compoundCondition operator='and'>
+      <compoundCondition operator='and'>
+          <simpleCondition role='onBegin' delay='5s'/>
+          <simpleCondition role='onEnd'/>
+      </compoundCondition>
+     </compoundCondition >
+   </causalConnector>
+
+   <causalConnector id='a'>
+       <compoundCondition operator='or'>
+         <compoundCondition operator='and'>
+	 <simpleCondition role='onBegin' delay='15s'/>
+             <simpleCondition role='onSelection'/>
+            </compoundCondition>
+      </compoundCondition>
+   </causalConnector>
+
+  </connectorBase>
+ </head>
+
+ <body>
+    <property name='value_1'/>
+
+     <media id='m'/>
+     <media id='n'/>
+     <media id='o'/>
+     <media id='p'/>
+     <media id='s'/>
+
+     <context id='bubble_one'>
+        <media id='w'/>
+        <port id='first' component='w'/>
+
+        <link xconnector='c'>
+             <bind role='onBegin' component='m'/>
+         </link>
+     </context>
+
+    <link xconnector='a'>
+            <bind role='onBegin' component='o'/>
+             <bind role='onSelection' component='n'/>
+      </link>
+
+
+ </body>
+</ncl>]])
+
+assert(filter.apply(ncl))]=]--
 
 
 
