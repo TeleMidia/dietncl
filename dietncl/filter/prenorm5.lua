@@ -48,12 +48,12 @@ local function make_binary_tree (parent, ncl)
 			 ['compoundCondition'] = 'simpleCondition',                                                         ['compoundAction'] = 'simpleAction'}
 
    local stat
-   
+
 	-- Returns function in case parent's length is zero (there are no child elements).
 	if #parent == 0 then
 		return
 	end
-	
+
 	-- In case parent has exactly one child, parent's child must be removed from parent and then inserted into parent's parent.
 	if #parent == 1 then
 		child = xml.remove (parent, 1)		-- Remove child from parent and insert it into parent's parent
@@ -65,14 +65,14 @@ local function make_binary_tree (parent, ncl)
 		else
 			make_binary_tree (child, ncl)
 		end
-	
+
 	-- In case parent has exactly two children.
 	elseif #parent == 2 then
-		
+
 		-- Both child elements' TAG is equal to parent's TAG, assessmentStatement must be added to parent.
 		if parent[1]:tag() == parent:tag() and parent[2]:tag() == parent:tag() then
 			stat = xml.new('assessmentStatement')
-			stat.operator='eq'
+			stat.comparator='eq'
 			attr[1] = xml.new('attributeStatement')
 			attr[1].role = aux.gen_id(ncl)
 			attr[1].eventType = 'attribution'
@@ -109,11 +109,11 @@ local function make_binary_tree (parent, ncl)
 				make_binary_tree (element, ncl)
 			end
 		end
-		
+
 	-- In case parent has more than two children.
 	else
 		local counter = 0
-		
+
 		-- If parent has exactly three children, then parent might be a ternary or binary compound element.
 		if #parent == 3 then
 			for index, element in ipairs(parent) do
@@ -121,15 +121,15 @@ local function make_binary_tree (parent, ncl)
 					counter = counter +1
 				end
 			end
-			
+
 			-- Already in the correct structure, two compound elements of TAG equals to parent's TAG
 			-- and one assessmentStatement or one compoundStatement.
 			if counter == 2 then
 				goto exception
 			end
 		end
-	
-		-- For each parent, a new element is created using the same TAG and operator as parent's. 
+
+		-- For each parent, a new element is created using the same TAG and operator as parent's.
 		root[parent:tag()] = xml.new(parent:tag())
 		root[parent:tag()].operator = parent.operator or (root[parent:tag()] .. '_operator')
 
@@ -148,7 +148,7 @@ local function make_binary_tree (parent, ncl)
 					root['compoundStatement'].operator = 'and'
 					parent:insert(root['compoundStatement'])
 				end
-				
+
 				child = xml.remove(parent, element)
 				root['compoundStatement']:insert(child)
 			elseif element:tag() == 'compoundStatement' then
@@ -163,21 +163,21 @@ local function make_binary_tree (parent, ncl)
 			end
 
 		end
-		
+
 		parent:insert(root[parent:tag()])
-		
+
 		-- After this treatment, parent might become a parent which has two children or one children or none.
 		-- There is need of using make_binary_tree (parent, ncl) again.
 		make_binary_tree (parent, ncl)
-		
+
 		::exception::
-		
+
 		for index, element in ipairs(parent) do
 			if element:tag() == parent:tag() then
 				make_binary_tree (element, ncl)
 			end
 		end
-		
+
 	end
 
 end
@@ -185,8 +185,6 @@ end
 ---
 -- Applies filter for restriction (5)
 --
-
-local role_table={}
 
 function filter.apply (ncl)
    local compound
@@ -215,11 +213,11 @@ function filter.apply (ncl)
 					-- Procedure must be carried on.
 				end
 			end
-		
+
 			compound=xml.new('compoundCondition')
 			compound.operator='and'
 			stat=xml.new('assessmentStatement')
-			stat.operator='eq'
+			stat.comparator='eq'
 			attr[1]=xml.new('attributeStatement')
 			attr[1].role=aux.gen_id(ncl)
 			attr[1].eventType='attribution'
@@ -240,8 +238,8 @@ function filter.apply (ncl)
 		for compound in conn:gmatch('^compound[AC].*$', nil, nil, 4) do
 			if compound:parent() == conn then
 				make_binary_tree (compound, ncl)
+			end
 		end
-	end
 
 		-- Updates all binds of the respective links after breakage procedure.
 		for parent_tag in conn:gmatch('^compound[ACS].*$', nil, nil, 4) do
@@ -251,12 +249,12 @@ function filter.apply (ncl)
 						for bind in link:gmatch('bind') do
 							if bind.role == tag.role then
 								for attr in tag:parent():parent():gmatch('attributeStatement') do
-									-- Avoids duplicates of binds referring to the same attributeStatement.
-									if role_table[attr.role] == nil then
-										role_table[attr.role] = 'exists'
-									else
-										-- Attribute statement already mentioned by one bind.
-										goto continue
+
+									-- Avoid creating binds referring to an attributeStatement already referred by another bind.
+									for review_bind in link:gmatch('bind') do
+											if review_bind.role == attr.role then
+												goto continue
+											end
 									end
 
 									if counter == 2 then
@@ -278,7 +276,7 @@ function filter.apply (ncl)
 									link:insert(new_bind)
 								end
 							end
-						
+
 							::continue::
 						end
 					end
@@ -286,7 +284,7 @@ function filter.apply (ncl)
 			end
 		end
 	end
-	
+
 	print (ncl)
 	return ncl
 

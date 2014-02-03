@@ -22,7 +22,54 @@ local filter = require ('dietncl.filter.prenorm5')
 
 _ENV = nil
 
--- First case: only one compound element together with two simple child elements.
+-- First case: only two compound elements, each containing two simple child elements.
+
+local str = [[
+<ncl>
+	<head>
+		<connectorBase>
+			<causalConnector id='c'>
+				<compoundCondition operator='and'>
+					<simpleCondition role='onBegin' delay='5s'/>
+					<assessmentStatement comparator='eq'>
+						<attributeStatement role='R1'/>
+						<attributeStatement role='R2'/>
+					</assessmentStatement>
+				</compoundCondition >
+				<compoundAction operator='and'>
+					<simpleAction role='start' delay='15s'/>
+					<assessmentStatement comparator='eq'>
+						<attributeStatement role='R3' eventType='attribution'/>
+						<attributeStatement role='R4' eventType='attribution'/>
+					</assessmentStatement>
+				</compoundAction>
+			</causalConnector>
+		</connectorBase>
+	</head>
+
+	<body>
+		<media id='m'/>
+
+		<context id='bubble'>
+			<property name='value'/>
+
+			<link xconnector='c'>
+				<bind role='onBegin' component='m'/>
+				<bind role='start' component='m'/>
+				<bind role='R1' component='bubble' interface='value'/>
+				<bind role='R2' component='bubble' interface='value'/>
+				<bind role='R3' component='bubble' interface='value'/>
+				<bind role='R4' component='bubble' interface='value'/>
+			</link>
+		</context>
+
+	</body>
+]]
+
+local ncl = dietncl.parsestring (str)
+assert (filter.apply (ncl))
+assert (ncl:equal (dietncl.parsestring(str)))
+
 
 local ncl = dietncl.parsestring ([[
 <ncl>
@@ -55,15 +102,13 @@ local ncl = dietncl.parsestring ([[
 	</head>
 
 	<body>
-		<property name='value_1'/>
-
 		<media id='m'/>
 		<media id='n'/>
 		<media id='o'/>
 		<media id='p'/>
 		<media id='s'/>
 
-		<context id='bubble_one'>
+		<context id='bubble'>
 			<media id='w'/>
 			<port id='first' component='w'/>
 
@@ -82,9 +127,107 @@ local ncl = dietncl.parsestring ([[
 	</body>
 </ncl>]])
 
-assert(filter.apply(ncl))
 
---[==[local str = [[
+local str =  [[
+<ncl>
+	<head>
+		<connectorBase>
+			<causalConnector id='c'>
+				<compoundCondition operator='and'>
+					<compoundCondition operator='and'>
+						<assessmentStatement comparator='eq'>
+							<attributeStatement role='_______0' eventType='attribution'/>
+							<attributeStatement role='_______1' eventType='attribution'/>
+						</assessmentStatement>
+						<simpleCondition role='onBegin' delay='5s'/>
+					</compoundCondition>
+					<compoundCondition operator='and'>
+						<assessmentStatement comparator='eq'>
+							<attributeStatement role='_______2' eventType='attribution'/>
+							<attributeStatement role='_______3' eventType='attribution'/>
+						</assessmentStatement>
+						<simpleCondition role='onEnd'/>
+					</compoundCondition>
+					<assessmentStatement comparator='eq'>
+						<attributeStatement role='_______4' eventType='attribution'/>
+						<attributeStatement role='_______5' eventType='attribution'/>
+					</assessmentStatement>
+				</compoundCondition >
+				<compoundAction operator='and'>
+						<simpleAction role='start' delay='15s'/>
+						<simpleAction role='pause'/>
+				</compoundAction>
+			</causalConnector>
+			<causalConnector id='a'>
+				<compoundCondition operator='or'>
+					<compoundCondition operator='and'>
+						<assessmentStatement comparator='eq'>
+							<attributeStatement role='_______9' eventType='attribution'/>
+							<attributeStatement role='_______10' eventType='attribution'/>
+						</assessmentStatement>
+						<simpleCondition role='onBegin' delay='15s'/>
+					</compoundCondition>
+					<compoundCondition operator='and'>
+						<assessmentStatement comparator='eq'>
+							<attributeStatement role='_______11' eventType='attribution'/>
+							<attributeStatement role='_______12' eventType='attribution'/>
+						</assessmentStatement>
+						<simpleCondition role='onSelection'/>
+					</compoundCondition>
+					<assessmentStatement comparator='eq'>
+						<attributeStatement role='_______13' eventType='attribution'/>
+						<attributeStatement role='_______14' eventType='attribution'/>
+					</assessmentStatement>
+				</compoundCondition>
+			</causalConnector>
+		</connectorBase>
+	</head>
+
+	<body>
+		<media id='m'/>
+		<media id='n'/>
+		<media id='o'/>
+		<media id='p'/>
+		<media id='s'/>
+		<context id='bubble'>
+			<media id='w'/>
+			<port id='first' component='w'/>
+			<link xconnector='c'>
+			     <bind role='onBegin' component='m'/>
+			     <bind role='onEnd' component='o'/>
+			     <bind role='start' component='w'/>
+			     <bind role='pause' component='m'/>
+			     <bind component='bubble' role='_______0' interface='_______6'/>
+			     <bind component='bubble' role='_______1' interface='_______6'/>
+			     <bind component='bubble' role='_______2' interface='_______7'/>
+			     <bind component='bubble' role='_______3' interface='_______7'/>
+			     <bind component='bubble' role='_______4' interface='_______8'/>
+			     <bind component='bubble' role='_______5' interface='_______8'/>
+			 </link>
+			 <property name='______6'/>
+			 <property name='______7'/>
+			 <property name='______8'/>
+		</context>
+		<link xconnector='a'>
+			<bind role='onBegin' component='o'/>
+			<bind role='onSelection' component='n'/>
+			<bind role='_______9' interface='_______15'/>
+			<bind role='_______10' interface='_______15'/>
+			<bind role='_______11' interface='_______16'/>
+			<bind role='_______12' interface='_______16'/>
+			<bind role='_______13' interface='_______17'/>
+			<bind role='_______14' interface='_______17'/>
+		</link>
+		<property name='______15'/>
+		<property name='______16'/>
+		<property name='______17'/>
+	</body>
+</ncl>]]
+
+assert(filter.apply(ncl))
+assert(ncl:equal (dietncl.parsestring(str)))
+
+local str = [[
 <ncl>
 	<head>
 		<connectorBase>
@@ -119,26 +262,26 @@ assert(filter.apply(ncl))
 					             	</assessmentStatement>
 				              	</compoundCondition>
 				               	<compoundCondition operator='and'>
-				              		<simpleCondition role='onAbort'/>
-				                   		<assessmentStatement operator='eq'>
-					               		<attributeStatement role='g' eventType='attribution'/>
-					                    		<attributeStatement role='h' eventType='attribution'/>
-				                    		</assessmentStatement>
-				                   	</compoundCondition>
-		                                           	<assessmentStatement operator='eq'>
-			                                          	<attributeStatement role='c' eventType='attribution'/>
-                                              				<attributeStatement role='d' eventType='attribution'/>
-			            		</assessmentStatement>
-			               	</compoundCondition>
-		                   		<assessmentStatement operator='eq'>
-			              		<attributeStatement role='r' eventType='attribution'/>
-                    		             		<attributeStatement role='s' eventType='attribution'/> 
-                                          		 </assessmentStatement>
-			        	</compoundCondition>
+									<simpleCondition role='onAbort'/>
+									<assessmentStatement operator='eq'>
+										<attributeStatement role='g' eventType='attribution'/>
+										<attributeStatement role='h' eventType='attribution'/>
+									</assessmentStatement>
+							</compoundCondition>
+							<assessmentStatement operator='eq'>
+								<attributeStatement role='c' eventType='attribution'/>
+								<attributeStatement role='d' eventType='attribution'/>
+							</assessmentStatement>
+						</compoundCondition>
+						<assessmentStatement operator='eq'>
+							<attributeStatement role='r' eventType='attribution'/>
+							<attributeStatement role='s' eventType='attribution'/>
+						</assessmentStatement>
+				</compoundCondition>
 			</causalConnector>
 		</connectorBase>
 	</head>
- 
+
 	<body>
 		<media id='m'/>
 		<link xconnector='c'>
@@ -164,7 +307,7 @@ assert(filter.apply(ncl))
 	</body>
 </ncl>]]
 
-local ncl = dietncl.parsestring (str)
+--[==[local ncl = dietncl.parsestring (str)
 assert (filter.apply (ncl))
 --assert (ncl:equal (dietncl.parsestring (str)))
 
@@ -337,7 +480,6 @@ local str = dietncl.parsestring([[
 	</body>
 </ncl>]])
 
-filter.apply(ncl)
 assert (filter.apply (ncl))
---assert (ncl:equal (str))]==]--
-
+--assert (ncl:equal (str))
+]==]--

@@ -19,6 +19,7 @@ local assert = assert
 
 local dietncl = require ('dietncl')
 local filter = require ('dietncl.filter.prenorm4')
+
 _ENV = nil
 
 local str = [[
