@@ -42,10 +42,11 @@ _ENV = nil
 local function make_binary_tree (parent, ncl)
    local attr={}
    local child
-   local exclude = {'compoundStatement', 'assessmentStatement', 'simpleCondition', 'simpleAction', 'attributeStatement'}
+   local exclude = {'compoundStatement', 'assessmentStatement', 'simpleCondition', 'simpleAction', 'attributeStatement',
+					['compoundCondition'] = 'simpleCondition',                       ['compoundAction'] = 'simpleAction'}
+
    local root={['compoundCondition_operator'] = 'and', ['compoundAction_operator'] = 'par', ['compoundStatement_operator'] = 'and',
-			 [1] = 'compoundCondition',                    [2] = 'compoundAction',                   [3] = 'compoundStatement',
-			 ['compoundCondition'] = 'simpleCondition',                                                         ['compoundAction'] = 'simpleAction'}
+				[1] = 'compoundCondition',              [2] = 'compoundAction',              [3] = 'compoundStatement',            }
 
    local stat
 
@@ -82,7 +83,7 @@ local function make_binary_tree (parent, ncl)
 			stat:insert(attr[1])
 			stat:insert(attr[2])
 			parent:insert(stat)
-		elseif parent[1]:tag() == root[parent:tag()] or parent[2]:tag() == root[parent:tag()] then
+		elseif parent[1]:tag() == exclude[parent:tag()] or parent[2]:tag() == exclude[parent:tag()] then
 			-- Nothing to do. Already a binary compound parent.
 		else
 
@@ -119,6 +120,8 @@ local function make_binary_tree (parent, ncl)
 			for index, element in ipairs(parent) do
 				if element:tag() == parent:tag() then
 					counter = counter +1
+				elseif element:tag() == exclude[parent:tag()] then
+					goto exception
 				end
 			end
 
@@ -166,8 +169,8 @@ local function make_binary_tree (parent, ncl)
 
 		parent:insert(root[parent:tag()])
 
-		-- After this treatment, parent might become a parent which has two children or one children or none.
-		-- There is need of using make_binary_tree (parent, ncl) again.
+		-- After this treatment, parent might become a parent which has two children or one child or none.
+		-- It's necessary to apply make_binary_tree (parent, ncl) once again.
 		make_binary_tree (parent, ncl)
 
 		::exception::
@@ -285,7 +288,6 @@ function filter.apply (ncl)
 		end
 	end
 
-	print (ncl)
 	return ncl
 
 end
