@@ -52,22 +52,22 @@ local str = dietncl.parsestring([[
                         <causalConnector id="c">
                                 <compoundCondition operator="and">
                                         <compoundCondition operator="and">
+                                                <simpleCondition role="onBegin" />
                                                 <assessmentStatement comparator="eq">
                                                         <attributeStatement role="__0" eventType="attribution" />
                                                         <attributeStatement role="__1" eventType="attribution" />
                                                 </assessmentStatement>
-                                                <simpleCondition role="onBegin" />
                                         </compoundCondition>
                                         <compoundCondition operator="and">
-                                                <assessmentStatement comparator="eq">
-                                                        <attributeStatement role="__2" eventType="attribution" />
-                                                        <attributeStatement role="__3" eventType="attribution" />
-                                                </assessmentStatement>
                                                 <simpleCondition role="onEnd" />
+                                                <assessmentStatement comparator="eq">
+                                                        <attributeStatement role="__3" eventType="attribution" />
+                                                        <attributeStatement role="__4" eventType="attribution" />
+                                                </assessmentStatement>
                                         </compoundCondition>
                                         <assessmentStatement comparator="eq">
-                                                <attributeStatement role="__4" eventType="attribution" />
                                                 <attributeStatement role="__5" eventType="attribution" />
+                                                <attributeStatement role="__6" eventType="attribution" />
                                         </assessmentStatement>
                                 </compoundCondition>
                         </causalConnector>
@@ -78,16 +78,14 @@ local str = dietncl.parsestring([[
                 <link xconnector="c">
                         <bind role="onBegin" component="m" />
                         <bind role="onEnd" component="m" />
-                        <bind role="__0" interface="__6" />
-                        <bind role="__1" interface="__6" />
-                        <bind role="__2" interface="__7" />
-                        <bind role="__3" interface="__7" />
-                        <bind role="__4" interface="__8" />
-                        <bind role="__5" interface="__8" />
+                        <bind role="__0" interface="__2" />
+                        <bind role="__1" interface="__2" />
+                        <bind role="__3" interface="__2" />
+                        <bind role="__4" interface="__2" />
+                        <bind role="__5" interface="__2" />
+                        <bind role="__6" interface="__2" />
                 </link>
-                <property name="__6" />
-                <property name="__7" />
-                <property name="__8" />
+                <property name="__2" />
         </body>
 </ncl>]])
 
@@ -201,29 +199,28 @@ local ncl = dietncl.parsestring ([[
 
 
 local str =  [[
-
 <ncl>
         <head>
                 <connectorBase>
                         <causalConnector id="c">
                                 <compoundCondition operator="and">
                                         <compoundCondition operator="and">
+                                                <simpleCondition role="onBegin" delay="5s" />
                                                 <assessmentStatement comparator="eq">
                                                         <attributeStatement role="_______0" eventType="attribution" />
                                                         <attributeStatement role="_______1" eventType="attribution" />
                                                 </assessmentStatement>
-                                                <simpleCondition role="onBegin" delay="5s" />
                                         </compoundCondition>
                                         <compoundCondition operator="and">
-                                                <assessmentStatement comparator="eq">
-                                                        <attributeStatement role="_______2" eventType="attribution" />
-                                                        <attributeStatement role="_______3" eventType="attribution" />
-                                                </assessmentStatement>
                                                 <simpleCondition role="onEnd" />
+                                                <assessmentStatement comparator="eq">
+                                                        <attributeStatement role="_______3" eventType="attribution" />
+                                                        <attributeStatement role="_______4" eventType="attribution" />
+                                                </assessmentStatement>
                                         </compoundCondition>
                                         <assessmentStatement comparator="eq">
-                                                <attributeStatement role="_______4" eventType="attribution" />
                                                 <attributeStatement role="_______5" eventType="attribution" />
+                                                <attributeStatement role="_______6" eventType="attribution" />
                                         </assessmentStatement>
                                 </compoundCondition>
                                 <compoundAction operator="and">
@@ -234,18 +231,18 @@ local str =  [[
                         <causalConnector id="a">
                                 <compoundCondition operator="and">
                                         <compoundCondition operator="and">
-                                                <assessmentStatement comparator="eq">
-                                                        <attributeStatement role="_______9" eventType="attribution" />
-                                                        <attributeStatement role="_______10" eventType="attribution" />
-                                                </assessmentStatement>
                                                 <simpleCondition role="onBegin" delay="15s" />
+                                                <assessmentStatement comparator="eq">
+                                                        <attributeStatement role="_______7" eventType="attribution" />
+                                                        <attributeStatement role="_______8" eventType="attribution" />
+                                                </assessmentStatement>
                                         </compoundCondition>
                                         <compoundCondition operator="and">
-                                                <assessmentStatement comparator="eq">
-                                                        <attributeStatement role="_______11" eventType="attribution" />
-                                                        <attributeStatement role="_______12" eventType="attribution" />
-                                                </assessmentStatement>
                                                 <simpleCondition role="onSelection" />
+                                                <assessmentStatement comparator="eq">
+                                                        <attributeStatement role="_______10" eventType="attribution" />
+                                                        <attributeStatement role="_______11" eventType="attribution" />
+                                                </assessmentStatement>
                                         </compoundCondition>
                                         <assessmentStatement comparator="eq">
                                                 <attributeStatement role="_______13" eventType="attribution" />
@@ -269,36 +266,33 @@ local str =  [[
                                 <bind role="onEnd" component="o" />
                                 <bind role="start" component="w" />
                                 <bind role="pause" component="m" />
-                                <bind component="bubble" role="_______0" interface="_______6" />
-                                <bind component="bubble" role="_______1" interface="_______6" />
-                                <bind component="bubble" role="_______2" interface="_______7" />
-                                <bind component="bubble" role="_______3" interface="_______7" />
-                                <bind component="bubble" role="_______4" interface="_______8" />
-                                <bind component="bubble" role="_______5" interface="_______8" />
+                                <bind component="bubble" role="_______0" interface="_______2" />
+                                <bind component="bubble" role="_______1" interface="_______2" />
+                                <bind component="bubble" role="_______3" interface="_______2" />
+                                <bind component="bubble" role="_______4" interface="_______2" />
+                                <bind component="bubble" role="_______5" interface="_______2" />
+                                <bind component="bubble" role="_______6" interface="_______2" />
                         </link>
-                        <property name="_______6" />
-                        <property name="_______7" />
-                        <property name="_______8" />
+                        <property name="_______2" />
                 </context>
                 <link xconnector="a">
                         <bind role="onBegin" component="o" />
                         <bind role="onSelection" component="n" />
-                        <bind role="_______9" interface="_______15" />
-                        <bind role="_______10" interface="_______15" />
-                        <bind role="_______11" interface="_______16" />
-                        <bind role="_______12" interface="_______16" />
-                        <bind role="_______13" interface="_______17" />
-                        <bind role="_______14" interface="_______17" />
+                        <bind role="_______7" interface="_______9" />
+                        <bind role="_______8" interface="_______9" />
+                        <bind role="_______10" interface="_______12" />
+                        <bind role="_______11" interface="_______12" />
+                        <bind role="_______13" interface="_______15" />
+                        <bind role="_______14" interface="_______15" />
                 </link>
+                <property name="_______9" />
+                <property name="_______12" />
                 <property name="_______15" />
-                <property name="_______16" />
-                <property name="_______17" />
         </body>
 </ncl>]]
 
 assert(filter.apply(ncl))
 assert(ncl:equal (dietncl.parsestring(str)))
-
 
 -- Make sure the filter does not change the NCL document out of need.
 
@@ -330,28 +324,28 @@ local str = [[
 					</compoundCondition>
 					<compoundCondition operator='and'>
 						<compoundCondition operator='and'>
-				             		<simpleCondition role='onEnd'/>
-					            	<assessmentStatement operator='eq'>
-					                   		<attributeStatement role='e' eventType='attribution'/>
-				                     			<attributeStatement role='f' eventType='attribution'/>
-					             	</assessmentStatement>
-				              	</compoundCondition>
-				               	<compoundCondition operator='and'>
-									<simpleCondition role='onAbort'/>
-									<assessmentStatement operator='eq'>
-										<attributeStatement role='g' eventType='attribution'/>
-										<attributeStatement role='h' eventType='attribution'/>
-									</assessmentStatement>
-							</compoundCondition>
+							<simpleCondition role='onEnd'/>
 							<assessmentStatement operator='eq'>
-								<attributeStatement role='c' eventType='attribution'/>
-								<attributeStatement role='d' eventType='attribution'/>
+								<attributeStatement role='e' eventType='attribution'/>
+								<attributeStatement role='f' eventType='attribution'/>
+							</assessmentStatement>
+						</compoundCondition>
+						<compoundCondition operator='and'>
+							<simpleCondition role='onAbort'/>
+							<assessmentStatement operator='eq'>
+								<attributeStatement role='g' eventType='attribution'/>
+								<attributeStatement role='h' eventType='attribution'/>
 							</assessmentStatement>
 						</compoundCondition>
 						<assessmentStatement operator='eq'>
-							<attributeStatement role='r' eventType='attribution'/>
-							<attributeStatement role='s' eventType='attribution'/>
+							<attributeStatement role='c' eventType='attribution'/>
+							<attributeStatement role='d' eventType='attribution'/>
 						</assessmentStatement>
+					</compoundCondition>
+					<assessmentStatement operator='eq'>
+						<attributeStatement role='r' eventType='attribution'/>
+						<attributeStatement role='s' eventType='attribution'/>
+					</assessmentStatement>
 				</compoundCondition>
 			</causalConnector>
 		</connectorBase>
@@ -359,25 +353,26 @@ local str = [[
 
 	<body>
 		<media id='m'/>
+		<property name='value'/>
 		<link xconnector='c'>
-			<bind role='onBegin' component='value'/>
-			<bind role='onResume' component='value'/>
-			<bind role='a' component='value'/>
-			<bind role='b' component='value'/>
-			<bind role='i' component='value'/>
-			<bind role='j' component='value'/>
-			<bind role='k' component='value'/>
-			<bind role='l' component='value'/>
-			<bind role='onEnd' component='m'/>
+			<bind role='onBegin' component='m'/>
+			<bind role='onResume' component='m'/>
+			<bind role='a' interface='value'/>
+			<bind role='b' interface='value'/>
+			<bind role='i' interface='value'/>
+			<bind role='j' interface='value'/>
+			<bind role='k' interface='value'/>
+			<bind role='l' interface='value'/>
+			<bind role='onEnd' componenet='m'/>
 			<bind role='onAbort' component='m'/>
-			<bind role='c' component='value'/>
-			<bind role='d' component='value'/>
-			<bind role='e' component='value'/>
-			<bind role='f' component='value'/>
-			<bind role='g' component='value'/>
-			<bind role='h' component='value'/>
-			<bind role='r' component='value'/>
-			<bind role='s' component='value'/>
+			<bind role='c' interface='value'/>
+			<bind role='d' interface='value'/>
+			<bind role='e' interface='value'/>
+			<bind role='f' interface='value'/>
+			<bind role='g' interface='value'/>
+			<bind role='h' interface='value'/>
+			<bind role='r' interface='value'/>
+			<bind role='s' interface='value'/>
 		</link>
 	</body>
 </ncl>]]
@@ -574,51 +569,51 @@ local str = [[
                                                 </assessmentStatement>
                                         </compoundStatement>
                                         <compoundCondition operator="and">
+                                                <simpleCondition role="onResume" />
                                                 <assessmentStatement comparator="eq">
                                                         <attributeStatement role="___________8" eventType="attribution" />
                                                         <attributeStatement role="___________9" eventType="attribution" />
                                                 </assessmentStatement>
-                                                <simpleCondition role="onResume" />
                                         </compoundCondition>
                                         <compoundCondition operator="and">
+                                                <simpleCondition role="onPause" />
                                                 <assessmentStatement comparator="eq">
                                                         <attributeStatement role="___________10" eventType="attribution" />
                                                         <attributeStatement role="___________11" eventType="attribution" />
                                                 </assessmentStatement>
-                                                <simpleCondition role="onPause" />
                                         </compoundCondition>
                                 </compoundCondition>
                                 <compoundCondition operator="or">
                                         <compoundCondition operator="and">
                                                 <compoundCondition operator="and">
+                                                        <simpleCondition transition="aborts" eventType="presentation" role="onAbort" />
                                                         <assessmentStatement comparator="eq">
                                                                 <attributeStatement role="___________6" eventType="attribution" />
                                                                 <attributeStatement role="___________7" eventType="attribution" />
                                                         </assessmentStatement>
-                                                        <simpleCondition transition="aborts" eventType="presentation" role="onAbort" />
                                                 </compoundCondition>
                                                 <compoundCondition operator="and">
                                                         <compoundCondition operator="and">
+                                                                <simpleCondition role="onSelection" key="ENTER" />
                                                                 <assessmentStatement comparator="eq">
                                                                         <attributeStatement role="___________2" eventType="attribution" />
                                                                         <attributeStatement role="___________3" eventType="attribution" />
                                                                 </assessmentStatement>
-                                                                <simpleCondition role="onSelection" key="ENTER" />
                                                         </compoundCondition>
                                                         <compoundCondition operator="and">
                                                                 <compoundCondition operator="and">
+                                                                        <simpleCondition role="onBegin" delay="5s" />
                                                                         <assessmentStatement comparator="eq">
                                                                                 <attributeStatement role="___________0" eventType="attribution" />
                                                                                 <attributeStatement role="___________1" eventType="attribution" />
                                                                         </assessmentStatement>
-                                                                        <simpleCondition role="onBegin" delay="5s" />
                                                                 </compoundCondition>
                                                                 <compoundCondition operator="and">
+                                                                        <simpleCondition role="onEnd" />
                                                                         <assessmentStatement comparator="eq">
                                                                                 <attributeStatement role="___________4" eventType="attribution" />
                                                                                 <attributeStatement role="___________5" eventType="attribution" />
                                                                         </assessmentStatement>
-                                                                        <simpleCondition role="onEnd" />
                                                                 </compoundCondition>
                                                                 <assessmentStatement comparator="eq">
                                                                         <attributeStatement role="___________20" eventType="attribution" />
@@ -702,60 +697,60 @@ local str = [[
                                 <compoundCondition operator="and">
                                         <compoundCondition operator="and">
                                                 <compoundCondition operator="and">
-                                                        <assessmentStatement comparator="eq">
-                                                                <attributeStatement role="___________34" eventType="attribution" />
-                                                                <attributeStatement role="___________35" eventType="attribution" />
-                                                        </assessmentStatement>
                                                         <simpleCondition role="onSelection" />
+                                                        <assessmentStatement comparator="eq">
+                                                                <attributeStatement role="___________28" eventType="attribution" />
+                                                                <attributeStatement role="___________29" eventType="attribution" />
+                                                        </assessmentStatement>
                                                 </compoundCondition>
                                                 <compoundCondition operator="and">
-                                                        <assessmentStatement comparator="eq">
-                                                                <attributeStatement role="___________38" eventType="attribution" />
-                                                                <attributeStatement role="___________39" eventType="attribution" />
-                                                        </assessmentStatement>
                                                         <simpleCondition transition="aborts" eventType="presentation" role="onAbort" />
+                                                        <assessmentStatement comparator="eq">
+                                                                <attributeStatement role="___________32" eventType="attribution" />
+                                                                <attributeStatement role="___________33" eventType="attribution" />
+                                                        </assessmentStatement>
                                                 </compoundCondition>
                                                 <assessmentStatement comparator="eq">
-                                                        <attributeStatement role="___________46" eventType="attribution" />
-                                                        <attributeStatement role="___________47" eventType="attribution" />
+                                                        <attributeStatement role="___________40" eventType="attribution" />
+                                                        <attributeStatement role="___________41" eventType="attribution" />
                                                 </assessmentStatement>
                                         </compoundCondition>
                                         <compoundCondition operator="and">
                                                 <compoundCondition operator="and">
-                                                        <assessmentStatement comparator="eq">
-                                                                <attributeStatement role="___________36" eventType="attribution" />
-                                                                <attributeStatement role="___________37" eventType="attribution" />
-                                                        </assessmentStatement>
                                                         <simpleCondition transition="starts" key="ENTER" eventType="selection" role="onBeginSelect" />
+                                                        <assessmentStatement comparator="eq">
+                                                                <attributeStatement role="___________30" eventType="attribution" />
+                                                                <attributeStatement role="___________31" eventType="attribution" />
+                                                        </assessmentStatement>
                                                 </compoundCondition>
                                                 <compoundCondition operator="and">
                                                         <compoundCondition operator="and">
-                                                                <assessmentStatement comparator="eq">
-                                                                        <attributeStatement role="___________32" eventType="attribution" />
-                                                                        <attributeStatement role="___________33" eventType="attribution" />
-                                                                </assessmentStatement>
                                                                 <simpleCondition role="onBegin" delay="15s" />
+                                                                <assessmentStatement comparator="eq">
+                                                                        <attributeStatement role="___________26" eventType="attribution" />
+                                                                        <attributeStatement role="___________27" eventType="attribution" />
+                                                                </assessmentStatement>
                                                         </compoundCondition>
                                                         <compoundCondition operator="and">
-                                                                <assessmentStatement comparator="eq">
-                                                                        <attributeStatement role="___________40" eventType="attribution" />
-                                                                        <attributeStatement role="___________41" eventType="attribution" />
-                                                                </assessmentStatement>
                                                                 <simpleCondition transition="presentation" eventType="presentation" role="start_again" />
+                                                                <assessmentStatement comparator="eq">
+                                                                        <attributeStatement role="___________34" eventType="attribution" />
+                                                                        <attributeStatement role="___________35" eventType="attribution" />
+                                                                </assessmentStatement>
                                                         </compoundCondition>
                                                         <assessmentStatement comparator="eq">
-                                                                <attributeStatement role="___________50" eventType="attribution" />
-                                                                <attributeStatement role="___________51" eventType="attribution" />
+                                                                <attributeStatement role="___________44" eventType="attribution" />
+                                                                <attributeStatement role="___________45" eventType="attribution" />
                                                         </assessmentStatement>
                                                 </compoundCondition>
                                                 <assessmentStatement comparator="eq">
-                                                        <attributeStatement role="___________48" eventType="attribution" />
-                                                        <attributeStatement role="___________49" eventType="attribution" />
+                                                        <attributeStatement role="___________42" eventType="attribution" />
+                                                        <attributeStatement role="___________43" eventType="attribution" />
                                                 </assessmentStatement>
                                         </compoundCondition>
                                         <assessmentStatement comparator="eq">
-                                                <attributeStatement role="___________44" eventType="attribution" />
-                                                <attributeStatement role="___________45" eventType="attribution" />
+                                                <attributeStatement role="___________38" eventType="attribution" />
+                                                <attributeStatement role="___________39" eventType="attribution" />
                                         </assessmentStatement>
                                 </compoundCondition>
                                 <compoundCondition operator="and">
@@ -766,8 +761,8 @@ local str = [[
                                         </assessmentStatement>
                                 </compoundCondition>
                                 <assessmentStatement comparator="eq">
-                                        <attributeStatement role="___________42" eventType="attribution" />
-                                        <attributeStatement role="___________43" eventType="attribution" />
+                                        <attributeStatement role="___________36" eventType="attribution" />
+                                        <attributeStatement role="___________37" eventType="attribution" />
                                 </assessmentStatement>
                         </compoundCondition>
                         <simpleAction role="start" />
@@ -817,25 +812,33 @@ local str = [[
                         <bind role="R18" component="value" />
                         <bind role="R19" component="value" />
                         <bind role="R20" component="value" />
-                        <bind component="bubble_one" role="___________2" interface="___________26" />
-                        <bind component="bubble_one" role="___________3" interface="___________26" />
-                        <bind component="bubble_one" role="___________0" interface="___________27" />
-                        <bind component="bubble_one" role="___________1" interface="___________27" />
-                        <bind component="bubble_one" role="___________4" interface="___________28" />
-                        <bind component="bubble_one" role="___________5" interface="___________28" />
-                        <bind component="bubble_one" role="___________20" interface="___________29" />
-                        <bind component="bubble_one" role="___________21" interface="___________29" />
-                        <bind component="bubble_one" role="___________18" interface="___________30" />
-                        <bind component="bubble_one" role="___________19" interface="___________30" />
-                        <bind component="bubble_one" role="___________6" interface="___________31" />
-                        <bind component="bubble_one" role="___________7" interface="___________31" />
+                        <bind component="bubble_one" role="___________0" interface="value" />
+                        <bind component="bubble_one" role="___________1" interface="value" />
+                        <bind component="bubble_one" role="___________2" interface="value" />
+                        <bind component="bubble_one" role="___________3" interface="value" />
+                        <bind component="bubble_one" role="___________4" interface="value" />
+                        <bind component="bubble_one" role="___________5" interface="value" />
+                        <bind component="bubble_one" role="___________6" interface="value" />
+                        <bind component="bubble_one" role="___________7" interface="value" />
+                        <bind component="bubble_one" role="___________8" interface="value" />
+                        <bind component="bubble_one" role="___________9" interface="value" />
+                        <bind component="bubble_one" role="___________10" interface="value" />
+                        <bind component="bubble_one" role="___________11" interface="value" />
+                        <bind component="bubble_one" role="___________12" interface="value" />
+                        <bind component="bubble_one" role="___________13" interface="value" />
+                        <bind component="bubble_one" role="___________14" interface="value" />
+                        <bind component="bubble_one" role="___________15" interface="value" />
+                        <bind component="bubble_one" role="___________16" interface="value" />
+                        <bind component="bubble_one" role="___________17" interface="value" />
+                        <bind component="bubble_one" role="___________18" interface="value" />
+                        <bind component="bubble_one" role="___________19" interface="value" />
+                        <bind component="bubble_one" role="___________20" interface="value" />
+                        <bind component="bubble_one" role="___________21" interface="value" />
+                        <bind component="bubble_one" role="___________22" interface="value" />
+                        <bind component="bubble_one" role="___________23" interface="value" />
+                        <bind component="bubble_one" role="___________24" interface="value" />
+                        <bind component="bubble_one" role="___________25" interface="value" />
                 </link>
-                <property name="___________26" />
-                <property name="___________27" />
-                <property name="___________28" />
-                <property name="___________29" />
-                <property name="___________30" />
-                <property name="___________31" />
         </context>
         <link xconnector="a">
                 <bind role="onBegin" component="o" />
@@ -855,33 +858,30 @@ local str = [[
                         <bind role="start_again" component="s" />
                         <bind role="start" component="m" />
                 </bind>
-                <bind role="___________34" interface="___________52" />
-                <bind role="___________35" interface="___________52" />
-                <bind role="___________38" interface="___________53" />
-                <bind role="___________39" interface="___________53" />
-                <bind role="___________46" interface="___________54" />
-                <bind role="___________47" interface="___________54" />
-                <bind role="___________36" interface="___________55" />
-                <bind role="___________37" interface="___________55" />
-                <bind role="___________32" interface="___________56" />
-                <bind role="___________33" interface="___________56" />
-                <bind role="___________40" interface="___________57" />
-                <bind role="___________41" interface="___________57" />
-                <bind role="___________50" interface="___________58" />
-                <bind role="___________51" interface="___________58" />
-                <bind role="___________48" interface="___________59" />
-                <bind role="___________49" interface="___________59" />
+                <bind role="___________26" interface="master_value" />
+                <bind role="___________27" interface="master_value" />
+                <bind role="___________28" interface="master_value" />
+                <bind role="___________29" interface="master_value" />
+                <bind role="___________30" interface="master_value" />
+                <bind role="___________31" interface="master_value" />
+                <bind role="___________32" interface="master_value" />
+                <bind role="___________33" interface="master_value" />
+                <bind role="___________34" interface="master_value" />
+                <bind role="___________35" interface="master_value" />
+                <bind role="___________36" interface="master_value" />
+                <bind role="___________37" interface="master_value" />
+                <bind role="___________38" interface="master_value" />
+                <bind role="___________39" interface="master_value" />
+                <bind role="___________40" interface="master_value" />
+                <bind role="___________41" interface="master_value" />
+                <bind role="___________42" interface="master_value" />
+                <bind role="___________43" interface="master_value" />
+                <bind role="___________44" interface="master_value" />
+                <bind role="___________45" interface="master_value" />
         </link>
-        <property name="___________52" />
-        <property name="___________53" />
-        <property name="___________54" />
-        <property name="___________55" />
-        <property name="___________56" />
-        <property name="___________57" />
-        <property name="___________58" />
-        <property name="___________59" />
 	</body>
 </ncl>]]
 
 assert(filter.apply(ncl))
 assert(ncl:equal (dietncl.parsestring(str)))
+

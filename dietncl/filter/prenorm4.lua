@@ -66,7 +66,7 @@ end
 function filter.apply (ncl)
    for link in ncl:gmatch ('link') do
       local conn = ncl:match ('causalConnector', 'id', link.xconnector)
-
+		-- Remove min and max
       -- Expand aliases.
       for x in conn:gmatch ('^simple[AC].*$', nil, nil, 4) do
          if alias_map[x.role] then
