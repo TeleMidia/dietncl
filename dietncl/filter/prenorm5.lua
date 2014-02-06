@@ -34,12 +34,15 @@ local xml = require ('dietncl.xmlsugar')
 local aux = require ('dietncl.nclaux')
 _ENV = nil
 
+---
 -- Insert a tautological statement to turn a compound element into a binary one.
+--
 
 local function insert_tautological_statement (ncl, conn, parent)
 	local attr = {}
 	local stat
 	local new_bind
+	local property
 
 	stat = xml.new ('assessmentStatement')
 	stat.comparator = 'eq'
@@ -54,7 +57,6 @@ local function insert_tautological_statement (ncl, conn, parent)
 	parent:insert (stat)
 
 	for link in ncl:gmatch ('link', 'xconnector', conn.id) do
-		local property
 
 		property = link:parent():match ('property')
 
@@ -76,11 +78,8 @@ local function insert_tautological_statement (ncl, conn, parent)
 			link:insert (new_bind)
 		end
 
-		-- Once a new bind has been inserted, the search must be stopped.
-		goto continue
 	end
 
-	::continue::
 end
 
 ---
@@ -90,9 +89,12 @@ end
 local function make_binary_tree (ncl, conn, parent)
    local child
    local exclude = {'compoundStatement', 'assessmentStatement', 'simpleCondition', 'simpleAction', 'attributeStatement',
-					compoundCondition = 'simpleCondition',                       compoundAction = 'simpleAction'}
+					compoundCondition = 'simpleCondition',
+					compoundAction = 'simpleAction'}
 
-   local root={compoundCondition_operator = 'and', compoundAction_operator = 'par', compoundStatement_operator = 'and',
+   local root={compoundCondition_operator = 'and',
+			    compoundAction_operator = 'par',
+				compoundStatement_operator = 'and',
 				[1] = 'compoundCondition',              [2] = 'compoundAction',              [3] = 'compoundStatement'}
 
 	-- Returns function in case parent's length is zero (there are no child elements).
@@ -219,6 +221,7 @@ local function make_binary_tree (ncl, conn, parent)
 	end
 
 end
+
 ---
 -- Applies filter for restriction (5)
 --
