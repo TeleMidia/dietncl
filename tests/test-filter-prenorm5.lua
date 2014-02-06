@@ -26,23 +26,23 @@ _ENV = nil
 
 local ncl = dietncl.parsestring([[
 <ncl>
-	<head>
-		<connectorBase>
-			<causalConnector id='c'>
-				<compoundCondition operator='and'>
-					<simpleCondition role='onBegin'/>
-					<simpleCondition role='onEnd'/>
-				</compoundCondition>
-			</causalConnector>
-		</connectorBase>
-	</head>
-	<body>
-		<media id='m'/>
-		<link xconnector='c'>
-			<bind role='onBegin' component='m'/>
-			<bind role='onEnd' component='m'/>
-		</link>
-	</body>
+    <head>
+        <connectorBase>
+            <causalConnector id='c'>
+                <compoundCondition operator='and'>
+                    <simpleCondition role='onBegin'/>
+                    <simpleCondition role='onEnd'/>
+                </compoundCondition>
+            </causalConnector>
+        </connectorBase>
+    </head>
+    <body>
+        <media id='m'/>
+        <link xconnector='c'>
+            <bind role='onBegin' component='m'/>
+            <bind role='onEnd' component='m'/>
+        </link>
+    </body>
 </ncl>]])
 
 local str = dietncl.parsestring([[
@@ -95,44 +95,44 @@ assert (ncl:equal (str))
 
 local str = [[
 <ncl>
-	<head>
-		<connectorBase>
-			<causalConnector id='c'>
-				<compoundCondition operator='and'>
-					<simpleCondition role='onBegin' delay='5s'/>
-					<assessmentStatement comparator='eq'>
-						<attributeStatement role='R1'/>
-						<attributeStatement role='R2'/>
-					</assessmentStatement>
-				</compoundCondition >
-				<compoundAction operator='and'>
-					<simpleAction role='start' delay='15s'/>
-					<assessmentStatement comparator='eq'>
-						<attributeStatement role='R3' eventType='attribution'/>
-						<attributeStatement role='R4' eventType='attribution'/>
-					</assessmentStatement>
-				</compoundAction>
-			</causalConnector>
-		</connectorBase>
-	</head>
+    <head>
+        <connectorBase>
+            <causalConnector id='c'>
+                <compoundCondition operator='and'>
+                    <simpleCondition role='onBegin' delay='5s'/>
+                    <assessmentStatement comparator='eq'>
+                        <attributeStatement role='R1'/>
+                        <attributeStatement role='R2'/>
+                    </assessmentStatement>
+                </compoundCondition >
+                <compoundAction operator='and'>
+                    <simpleAction role='start' delay='15s'/>
+                    <assessmentStatement comparator='eq'>
+                        <attributeStatement role='R3' eventType='attribution'/>
+                        <attributeStatement role='R4' eventType='attribution'/>
+                    </assessmentStatement>
+                </compoundAction>
+            </causalConnector>
+        </connectorBase>
+    </head>
 
-	<body>
-		<media id='m'/>
+    <body>
+        <media id='m'/>
 
-		<context id='bubble'>
-			<property name='value'/>
+        <context id='bubble'>
+            <property name='value'/>
 
-			<link xconnector='c'>
-				<bind role='onBegin' component='m'/>
-				<bind role='start' component='m'/>
-				<bind role='R1' component='bubble' interface='value'/>
-				<bind role='R2' component='bubble' interface='value'/>
-				<bind role='R3' component='bubble' interface='value'/>
-				<bind role='R4' component='bubble' interface='value'/>
-			</link>
-		</context>
+            <link xconnector='c'>
+                <bind role='onBegin' component='m'/>
+                <bind role='start' component='m'/>
+                <bind role='R1' component='bubble' interface='value'/>
+                <bind role='R2' component='bubble' interface='value'/>
+                <bind role='R3' component='bubble' interface='value'/>
+                <bind role='R4' component='bubble' interface='value'/>
+            </link>
+        </context>
 
-	</body>
+    </body>
 ]]
 
 local ncl = dietncl.parsestring (str)
@@ -143,58 +143,58 @@ assert (ncl:equal (dietncl.parsestring(str)))
 
 local ncl = dietncl.parsestring ([[
 <ncl>
-	<head>
-		<connectorBase>
-			<causalConnector id='c'>
-				<compoundCondition operator='and'>
-					<compoundCondition operator='and'>
-						<simpleCondition role='onBegin' delay='5s'/>
-						<simpleCondition role='onEnd'/>
-					</compoundCondition>
-				</compoundCondition >
-				<compoundAction operator='and'>
-					<compoundAction operator='and'>
-						<simpleAction role='start' delay='15s'/>
-						<simpleAction role='pause'/>
-					</compoundAction>
-				</compoundAction>
-			</causalConnector>
+    <head>
+        <connectorBase>
+            <causalConnector id='c'>
+                <compoundCondition operator='and'>
+                    <compoundCondition operator='and'>
+                        <simpleCondition role='onBegin' delay='5s'/>
+                        <simpleCondition role='onEnd'/>
+                    </compoundCondition>
+                </compoundCondition >
+                <compoundAction operator='and'>
+                    <compoundAction operator='and'>
+                        <simpleAction role='start' delay='15s'/>
+                        <simpleAction role='pause'/>
+                    </compoundAction>
+                </compoundAction>
+            </causalConnector>
 
-			<causalConnector id='a'>
-				<compoundCondition operator='or'>
-					<compoundCondition operator='and'>
-						<simpleCondition role='onBegin' delay='15s'/>
-						<simpleCondition role='onSelection'/>
-					</compoundCondition>
-				</compoundCondition>
-			</causalConnector>
-		</connectorBase>
-	</head>
+            <causalConnector id='a'>
+                <compoundCondition operator='or'>
+                    <compoundCondition operator='and'>
+                        <simpleCondition role='onBegin' delay='15s'/>
+                        <simpleCondition role='onSelection'/>
+                    </compoundCondition>
+                </compoundCondition>
+            </causalConnector>
+        </connectorBase>
+    </head>
 
-	<body>
-		<media id='m'/>
-		<media id='n'/>
-		<media id='o'/>
-		<media id='p'/>
-		<media id='s'/>
+    <body>
+        <media id='m'/>
+        <media id='n'/>
+        <media id='o'/>
+        <media id='p'/>
+        <media id='s'/>
 
-		<context id='bubble'>
-			<media id='w'/>
-			<port id='first' component='w'/>
+        <context id='bubble'>
+            <media id='w'/>
+            <port id='first' component='w'/>
 
-			<link xconnector='c'>
-			     <bind role='onBegin' component='m'/>
-			     <bind role='onEnd' component='o'/>
-			     <bind role='start' component='w'/>
-			     <bind role='pause' component='m'/>
-			 </link>
-		</context>
+            <link xconnector='c'>
+                 <bind role='onBegin' component='m'/>
+                 <bind role='onEnd' component='o'/>
+                 <bind role='start' component='w'/>
+                 <bind role='pause' component='m'/>
+             </link>
+        </context>
 
-		<link xconnector='a'>
-			<bind role='onBegin' component='o'/>
-			<bind role='onSelection' component='n'/>
-		</link>
-	</body>
+        <link xconnector='a'>
+            <bind role='onBegin' component='o'/>
+            <bind role='onSelection' component='n'/>
+        </link>
+    </body>
 </ncl>]])
 
 
@@ -298,83 +298,83 @@ assert(ncl:equal (dietncl.parsestring(str)))
 
 local str = [[
 <ncl>
-	<head>
-		<connectorBase>
-			<causalConnector id='c'>
-				<compoundCondition operator='and'>
-					<compoundCondition operator='and'>
-						<compoundCondition operator='and'>
-							<simpleCondition role='onBegin'/>
-							<assessmentStatement operator='eq'>
-								<attributeStatement role='i' eventType='attribution'/>
-								<attributeStatement role='j' eventType='attribution'/>
-							</assessmentStatement>
-						</compoundCondition>
-						<compoundCondition operator='and'>
-							<simpleCondition role='onResume'/>
-							<assessmentStatement operator='eq'>
-								<attributeStatement role='k' eventType='attribution'/>
-								<attributeStatement role='l' eventType='attribution'/>
-							</assessmentStatement>
-						</compoundCondition>
-						<assessmentStatement operator='eq'>
-							<attributeStatement role='a' eventType='attribution'/>
-							<attributeStatement role='b' eventType='attribution'/>
-						</assessmentStatement>
-					</compoundCondition>
-					<compoundCondition operator='and'>
-						<compoundCondition operator='and'>
-							<simpleCondition role='onEnd'/>
-							<assessmentStatement operator='eq'>
-								<attributeStatement role='e' eventType='attribution'/>
-								<attributeStatement role='f' eventType='attribution'/>
-							</assessmentStatement>
-						</compoundCondition>
-						<compoundCondition operator='and'>
-							<simpleCondition role='onAbort'/>
-							<assessmentStatement operator='eq'>
-								<attributeStatement role='g' eventType='attribution'/>
-								<attributeStatement role='h' eventType='attribution'/>
-							</assessmentStatement>
-						</compoundCondition>
-						<assessmentStatement operator='eq'>
-							<attributeStatement role='c' eventType='attribution'/>
-							<attributeStatement role='d' eventType='attribution'/>
-						</assessmentStatement>
-					</compoundCondition>
-					<assessmentStatement operator='eq'>
-						<attributeStatement role='r' eventType='attribution'/>
-						<attributeStatement role='s' eventType='attribution'/>
-					</assessmentStatement>
-				</compoundCondition>
-			</causalConnector>
-		</connectorBase>
-	</head>
+    <head>
+        <connectorBase>
+            <causalConnector id='c'>
+                <compoundCondition operator='and'>
+                    <compoundCondition operator='and'>
+                        <compoundCondition operator='and'>
+                            <simpleCondition role='onBegin'/>
+                            <assessmentStatement operator='eq'>
+                                <attributeStatement role='i' eventType='attribution'/>
+                                <attributeStatement role='j' eventType='attribution'/>
+                            </assessmentStatement>
+                        </compoundCondition>
+                        <compoundCondition operator='and'>
+                            <simpleCondition role='onResume'/>
+                            <assessmentStatement operator='eq'>
+                                <attributeStatement role='k' eventType='attribution'/>
+                                <attributeStatement role='l' eventType='attribution'/>
+                            </assessmentStatement>
+                        </compoundCondition>
+                        <assessmentStatement operator='eq'>
+                            <attributeStatement role='a' eventType='attribution'/>
+                            <attributeStatement role='b' eventType='attribution'/>
+                        </assessmentStatement>
+                    </compoundCondition>
+                    <compoundCondition operator='and'>
+                        <compoundCondition operator='and'>
+                            <simpleCondition role='onEnd'/>
+                            <assessmentStatement operator='eq'>
+                                <attributeStatement role='e' eventType='attribution'/>
+                                <attributeStatement role='f' eventType='attribution'/>
+                            </assessmentStatement>
+                        </compoundCondition>
+                        <compoundCondition operator='and'>
+                            <simpleCondition role='onAbort'/>
+                            <assessmentStatement operator='eq'>
+                                <attributeStatement role='g' eventType='attribution'/>
+                                <attributeStatement role='h' eventType='attribution'/>
+                            </assessmentStatement>
+                        </compoundCondition>
+                        <assessmentStatement operator='eq'>
+                            <attributeStatement role='c' eventType='attribution'/>
+                            <attributeStatement role='d' eventType='attribution'/>
+                        </assessmentStatement>
+                    </compoundCondition>
+                    <assessmentStatement operator='eq'>
+                        <attributeStatement role='r' eventType='attribution'/>
+                        <attributeStatement role='s' eventType='attribution'/>
+                    </assessmentStatement>
+                </compoundCondition>
+            </causalConnector>
+        </connectorBase>
+    </head>
 
-	<body>
-		<media id='m'/>
-		<property name='value'/>
-		<link xconnector='c'>
-			<bind role='onBegin' component='m'/>
-			<bind role='onResume' component='m'/>
-			<bind role='a' interface='value'/>
-			<bind role='b' interface='value'/>
-			<bind role='i' interface='value'/>
-			<bind role='j' interface='value'/>
-			<bind role='k' interface='value'/>
-			<bind role='l' interface='value'/>
-			<bind role='onEnd' componenet='m'/>
-			<bind role='onAbort' component='m'/>
-			<bind role='c' interface='value'/>
-			<bind role='d' interface='value'/>
-			<bind role='e' interface='value'/>
-			<bind role='f' interface='value'/>
-			<bind role='g' interface='value'/>
-			<bind role='h' interface='value'/>
-			<bind role='r' interface='value'/>
-			<bind role='s' interface='value'/>
-		</link>
-	</body>
+    <body>
+        <media id='m'/>
+        <property name='value'/>
+        <link xconnector='c'>
+            <bind role='onBegin' component='m'/>
+            <bind role='onResume' component='m'/>
+            <bind role='a' interface='value'/>
+            <bind role='b' interface='value'/>
+            <bind role='i' interface='value'/>
+            <bind role='j' interface='value'/>
+            <bind role='k' interface='value'/>
+            <bind role='l' interface='value'/>
+            <bind role='onEnd' componenet='m'/>
+            <bind role='onAbort' component='m'/>
+            <bind role='c' interface='value'/>
+            <bind role='d' interface='value'/>
+            <bind role='e' interface='value'/>
+            <bind role='f' interface='value'/>
+            <bind role='g' interface='value'/>
+            <bind role='h' interface='value'/>
+            <bind role='r' interface='value'/>
+            <bind role='s' interface='value'/>
+        </link>
+    </body>
 </ncl>]]
 
 
@@ -386,174 +386,174 @@ assert (ncl:equal (dietncl.parsestring (str)))
 
 local ncl = dietncl.parsestring ([[
 <ncl>
-	<head>
-		<connectorBase>
-			<causalConnector id='c'>
-				<compoundCondition operator='or'>
-					<compoundCondition operator='and'>
-						<simpleCondition role='onBegin' delay='5s'/>
-						<simpleCondition role='onSelection' key='ENTER'/>
-						<simpleCondition role='onEnd'/>
-						<simpleCondition role='onAbort' transition='aborts' eventType='presentation'/>
-					</compoundCondition>
-					<compoundCondition operator='and'>
-						<simpleCondition role='onResume'/>
-						<simpleCondition role='onPause'/>
-						<compoundStatement operator='and'>
-							<assessmentStatement comparator='ne'>
-								<attributeStatement role='R17' eventType='attribution'/>
-								<attributeStatement role='R18' eventType='attribution'/>
-							</assessmentStatement>
-							<assessmentStatement comparator='ne'>
-								<attributeStatement role='R19' eventType='attribution'/>
-								<attributeStatement role='R20' eventType='attribution'/>
-							</assessmentStatement>
-						</compoundStatement>
-					</compoundCondition>
-					<compoundCondition operator='and'>
-						<simpleCondition role='beginning' transition='presentation' eventType='presentation'/>
-						<assessmentStatement comparator='ne'>
-							<attributeStatement role='R1' eventType='attribution'/>
-							<attributeStatement role='R2' eventType='attribution'/>
-						</assessmentStatement/>
-					</compoundCondition>
-				</compoundCondition >
-				<compoundAction operator='par'>
-					<compoundAction operator='seq'>
-						<simpleAction role='start'/>
-						<simpleAction role='pause'/>
-						<assessmentStatement comparator='eq'>
-							<attributeStatement role='R3' eventType='attribution'/>
-							<attributeStatement role='R4' eventType='attribution'/>
-						</assessmentStatement>
-					</compoundAction>
-					<compoundAction operator='par'>
-						<simpleAction role='abort'/>
-						<assessmentStatement comparator='eq'>
-							<attributeStatement role='R9' eventType='attribution'/>
-							<attributeStatement role='R10' eventType='attribution'/>
-						</assessmentStatement>
-					</compoundAction>
-					<compoundAction operator='seq'>
-						<simpleAction role='resume'/>
-						<assessmentStatement comparator='eq'>
-							<attributeStatement role='R11' eventType='attribution'/>
-							<attributeStatement role='R12' eventType='attribution'/>
-						</assessmentStatement>
-					</compoundAction>
-				</compoundAction>
-				<compoundStatement operator='and'>
-					<assessmentStatement comparator='eq'>
-							<attributeStatement role='R13' eventType='attribution'/>
-							<attributeStatement role='R14' eventType='attribution'/>
-					</assessmentStatement>
-					<assessmentStatement comparator='eq'>
-							<attributeStatement role='R15' eventType='attribution'/>
-							<attributeStatement role='R16' eventType='attribution'/>
-					</assessmentStatement>
-				</compoundStatement>
-			</causalConnector>
+    <head>
+        <connectorBase>
+            <causalConnector id='c'>
+                <compoundCondition operator='or'>
+                    <compoundCondition operator='and'>
+                        <simpleCondition role='onBegin' delay='5s'/>
+                        <simpleCondition role='onSelection' key='ENTER'/>
+                        <simpleCondition role='onEnd'/>
+                        <simpleCondition role='onAbort' transition='aborts' eventType='presentation'/>
+                    </compoundCondition>
+                    <compoundCondition operator='and'>
+                        <simpleCondition role='onResume'/>
+                        <simpleCondition role='onPause'/>
+                        <compoundStatement operator='and'>
+                            <assessmentStatement comparator='ne'>
+                                <attributeStatement role='R17' eventType='attribution'/>
+                                <attributeStatement role='R18' eventType='attribution'/>
+                            </assessmentStatement>
+                            <assessmentStatement comparator='ne'>
+                                <attributeStatement role='R19' eventType='attribution'/>
+                                <attributeStatement role='R20' eventType='attribution'/>
+                            </assessmentStatement>
+                        </compoundStatement>
+                    </compoundCondition>
+                    <compoundCondition operator='and'>
+                        <simpleCondition role='beginning' transition='presentation' eventType='presentation'/>
+                        <assessmentStatement comparator='ne'>
+                            <attributeStatement role='R1' eventType='attribution'/>
+                            <attributeStatement role='R2' eventType='attribution'/>
+                        </assessmentStatement/>
+                    </compoundCondition>
+                </compoundCondition >
+                <compoundAction operator='par'>
+                    <compoundAction operator='seq'>
+                        <simpleAction role='start'/>
+                        <simpleAction role='pause'/>
+                        <assessmentStatement comparator='eq'>
+                            <attributeStatement role='R3' eventType='attribution'/>
+                            <attributeStatement role='R4' eventType='attribution'/>
+                        </assessmentStatement>
+                    </compoundAction>
+                    <compoundAction operator='par'>
+                        <simpleAction role='abort'/>
+                        <assessmentStatement comparator='eq'>
+                            <attributeStatement role='R9' eventType='attribution'/>
+                            <attributeStatement role='R10' eventType='attribution'/>
+                        </assessmentStatement>
+                    </compoundAction>
+                    <compoundAction operator='seq'>
+                        <simpleAction role='resume'/>
+                        <assessmentStatement comparator='eq'>
+                            <attributeStatement role='R11' eventType='attribution'/>
+                            <attributeStatement role='R12' eventType='attribution'/>
+                        </assessmentStatement>
+                    </compoundAction>
+                </compoundAction>
+                <compoundStatement operator='and'>
+                    <assessmentStatement comparator='eq'>
+                            <attributeStatement role='R13' eventType='attribution'/>
+                            <attributeStatement role='R14' eventType='attribution'/>
+                    </assessmentStatement>
+                    <assessmentStatement comparator='eq'>
+                            <attributeStatement role='R15' eventType='attribution'/>
+                            <attributeStatement role='R16' eventType='attribution'/>
+                    </assessmentStatement>
+                </compoundStatement>
+            </causalConnector>
 
-			<causalConnector id='a'>
-				<compoundCondition operator='or'>
-					<compoundCondition operator='and'>
-						<simpleCondition role='onBegin' delay='15s'/>
-						<simpleCondition role='onSelection'/>
-						<simpleCondition role='onBeginSelect' key='ENTER' transition='starts' eventType='selection'/>
-						<simpleCondition role='onAbort' transition='aborts' eventType='presentation'/>
-						<simpleCondition role='start_again' eventType='presentation' transition='presentation'/>
-						<assessmentStatement comparator='eq'>
-							<attributeStatement role='R5' eventType='attribution'/>
-							<attributeStatement role='R6' eventType='attribution'/>
-						</assessmentStatement/>
-					</compoundCondition>
-					<compoundCondition operator='and'>
-						<simpleCondition role='onResume'/>
-						<assessmentStatement comparator='eq'>
-							<attributeStatement role='R7' eventType='attribution'/>
-							<attributeStatement role='R8' eventType='attribution'/>
-						</assessmentStatement/>
-					</compoundCondition>
-				</compoundCondition>
-				<simpleAction role='start'/>
-				<assessmentStatement comparator='ne'>
-						<attributeStatement role='R21' eventType='attribution'/>
-						<attributeStatement role='R22' eventType='attribution'/>
-				</assessmentStatement>
-			</causalConnector>
-		</connectorBase>
-	</head>
+            <causalConnector id='a'>
+                <compoundCondition operator='or'>
+                    <compoundCondition operator='and'>
+                        <simpleCondition role='onBegin' delay='15s'/>
+                        <simpleCondition role='onSelection'/>
+                        <simpleCondition role='onBeginSelect' key='ENTER' transition='starts' eventType='selection'/>
+                        <simpleCondition role='onAbort' transition='aborts' eventType='presentation'/>
+                        <simpleCondition role='start_again' eventType='presentation' transition='presentation'/>
+                        <assessmentStatement comparator='eq'>
+                            <attributeStatement role='R5' eventType='attribution'/>
+                            <attributeStatement role='R6' eventType='attribution'/>
+                        </assessmentStatement/>
+                    </compoundCondition>
+                    <compoundCondition operator='and'>
+                        <simpleCondition role='onResume'/>
+                        <assessmentStatement comparator='eq'>
+                            <attributeStatement role='R7' eventType='attribution'/>
+                            <attributeStatement role='R8' eventType='attribution'/>
+                        </assessmentStatement/>
+                    </compoundCondition>
+                </compoundCondition>
+                <simpleAction role='start'/>
+                <assessmentStatement comparator='ne'>
+                        <attributeStatement role='R21' eventType='attribution'/>
+                        <attributeStatement role='R22' eventType='attribution'/>
+                </assessmentStatement>
+            </causalConnector>
+        </connectorBase>
+    </head>
 
-	<body>
-		<property name='master_value'/>
+    <body>
+        <property name='master_value'/>
 
-		<media id='m'/>
-		<media id='n'/>
-		<media id='o'/>
-		<media id='p'/>
-		<media id='s'/>
+        <media id='m'/>
+        <media id='n'/>
+        <media id='o'/>
+        <media id='p'/>
+        <media id='s'/>
 
-		<context id='bubble_one'>
-			<property name='value'/>
-			<property name='another_value'/>
-			<media id='w'/>
-			<port id='first' component='w'/>
+        <context id='bubble_one'>
+            <property name='value'/>
+            <property name='another_value'/>
+            <media id='w'/>
+            <port id='first' component='w'/>
 
-			<link xconnector='c'>
-				<bind role='onBegin' component='m'/>
-				<bind role='onSelection' component='n'>
-					<bindParam name='key' value='ENTER'/>
-				</bind>
-				<bind role='onEnd' component='o'/>
-				<bind role='onResume' component='w'/>
-				<bind role='onPause' component='n'/>
-				<bind role='beginning' component='m'/>
-				<bind role='start' comnponent='n'/>
-				<bind role='pause' component='m'/>
-				<bind role='abort' component='w'/>
-				<bind role='resume' component='n'/>
-				<bind role='R1' component='value'/>
-				<bind role='R2' component='another_value'/>
-				<bind role='R3' component='value'/>
-				<bind role='R4' component='value'/>
-				<bind role='R9' component='value'/>
-				<bind role='R10' component='value'/>
-				<bind role='R11' component='value'/>
-				<bind role='R12' component='value'/>
-				<bind role='R13' component='value'/>
-				<bind role='R14' component='value'/>
-				<bind role='R17' component='value'/>
-				<bind role='R18' component='value'/>
-				<bind role='R19' component='value'/>
-				<bind role='R20' component='value'/>
-			</link>
-		</context>
+            <link xconnector='c'>
+                <bind role='onBegin' component='m'/>
+                <bind role='onSelection' component='n'>
+                    <bindParam name='key' value='ENTER'/>
+                </bind>
+                <bind role='onEnd' component='o'/>
+                <bind role='onResume' component='w'/>
+                <bind role='onPause' component='n'/>
+                <bind role='beginning' component='m'/>
+                <bind role='start' comnponent='n'/>
+                <bind role='pause' component='m'/>
+                <bind role='abort' component='w'/>
+                <bind role='resume' component='n'/>
+                <bind role='R1' component='value'/>
+                <bind role='R2' component='another_value'/>
+                <bind role='R3' component='value'/>
+                <bind role='R4' component='value'/>
+                <bind role='R9' component='value'/>
+                <bind role='R10' component='value'/>
+                <bind role='R11' component='value'/>
+                <bind role='R12' component='value'/>
+                <bind role='R13' component='value'/>
+                <bind role='R14' component='value'/>
+                <bind role='R17' component='value'/>
+                <bind role='R18' component='value'/>
+                <bind role='R19' component='value'/>
+                <bind role='R20' component='value'/>
+            </link>
+        </context>
 
-		<link xconnector='a'>
-			<bind role='onBegin' component='o'/>
-			<bind role='onSelection' component='n'/>
-			<bind role='onResume' component='m'/>
-			<bind role='onBeginSelect' component='p'>
-				<bindParam name='key' value='ENTER'>
-			</bind>
-			<bind role='onResume' component='s'/>
-			<bind role='start' component='n'/>
-			<bind role='R5' component='master_value'/>
-			<bind role='R6' component='master_value'/>
-			<bind role='R7' component='master_value'/>
-			<bind role='R8' component='master_value'/>
-			<bind role='R21' component='master_value'/>
-			<bind role='R22' component='master_value'/>
-			<bind role='onAbort' component='m'/>
-			<bind role='start_again' component='s'/>
-			<bind role='start' component='m'>
-		</link>
-	</body>
+        <link xconnector='a'>
+            <bind role='onBegin' component='o'/>
+            <bind role='onSelection' component='n'/>
+            <bind role='onResume' component='m'/>
+            <bind role='onBeginSelect' component='p'>
+                <bindParam name='key' value='ENTER'>
+            </bind>
+            <bind role='onResume' component='s'/>
+            <bind role='start' component='n'/>
+            <bind role='R5' component='master_value'/>
+            <bind role='R6' component='master_value'/>
+            <bind role='R7' component='master_value'/>
+            <bind role='R8' component='master_value'/>
+            <bind role='R21' component='master_value'/>
+            <bind role='R22' component='master_value'/>
+            <bind role='onAbort' component='m'/>
+            <bind role='start_again' component='s'/>
+            <bind role='start' component='m'>
+        </link>
+    </body>
 </ncl>]])
 
 local str = [[
 <ncl>
-	<head>
+    <head>
         <connectorBase>
                 <causalConnector id="c">
                         <compoundCondition operator="or">
@@ -772,8 +772,8 @@ local str = [[
                         </assessmentStatement>
                 </causalConnector>
         </connectorBase>
-	</head>
-	<body>
+    </head>
+    <body>
         <property name="master_value" />
         <media id="m" />
         <media id="n" />
@@ -879,9 +879,8 @@ local str = [[
                 <bind role="___________44" interface="master_value" />
                 <bind role="___________45" interface="master_value" />
         </link>
-	</body>
+    </body>
 </ncl>]]
 
 assert(filter.apply(ncl))
 assert(ncl:equal (dietncl.parsestring(str)))
-
