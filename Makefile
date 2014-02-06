@@ -75,22 +75,9 @@ update-copyright:
 all_src := `git ls-files '*.lua'`
 dietncl_src := `git ls-files 'dietncl/*.lua'`
 
-sc_lua:
-	@./build-aux/sclua.pl $(all_src)
-
-sc_lua_copyright:
-	@./build-aux/sclua-copyright.pl $(all_src)
-
-sc_lua_column_76_ =\
-  /^.*$$/\
-    and length $$_ > 76\
-    and die "error:$$ARGV:$$.: line longer than 76 columns\n-->$$_\n";
-sc_lua_column_76:
-	@perl -wnle '$(sc_lua_column_76_)' $(dietncl_src)
-
-local-check = sc_lua sc_lua_copyright sc_lua_column_76
-.PHONY: check-syntax $(local-check)
-syntax-check: $(local-check)
+.PHONY: syntax-check
+syntax-check:
+	@./build-aux/syntax-check $(all_src)
 
 # Adapted from GNU Automake 1.12.6.
 tty_colors = \
