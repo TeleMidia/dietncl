@@ -82,10 +82,10 @@ local function insert_tautological_statement (ncl, conn, parent)
 end
 
 ---
--- Adds binary elements to binary chain of these same elements .
+-- Make sure that every leaf of the tree is a binary compound and every branch of the tree is a ternary compounds.
 --
 
-local function make_binary_tree (ncl, conn, parent)
+local function make_ternary_tree (ncl, conn, parent)
    local child
    local exclude = {'compoundStatement', 'assessmentStatement', 'simpleCondition', 'simpleAction', 'attributeStatement',
                     compoundCondition = 'simpleCondition',
@@ -110,7 +110,7 @@ local function make_binary_tree (ncl, conn, parent)
         if child:tag() == 'assessmentStatement' or child:tag() == 'compoundStatement' then
             return
         else
-            make_binary_tree (ncl, conn, child)
+            make_ternary_tree (ncl, conn, child)
         end
 
     -- In case parent has exactly two children.
@@ -143,7 +143,7 @@ local function make_binary_tree (ncl, conn, parent)
 
         for index, element in ipairs (parent) do
             if element:tag() == parent:tag() then
-                make_binary_tree (ncl, conn, element)
+                make_ternary_tree (ncl, conn, element)
             end
         end
 
@@ -207,13 +207,13 @@ local function make_binary_tree (ncl, conn, parent)
 
         -- After this treatment, parent might become a parent which has two children or one child or none.
         -- It's necessary to apply make_binary_tree (parent, ncl) once again.
-        make_binary_tree (ncl, conn, parent)
+        make_ternary_tree (ncl, conn, parent)
 
         ::exception::
 
         for index, element in ipairs (parent) do
             if element:tag() == parent:tag() then
-                make_binary_tree (ncl, conn, element)
+                make_ternary_tree (ncl, conn, element)
             end
         end
 
@@ -263,7 +263,7 @@ function filter.apply (ncl)
         -- Breakage procedure: creates a chain of binary compound conditions.
         for compound in conn:gmatch ('^compound[AC].*$', nil, nil, 4) do
             if compound:parent() == conn then
-                make_binary_tree (ncl, conn, compound)
+                make_ternary_tree (ncl, conn, compound)
             end
         end
 
