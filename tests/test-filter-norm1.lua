@@ -16,6 +16,7 @@ You should have received a copy of the GNU General Public License along
 with DietNCL.  If not, see <http://www.gnu.org/licenses/>.  ]]--
 
 local assert = assert
+local print = print
 
 local dietncl = require ('dietncl')
 local filter = require ('dietncl.filter.norm1')
@@ -69,7 +70,7 @@ local ncl = dietncl.parsestring([[
 local str = ncl
 assert (filter.apply (ncl))
 assert (ncl:equal (str))
-
+--[==[
 local ncl = dietncl.parsestring([[
 <ncl>
     <head>
@@ -797,3 +798,4 @@ local str = [[
 local ncl = dietncl.parsestring (str)
 assert(filter.apply (ncl))
 assert(ncl:equal (dietncl.parsestring (str)))
+]==]--

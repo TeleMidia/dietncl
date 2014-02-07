@@ -124,4 +124,11 @@ function nclaux.insert_descparam (desc, name, value)
    desc:insert (param)
 end
 
+--function nclaux.get_mapping_binds (ncl, e)
+--    assert (e:tag() == '^compound[ACS].*$' or e:tag() == 'simpleCondition' or e:tag() == 'attributeAssessment')
+--    local list_binds = {[ncl:match('')]}
+
+
+--end
+
 return nclaux
