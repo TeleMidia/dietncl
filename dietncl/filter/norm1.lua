@@ -37,35 +37,97 @@ _ENV = nil
 --
 
 local function update_binds (ncl, conn, link)
-
-        if link == nil and #conn == 0 then
+        
+        if link == nil then
             link = ncl:match('link', 'xconnector', conn.id)
-            xml.remove (link:parent(), link)
+            if link then
+                xml.remove (link:parent(), link)
+            end
             xml.remove (conn:parent(), conn)
+            
         else
             local parent = link:parent()
-            local copy = link:clone()
-            copy.id = conn.id
-            parent:insert (copy)
-            for attr in conn:gmatch ('attributeStatement') do
-                local new_bind = xml.new ('bind')
-                new_bind.role = attr.role
-                local property = copy:parent():match('property')
-                if not property then
-                    property = xml.new ('property')
-                    property.name = aux.gen_id (ncl)
-                end
-                new_bind.interface = property.name
-                if copy:parent().id then
-                    new_bind.component = copy:parent().id
-                end
+            local new_link = xml.new ('link')
+	    new_link.xconnector = conn.id
+            parent:insert (new_link)
+	    for comp in conn:gmatch('simpleCondition') do
+		local bind = link:match ('bind', 'role', comp.role)
+		if bind then
+			bind = xml.remove (bind:parent(), bind)
+			new_link:insert (bind)
+		end
+	    end
+	    for comp in conn:gmatch('simpleAction') do
+		local bind = link:match ('bind', 'role', comp.role)
+		if bind then
+			bind = xml.remove (bind:parent(), bind)
+			new_link:insert (bind)
+		end
+	    end
+	     for attr in conn:gmatch ('attributeStatement') do
+		local new_bind = xml.new ('bind')
+		new_bind.role = attr.role
+		local property = new_link:parent():match('property')
+		if not property then
+			property = xml.new ('property')
+			property.name = aux.gen_id (ncl)
+		end
+		new_bind.interface = property.name
+		if new_link:parent().id then
+			new_bind.component = new_link:parent().id
+		end
+		new_link:insert (new_bind)
             end
+
         end
 
 end
 
-local function break_ternary_compounds (ncl, base, connector, parent)
-
+local function break_ternary_compounds (ncl, base, connector, parent, action)
+    local statement
+    local stat_list = {}
+    local i = 1
+    
+    for stat in parent:gmatch('compoundStatement') do
+        if stat:parent() == parent then
+            stat_list[i] = stat
+            i = i + 1
+        end
+    end
+        
+    if #stat_list == 1 then
+        for stat in parent:gmatch('assessmentStatement') do
+            if stat:parent() == parent then
+		stat = xml.remove (parent, stat)
+                stat_list[1]:insert (stat)
+            end
+        end
+    elseif #stat_list == 2 then
+        for index, element in ipairs (stat_list[1]) do
+            element = xml.remove (stat_list[1], element)
+            stat_list[2]:insert (element)
+        end
+    end
+        
+    local i = 1
+    
+    for stat in parent:gmatch('assessmentStatement') do
+        if stat:parent() == parent then
+            stat_list[i] = stat
+            i = i + 1
+        end
+    end
+        
+    if #stat_list > 1 then
+        local stat_compound = xml.new ('compoundStatement')
+        stat_compound.operator = 'eq'
+        for index, stat in ipairs (stat_list) do
+            stat = xml.remove (stat:parent(), stat)
+	    local copy = stat:clone()
+            stat_compound:insert (copy)
+        end
+    end
+    
     if #parent == 3 then
 
         local statement
@@ -74,28 +136,29 @@ local function break_ternary_compounds (ncl, base, connector, parent)
 
         for i, child in ipairs (parent) do
             child_list[i] = child
-            if child:tag() == 'assessmentStatement' then
-                statement = xml.new ('compoundStatement')
-            end
         end
-
+        
         for index, child in ipairs (child_list) do
             if child:tag() == 'assessmentStatement' or child:tag() == 'compoundStatement' then
                 statement = xml.remove (child:parent(), child)
                 child = nil
             end
         end
-
+        
         if parent.operator == 'or' then
             for index, child in ipairs (child_list) do
-                if child:tag () == 'compoundCondition' then
+                if child:tag () == 'compoundCondition' and #child == 2 then
                     conn[index] = xml.new ('causalConnector')
                     conn[index].id = aux.gen_id (ncl)
+                    if action then
+                        local copy = action:clone ()
+                        conn[index]:insert (copy)
+                    end
                     base:insert (conn[index])
                     local link = ncl:match ('link', 'xconnector', connector.id)
                     child = xml.remove (parent, child)
                     local copy = statement:clone()
-                    if #child == 2 and child:match('simpleCondition') then
+                    if #child == 2 and child:match('simpleCondition') and statement then
                         local compound_stat = xml.new ('compoundStatement')
                         compound_stat.operator = 'and'
 
@@ -104,7 +167,6 @@ local function break_ternary_compounds (ncl, base, connector, parent)
                                 stat = xml.remove (statement, stat)
                                 compound_stat:insert (stat)
                             end
-                            xml.remove(parent, statement)
                         end
 
                         compound_stat:insert (copy)
@@ -119,16 +181,31 @@ local function break_ternary_compounds (ncl, base, connector, parent)
                     if link then
                         update_binds (ncl, conn[index], link)
                     end
-                end
+                elseif child:tag () == 'compoundCondition' and #child == 3 then
+			for index, element in ipairs (child) do
+				local assess
+				if element:tag() == 'compoundStatement' or element:tag() == 'assessmentStatement' then
+					assess = xml.remove (element:parent(), element)
+				end
+				if assess then
+					for i, comp in ipairs (child) do
+						if comp:tag() == 'compoundCondition' then
+							local copy = assess:clone()
+							comp:insert (copy)
+						end
+					end
+				end
+			end
+			 break_ternary_compounds (ncl, base, connector, child[1], action['master'])
+			 break_ternary_compounds (ncl, base, connector, child[2], action['master'])
+		end
             end
         end
-
-        xml.remove (parent:parent(), parent)
-
+    
         for index, connectors in ipairs (conn) do
             for count, element in ipairs (connectors) do
                 if element:tag() == 'compoundCondition'  then
-                    break_ternary_compounds (ncl, base, connectors, element)
+                    break_ternary_compounds (ncl, base, connector, element, action['master'])
                 end
             end
         end
@@ -141,9 +218,9 @@ local function break_ternary_compounds (ncl, base, connector, parent)
         if parent[1] == 'simpleCondition' or parent[2] == 'simpleCondition' then
             return
         elseif parent[1]:tag() == 'compoundCondition' then
-            break_ternary_compounds (ncl, base, conn, parent[1])
+            break_ternary_compounds (ncl, base, connector, parent[1], action)
         elseif parent[2]:tag() == 'compoundCondition' then
-            break_ternary_compounds (ncl, base, conn, parent[2])
+            break_ternary_compounds (ncl, base, connector, parent[2], action)
         end
     end
 
@@ -154,23 +231,64 @@ end
 function filter.apply (ncl)
 
     for conn in ncl:gmatch ('causalConnector') do
-        local compound = conn:match ('compoundCondition')
-
-        if compound[1]:tag() == 'simpleCondition' or compound[2]:tag() == 'simpleCondition' then
-            goto keep
+        
+        local root_statement = {}
+        
+        root_statement = {conn:match ('compoundStatement')}
+	for index, element in ipairs (root_statement) do
+            if element:parent() == conn then
+                root_statement['compoundStatement'] = xml.remove(element:parent(), element)
+            end
+	end
+        
+        if root_statement['compoundStatement'] == nil then
+	    root_statement = {conn:match ('assessmentStatement')}
+            for index, element in ipairs (root_statement) do
+                if element:parent() == conn then
+                    root_statement['assessmentStatement'] = xml.remove(element:parent(), element)
+                end
+            end
         end
+        
+        local action = {conn:match ('compoundAction')}
+	for index, element in ipairs (action) do
+            if element:parent() == conn then
+                action['master'] = xml.remove (element:parent(), element)
+            end
+        end
+        
+        if action['master'] == nil then
+	action = {conn:match ('simpleAction')}
+            for index, element in ipairs (action) do
+                if element:parent() == conn then
+                    action['master'] = xml.remove (element:parent(), element)
+                end
+            end
+        end
+        
 
-        for index, parent in ipairs (conn) do
-            break_ternary_compounds (ncl, conn:parent(), conn, parent)
+      print(action['master'])
+       print(root_statement['assessmentStatement'])
+        
+        for parent in conn:gmatch ('compoundCondition') do
+            if parent:parent() == conn then
+                if root_statement['assessmentStatement'] then
+                    local comp_stat = xml.new ('compoundStatement')
+                    comp_stat.operator = 'eq'
+                    comp_stat:insert (root_statement['assessmentStatement'])
+                    parent:insert (comp_stat)
+                elseif root_statement['compoundStatement'] then
+                    parent:insert (root_statement['compoundStatement'])
+                end
+                break_ternary_compounds (ncl, conn:parent(), conn, parent, action['master'])
+            end
         end
 
         update_binds (ncl, conn)
 
-        ::keep::
-
     end
 
-    print(ncl)
+   print(ncl)
 
     return ncl
 
