@@ -32,266 +32,149 @@ local xml = require ('dietncl.xmlsugar')
 local aux = require ('dietncl.nclaux')
 _ENV = nil
 
----
--- In case of ternary compound, an equivalent
---
+function filter.apply (ncl)
+	local condition = true
 
-local function update_binds (ncl, conn, link)
-        
-        if link == nil then
-            link = ncl:match('link', 'xconnector', conn.id)
-            if link then
-                xml.remove (link:parent(), link)
-            end
-            xml.remove (conn:parent(), conn)
-            
-        else
-            local parent = link:parent()
-            local new_link = xml.new ('link')
-	    new_link.xconnector = conn.id
-            parent:insert (new_link)
-	    for comp in conn:gmatch('simpleCondition') do
-		local bind = link:match ('bind', 'role', comp.role)
-		if bind then
-			bind = xml.remove (bind:parent(), bind)
-			new_link:insert (bind)
-		end
-	    end
-	    for comp in conn:gmatch('simpleAction') do
-		local bind = link:match ('bind', 'role', comp.role)
-		if bind then
-			bind = xml.remove (bind:parent(), bind)
-			new_link:insert (bind)
-		end
-	    end
-	     for attr in conn:gmatch ('attributeStatement') do
-		local new_bind = xml.new ('bind')
-		new_bind.role = attr.role
-		local property = new_link:parent():match('property')
-		if not property then
-			property = xml.new ('property')
-			property.name = aux.gen_id (ncl)
-		end
-		new_bind.interface = property.name
-		if new_link:parent().id then
-			new_bind.component = new_link:parent().id
-		end
-		new_link:insert (new_bind)
-            end
+	while condition == true do
+		local conn_list = {ncl:match ('causalConnector')}
+		condition = false
+		for index, conn in ipairs (conn_list) do
+			local first_stat
 
-        end
-
-end
-
-local function break_ternary_compounds (ncl, base, connector, parent, action)
-    local statement
-    local stat_list = {}
-    local i = 1
-    
-    for stat in parent:gmatch('compoundStatement') do
-        if stat:parent() == parent then
-            stat_list[i] = stat
-            i = i + 1
-        end
-    end
-        
-    if #stat_list == 1 then
-        for stat in parent:gmatch('assessmentStatement') do
-            if stat:parent() == parent then
-		stat = xml.remove (parent, stat)
-                stat_list[1]:insert (stat)
-            end
-        end
-    elseif #stat_list == 2 then
-        for index, element in ipairs (stat_list[1]) do
-            element = xml.remove (stat_list[1], element)
-            stat_list[2]:insert (element)
-        end
-    end
-        
-    local i = 1
-    
-    for stat in parent:gmatch('assessmentStatement') do
-        if stat:parent() == parent then
-            stat_list[i] = stat
-            i = i + 1
-        end
-    end
-        
-    if #stat_list > 1 then
-        local stat_compound = xml.new ('compoundStatement')
-        stat_compound.operator = 'eq'
-        for index, stat in ipairs (stat_list) do
-            stat = xml.remove (stat:parent(), stat)
-	    local copy = stat:clone()
-            stat_compound:insert (copy)
-        end
-    end
-    
-    if #parent == 3 then
-
-        local statement
-        local child_list = {}
-        local conn = {}
-
-        for i, child in ipairs (parent) do
-            child_list[i] = child
-        end
-        
-        for index, child in ipairs (child_list) do
-            if child:tag() == 'assessmentStatement' or child:tag() == 'compoundStatement' then
-                statement = xml.remove (child:parent(), child)
-                child = nil
-            end
-        end
-        
-        if parent.operator == 'or' then
-            for index, child in ipairs (child_list) do
-                if child:tag () == 'compoundCondition' and #child == 2 then
-                    conn[index] = xml.new ('causalConnector')
-                    conn[index].id = aux.gen_id (ncl)
-                    if action then
-                        local copy = action:clone ()
-                        conn[index]:insert (copy)
-                    end
-                    base:insert (conn[index])
-                    local link = ncl:match ('link', 'xconnector', connector.id)
-                    child = xml.remove (parent, child)
-                    local copy = statement:clone()
-                    if #child == 2 and child:match('simpleCondition') and statement then
-                        local compound_stat = xml.new ('compoundStatement')
-                        compound_stat.operator = 'and'
-
-                        if statement:tag() == 'compoundStatement' then
-                            for i, stat in ipairs (statement) do
-                                stat = xml.remove (statement, stat)
-                                compound_stat:insert (stat)
-                            end
-                        end
-
-                        compound_stat:insert (copy)
-                        copy = child:match ('assessmentStatement')
-                        copy = xml.remove (child, copy)
-                        compound_stat:insert (copy)
-                        child:insert (compound_stat)
-                    else
-                        child:insert (copy)
-                    end
-                    conn[index]:insert (child)
-                    if link then
-                        update_binds (ncl, conn[index], link)
-                    end
-                elseif child:tag () == 'compoundCondition' and #child == 3 then
-			for index, element in ipairs (child) do
-				local assess
-				if element:tag() == 'compoundStatement' or element:tag() == 'assessmentStatement' then
-					assess = xml.remove (element:parent(), element)
+			for first in conn:gmatch ('compound') do
+				if first:parent() == conn then
+					first_stat = xml.remove (first:parnet(), first)
 				end
-				if assess then
-					for i, comp in ipairs (child) do
-						if comp:tag() == 'compoundCondition' then
-							local copy = assess:clone()
-							comp:insert (copy)
-						end
+			end
+
+			if first_stat == nil then
+				for first in conn:gmatch ('assessmentStatement') do
+					if first:parent() == conn then
+						first_stat = xml.remove (first:parent(), first)
 					end
 				end
 			end
-			 break_ternary_compounds (ncl, base, connector, child[1], action['master'])
-			 break_ternary_compounds (ncl, base, connector, child[2], action['master'])
+
+
+			local comp = {conn:match ('compoundCondition')}
+			for i, element in ipairs (comp) do
+				local copy
+				if #element == 3 and element.operator == 'or' then
+
+					local action
+					for action_root in conn:gmatch ('compoundAction') do
+						if action_root:parent() == conn then
+							action = xml.remove (action_root:parent(), action_root)
+						end
+					end
+
+					if action == nil then
+						for action_root in conn:gmatch ('simpleAction') do
+							if action_root:parent() == conn then
+								action = xml.remove (action_root:parent(), action_root)
+							end
+						end
+					end
+
+					if copy == nil then
+						for child in element:gmatch ('compoundStatement') do
+							if child:parent() == element then
+								copy = xml.remove (child:parent(), child)
+							end
+						end
+					end
+
+					for child in element:gmatch ('assessmentStatement') do
+						if child:parent() == element then
+							copy = xml.remove (child:parent(), child)
+						end
+					end
+
+					condition = true
+
+					for compound in element:gmatch ('compoundCondition') do
+						if compound:parent() == element then
+							compound = xml.remove (compound:parent(), compound)
+							compound:insert (copy:clone())
+
+							local statements = {}
+							local i = 1
+							for statement in compound:gmatch (copy:tag()) do
+								if statement:parent() == compound then
+									statements[i] = statement
+									i = i +1
+								end
+							end
+
+							if #statements == 2 then
+								if copy:tag() == 'assessmentStatement' then
+									local new_compound = xml.new ('compoundStatement')
+									new_compound.operator = 'eq'
+									local transfer = xml.remove (statements[1]:parent(), statements[1])
+									new_compound:insert (transfer)
+									transfer = xml.remove (statements[2]:parent(), statements[2])
+									new_compound:insert (transfer)
+
+									if first_stat then
+										if first_stat:tag() == 'assessmentStatement' then
+											new_compound:insert (first_stat:clone())
+										elseif first_stat:tag() == 'compoundStatement' then
+											for index, supreme_stat in ipairs (first_stat) do
+												supreme_stat = xml.remove (supreme_stat:parent(), supreme_stat)
+												new_compound:insert (supreme_stat)
+											end
+										end
+									end
+
+									compound:insert (new_compound)
+
+
+								elseif copy:tag() == 'compoundStatement' then
+									for i, stats in ipairs (statements[1]) do
+										local transfer = xml.remove (stats:parent(), stats)
+										statements[2]:insert (transfer)
+									end
+
+									if first_stat then
+										if first_stat:tag() == 'assessmentStatement' then
+											statements[2]:insert (first_stat:clone())
+										elseif first_stat:tag() == 'compoundStatement' then
+											for index, supreme_stat in ipairs (first_stat) do
+												supreme_stat = xml.remove (supreme_stat:parent(), supreme_stat)
+												statements[2]:insert (supreme_stat)
+											end
+										end
+									end
+								end
+							end
+
+							local connector = xml.new ('causalConnector')
+							connector.id = aux.gen_id (ncl)
+							connector:insert (compound)
+							if action then
+								connector:insert (action:clone())
+							end
+							conn:parent():insert (connector)
+						end
+					end
+				end
+
+				if #element == 0 then
+					xml.remove (element:parent(), element)
+				end
+
+			end
+
+			if #conn == 0 then
+				xml.remove (conn:parent(), conn)
+			end
+
 		end
-            end
-        end
-    
-        for index, connectors in ipairs (conn) do
-            for count, element in ipairs (connectors) do
-                if element:tag() == 'compoundCondition'  then
-                    break_ternary_compounds (ncl, base, connector, element, action['master'])
-                end
-            end
-        end
-
-    elseif parent.operator == 'and' and #parent == 3 then
-
-
-    elseif #parent == 2 then
-        -- TODO: Fix make_ternary_compounds (parent[1]), parent[1] is not being accepted.
-        if parent[1] == 'simpleCondition' or parent[2] == 'simpleCondition' then
-            return
-        elseif parent[1]:tag() == 'compoundCondition' then
-            break_ternary_compounds (ncl, base, connector, parent[1], action)
-        elseif parent[2]:tag() == 'compoundCondition' then
-            break_ternary_compounds (ncl, base, connector, parent[2], action)
-        end
-    end
-
-
-end
-
-
-function filter.apply (ncl)
-
-    for conn in ncl:gmatch ('causalConnector') do
-        
-        local root_statement = {}
-        
-        root_statement = {conn:match ('compoundStatement')}
-	for index, element in ipairs (root_statement) do
-            if element:parent() == conn then
-                root_statement['compoundStatement'] = xml.remove(element:parent(), element)
-            end
 	end
-        
-        if root_statement['compoundStatement'] == nil then
-	    root_statement = {conn:match ('assessmentStatement')}
-            for index, element in ipairs (root_statement) do
-                if element:parent() == conn then
-                    root_statement['assessmentStatement'] = xml.remove(element:parent(), element)
-                end
-            end
-        end
-        
-        local action = {conn:match ('compoundAction')}
-	for index, element in ipairs (action) do
-            if element:parent() == conn then
-                action['master'] = xml.remove (element:parent(), element)
-            end
-        end
-        
-        if action['master'] == nil then
-	action = {conn:match ('simpleAction')}
-            for index, element in ipairs (action) do
-                if element:parent() == conn then
-                    action['master'] = xml.remove (element:parent(), element)
-                end
-            end
-        end
-        
 
-      print(action['master'])
-       print(root_statement['assessmentStatement'])
-        
-        for parent in conn:gmatch ('compoundCondition') do
-            if parent:parent() == conn then
-                if root_statement['assessmentStatement'] then
-                    local comp_stat = xml.new ('compoundStatement')
-                    comp_stat.operator = 'eq'
-                    comp_stat:insert (root_statement['assessmentStatement'])
-                    parent:insert (comp_stat)
-                elseif root_statement['compoundStatement'] then
-                    parent:insert (root_statement['compoundStatement'])
-                end
-                break_ternary_compounds (ncl, conn:parent(), conn, parent, action['master'])
-            end
-        end
-
-        update_binds (ncl, conn)
-
-    end
-
-   print(ncl)
-
-    return ncl
+	return ncl
 
 end
 
 return filter
+
