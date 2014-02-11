@@ -77,7 +77,6 @@ local ncl = dietncl.parsestring([[
 
 local str = ncl
 assert (filter.apply (ncl))
-print(ncl)
 --assert (ncl:equal (str))
 
 local ncl = dietncl.parsestring([[
@@ -156,7 +155,6 @@ local ncl = dietncl.parsestring([[
 
 local str = ncl
 assert (filter.apply (ncl))
-
 --assert (ncl:equal (str))
 
 local ncl = dietncl.parsestring([[
@@ -227,5 +225,5 @@ local ncl = dietncl.parsestring([[
 </ncl>]])
 
 assert(filter.apply (ncl))
---print(ncl)
+print(ncl)
 --assert(ncl:equal (dietncl.parsestring (str)))
