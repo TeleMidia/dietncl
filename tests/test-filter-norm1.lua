@@ -77,6 +77,7 @@ local ncl = dietncl.parsestring([[
 
 local str = ncl
 assert (filter.apply (ncl))
+print(ncl)
 --assert (ncl:equal (str))
 
 local ncl = dietncl.parsestring([[
@@ -155,75 +156,5 @@ local ncl = dietncl.parsestring([[
 
 local str = ncl
 assert (filter.apply (ncl))
---assert (ncl:equal (str))
-
-local ncl = dietncl.parsestring([[
-<ncl>
-        <head>
-                <connectorBase>
-					<causalConnector id="c">
-						<compoundCondition operator="or">
-							<compoundCondition operator='or'>
-								<compoundCondition operator="and">
-									<simpleCondition role="onBegin" />
-									<assessmentStatement comparator="eq">
-										<attributeStatement role="__0" eventType="attribution" />
-										<attributeStatement role="__1" eventType="attribution" />
-									</assessmentStatement>
-								</compoundCondition>
-								<compoundCondition operator="and">
-									<simpleCondition role="onEnd" />
-									<assessmentStatement comparator="eq">
-										<attributeStatement role="__3" eventType="attribution" />
-										<attributeStatement role="__4" eventType="attribution" />
-									</assessmentStatement>
-								</compoundCondition>
-								<assessmentStatement comparator="eq">
-									<attributeStatement role="__5" eventType="attribution" />
-									<attributeStatement role="__6" eventType="attribution" />
-								</assessmentStatement>
-							</compoundCondition>
-							<assessmentStatement comparator="eq">
-								<attributeStatement role="__7" eventType="attribution" />
-								<attributeStatement role="__8" eventType="attribution" />
-							</assessmentStatement>
-							<compoundCondition operator="and">
-								<simpleCondition role="onResume" />
-								<assessmentStatement comparator="eq">
-									<attributeStatement role="__9" eventType="attribution" />
-									<attributeStatement role="__10" eventType="attribution" />
-								</assessmentStatement>
-							</compoundCondition>
-						</compoundCondition>
-						<compoundAction operator="and">
-							<simpleAction role="start" delay="15s" />
-							<simpleAction role="pause" />
-						</compoundAction>
-						<assessmentStatement comparator="eq">
-							<attributeStatement role="__11" eventType="attribution" />
-							<attributeStatement role="__12" eventType="attribution" />
-						</assessmentStatement>
-					</causalConnector>
-				</connectorBase>
-        </head>
-        <body>
-                <media id="m" />
-	      <context id='alpha'>
-			<link xconnector="c">
-				<bind role="onBegin" component="m" />
-				<bind role="onEnd" component="m" />
-				<bind role="__0" component='alpha' interface="__2" />
-				<bind role="__1" component='alpha' interface="__2" />
-				<bind role="__3" component='alpha' interface="__2" />
-				<bind role="__4" component='alpha' interface="__2" />
-				<bind role="__5" component='alpha' interface="__2" />
-				<bind role="__6" component='alpha' interface="__2" />
-			</link>
-			<property name="__2" />
-	      </context>
-        </body>
-</ncl>]])
-
-assert(filter.apply (ncl))
 print(ncl)
---assert(ncl:equal (dietncl.parsestring (str)))
+--assert (ncl:equal (str))
