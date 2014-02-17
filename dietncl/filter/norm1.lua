@@ -38,6 +38,7 @@ function filter.apply (ncl)
 
     while condition == true do
         local conn_list = {ncl:match ('causalConnector')}
+
         condition = false
         for index, conn in ipairs (conn_list) do
             local first_stat
@@ -55,7 +56,6 @@ function filter.apply (ncl)
                     end
                 end
             end
-
 
             local comp = {conn:match ('compoundCondition')}
 				local action
@@ -86,7 +86,9 @@ function filter.apply (ncl)
 							end
 						end
 					end
+				end
 
+				for i, element in ipairs (comp) do
 
 					if #element >= 3 and element.operator == 'or' then
 
@@ -108,20 +110,6 @@ function filter.apply (ncl)
 							end
 						end
 
-						--[==[ Begin of Testing Code
-						for thing in element:gmatch('simpleCondition') do
-							if thing.role == 'onBegin' then
-							print(element)
-							if new_compound then
-							print(new_compound)
-							print(temp_stat[1])
-							else
-							print(temp_stat[1])
-							end
-							end
-						end
-						]==]-- End of testing code
-
 						if new_compound then
 							new_compound:insert (temp_stat[1])
 						end
@@ -134,24 +122,28 @@ function filter.apply (ncl)
 								if new_compound then
 									local copy = new_compound:clone()
 									for assessmt in temp_comp:gmatch ('assessmentStatement') do
-										local root = assessmt:parent()
-										local transfer = xml.remove (assessmt:parent(), assessmt)
-										if #root == 0 then
-											xml.remove (root:parent(), root)
+										if assessmt:parent() == temp_comp or (assessmt:parent():parent() == temp_comp and assessmt:parent():tag() == 'compoundStatement') then
+											local root = assessmt:parent()
+											local transfer = xml.remove (assessmt:parent(), assessmt)
+											if #root == 0 and root ~= temp_comp then
+												xml.remove (root:parent(), root)
+											end
+											copy:insert (transfer)
 										end
-										copy:insert (transfer)
 									end
 									temp_comp:insert (copy)
 								elseif temp_stat[1] then
 									local new_compound = xml.new ('compoundStatement')
 									new_compound.operator = 'and'
 									for assessmt in temp_comp:gmatch ('assessmentStatement') do
-										local root = assessmt:parent()
-										local transfer = xml.remove (assessmt:parent(), assessmt)
-										if #root == 0 then
-											xml.remove (root:parent(), root)
+										if assessmt:parent() == temp_comp or (assessmt:parent():parent() == temp_comp and assessmt:parent():tag() == 'compoundStatement') then
+											local root = assessmt:parent()
+											local transfer = xml.remove (assessmt:parent(), assessmt)
+											if #root == 0 and root ~= temp_comp then
+												xml.remove (root:parent(), root)
+											end
+											new_compound:insert (transfer)
 										end
-										new_compound:insert (transfer)
 									end
 									if #new_compound > 0 then
 										new_compound:insert (temp_stat[1]:clone())
@@ -183,7 +175,7 @@ function filter.apply (ncl)
 
         end
     end
-	--print(ncl)
+
     return ncl
 
 end
