@@ -86,23 +86,46 @@ local str = dietncl.parsestring ([[
         </head>
         <body>
                 <media id="m" />
-                <link xconnector="c">
+                <property name="__2" />
+                <link xconnector="__0">
                         <bind role="onBegin" component="m" />
-                        <bind role="onEnd" component="m" />
+                        <bind role="start" component="m" />
+                        <bind role="pause" component="m" />
                         <bind role="__0" interface="__2" />
                         <bind role="__1" interface="__2" />
                         <bind role="__3" interface="__2" />
                         <bind role="__4" interface="__2" />
                         <bind role="__5" interface="__2" />
                         <bind role="__6" interface="__2" />
+                        <bind role="__7" interface="__2" />
+                        <bind role="__8" interface="__2" />
                 </link>
-                <property name="__2" />
+
+                <context id="vortex">
+                    <property name="__9">
+                    <link xconnector="__1">
+                        <bind role="onEnd" component="m" />
+                        <bind role="start" component="m" />
+                        <bind role="pause" component="m" />
+                        <bind role="__0" interface="__9" />
+                        <bind role="__1" interface="__9" />
+                        <bind role="__3" interface="__9" />
+                        <bind role="__4" interface="__9" />
+                        <bind role="__5" interface="__9" />
+                        <bind role="__6" interface="__9" />
+                        <bind role="__7" interface="__9" />
+                        <bind role="__8" interface="__9" />
+                    </link>
+                </context>
+
         </body>
 </ncl>]])
 
 local ncl = str
 assert (filter.apply (ncl))
 assert (ncl:equal (str))
+
+-- Makes sure two connectors are created, one for each compoundCondition inside compoundCondition which presents OR operator.
 
 local ncl = dietncl.parsestring ([[
 <ncl>
@@ -145,12 +168,16 @@ local ncl = dietncl.parsestring ([[
                 <link xconnector="c">
                         <bind role="onBegin" component="m" />
                         <bind role="onEnd" component="m" />
+                        <bind role="start" component="m" />
+                        <bind role="pause" component="m" />
                         <bind role="__0" interface="__2" />
                         <bind role="__1" interface="__2" />
                         <bind role="__3" interface="__2" />
                         <bind role="__4" interface="__2" />
                         <bind role="__5" interface="__2" />
-                        <bind role="__6" interface="__2" />
+                        <bind role="__5" interface="__2" />
+                        <bind role="__7" interface="__2" />
+                        <bind role="__8" interface="__2" />
                 </link>
                 <property name="__2" />
         </body>
@@ -218,22 +245,36 @@ local str = dietncl.parsestring ([[
         </head>
         <body>
                 <media id="m" />
-                <link xconnector="c">
+                <property name="__2" />
+                <link xconnector="__0">
                         <bind role="onBegin" component="m" />
-                        <bind role="onEnd" component="m" />
+                        <bind role="start" component="m" />
+                        <bind role="pause" component="m" />
                         <bind role="__0" interface="__2" />
                         <bind role="__1" interface="__2" />
+                        <bind role="__5" interface="__2" />
+                        <bind role="__5" interface="__2" />
+                        <bind role="__7" interface="__2" />
+                        <bind role="__8" interface="__2" />
+                </link>
+                <link xconnector="__1">
+                        <bind role="onEnd" component="m" />
+                        <bind role="start" component="m" />
+                        <bind role="pause" component="m" />
                         <bind role="__3" interface="__2" />
                         <bind role="__4" interface="__2" />
                         <bind role="__5" interface="__2" />
-                        <bind role="__6" interface="__2" />
+                        <bind role="__5" interface="__2" />
+                        <bind role="__7" interface="__2" />
+                        <bind role="__8" interface="__2" />
                 </link>
-                <property name="__2" />
         </body>
 </ncl>]])
 
 assert (filter.apply (ncl))
 assert (ncl:equal (str))
+
+-- One more test for a NCL document which has more extensive connectors.
 
 local ncl = dietncl.parsestring([[
 <ncl>
@@ -298,12 +339,26 @@ local ncl = dietncl.parsestring([[
                 <link xconnector="c">
                         <bind role="onBegin" component="m" />
                         <bind role="onEnd" component="m" />
+                        <bind role="start" component="m" />
+                        <bind role="pause" component="m" />
                         <bind role="__0" interface="__2" />
                         <bind role="__1" interface="__2" />
                         <bind role="__3" interface="__2" />
                         <bind role="__4" interface="__2" />
                         <bind role="__5" interface="__2" />
                         <bind role="__6" interface="__2" />
+                </link>
+                <link xconnector="a">
+                    <bind role="onPause" component="m" />
+                    <bind role="onAbort" component="m" />
+                    <bind role="start" component="m" />
+                    <bind role="pause" component="m" />
+                    <bind role="__7" interface="__2" />
+                    <bind role="__8" interface="__2" />
+                    <bind role="__9" interface="__2" />
+                    <bind role="__10" interface="__2" />
+                    <bind role="__11" interface="__2" />
+                    <bind role="__12" interface="__2" />
                 </link>
                 <property name="__2" />
         </body>
@@ -393,23 +448,50 @@ local str = dietncl.parsestring ([[
         </head>
         <body>
                 <media id="m" />
-                <link xconnector="c">
+                <property name="__2" />
+                <link xconnector="__0">
                         <bind role="onBegin" component="m" />
-                        <bind role="onEnd" component="m" />
+                        <bind role="start" component="m" />
+                        <bind role="pause" component="m" />
                         <bind role="__0" interface="__2" />
                         <bind role="__1" interface="__2" />
+                        <bind role="__5" interface="__2" />
+                        <bind role="__6" interface="__2" />
+                </link>
+                <link xconnector="__1">
+                        <bind role="onEnd" component="m" />
+                        <bind role="start" component="m" />
+                        <bind role="pause" component="m" />
                         <bind role="__3" interface="__2" />
                         <bind role="__4" interface="__2" />
                         <bind role="__5" interface="__2" />
                         <bind role="__6" interface="__2" />
                 </link>
-                <property name="__2" />
+                <link xconnector="__2">
+                        <bind role="onPause" component="m" />
+                        <bind role="start" component="m" />
+                        <bind role="pause" component="m" />
+                        <bind role="__7" interface="__2" />
+                        <bind role="__8" interface="__2" />
+                        <bind role="__11" interface="__2" />
+                        <bind role="__12" interface="__2" />
+                </link>
+                <link xconnector="__3">
+                        <bind role="onAbort" component="m" />
+                        <bind role="start" component="m" />
+                        <bind role="pause" component="m" />
+                        <bind role="__9" interface="__2" />
+                        <bind role="__10" interface="__2" />
+                        <bind role="__11" interface="__2" />
+                        <bind role="__12" interface="__2" />
+                </link>
         </body>
 </ncl>]])
 
 assert (filter.apply (ncl))
 assert (ncl:equal (str))
 
+-- Another test for compoundConditions which present OR operator, this time one link being the child of a context.
 
 local ncl = dietncl.parsestring([[
 <ncl>
@@ -488,14 +570,36 @@ local ncl = dietncl.parsestring([[
                         <bind role="onBegin" component="m" />
                         <bind role="onEnd" component="m" />
                         <bind role="onResume" component="m" />
-                        <bind role="onAbort" component="m" />
+                        <bind role="start" component="m" />
+                        <bind role="pause" component="m" />
                         <bind role="__0" interface="__2" />
                         <bind role="__1" interface="__2" />
                         <bind role="__3" interface="__2" />
                         <bind role="__4" interface="__2" />
                         <bind role="__5" interface="__2" />
                         <bind role="__6" interface="__2" />
+                        <bind role="__13" interface="__2" />
+                        <bind role="__14" interface="__2" />
+                        <bind role="__15" interface="__2" />
+                        <bind role="__16" interface="__2" />
                 </link>
+
+                <context id='online'>
+                    <property name='prop'/>
+                    <link xconnector="a">
+                        <bind role="onPause" component="m" />
+                        <bind role="onAbort" component="m" />
+                        <bind role="abort" component="m" />
+                        <bind role="pause" component="m" />
+                        <bind role="__7" interface="prop" />
+                        <bind role="__8" interface="prop" />
+                        <bind role="__9" interface="prop" />
+                        <bind role="__10" interface="prop" />
+                        <bind role="__11" interface="prop" />
+                        <bind role="__12" interface="prop" />
+                    </link>
+                </context>
+
                 <property name="__2" />
         </body>
 </ncl>]])
@@ -504,7 +608,7 @@ local str = dietncl.parsestring( [[
 <ncl>
         <head>
                 <connectorBase>
-                        <causalConnector id="__1">
+                        <causalConnector id="_______1">
                                 <compoundCondition operator="and">
                                         <simpleCondition role="onEnd" />
                                         <compoundStatement operator="and">
@@ -523,7 +627,7 @@ local str = dietncl.parsestring( [[
                                         <simpleAction role="pause" />
                                 </compoundAction>
                         </causalConnector>
-                        <causalConnector id="__2">
+                        <causalConnector id="_______2">
                                 <compoundCondition operator="and">
                                         <simpleCondition role="onPause" />
                                         <compoundStatement operator="and">
@@ -542,7 +646,7 @@ local str = dietncl.parsestring( [[
                                         <simpleAction role="pause" />
                                 </compoundAction>
                         </causalConnector>
-                        <causalConnector id="__3">
+                        <causalConnector id="_______3">
                                 <compoundCondition operator="and">
                                         <simpleCondition role="onAbort" />
                                         <compoundStatement operator="and">
@@ -561,7 +665,7 @@ local str = dietncl.parsestring( [[
                                         <simpleAction role="pause" />
                                 </compoundAction>
                         </causalConnector>
-                        <causalConnector id="__4">
+                        <causalConnector id="_______4">
                                 <compoundCondition operator="and">
                                         <simpleCondition role="onBegin" />
                                         <compoundStatement operator="and">
@@ -584,7 +688,7 @@ local str = dietncl.parsestring( [[
                                         <simpleAction role="pause" />
                                 </compoundAction>
                         </causalConnector>
-                        <causalConnector id="__5">
+                        <causalConnector id="_______5">
                                 <compoundCondition operator="and">
                                         <simpleCondition role="onResume" />
                                         <compoundStatement operator="and">
@@ -611,19 +715,59 @@ local str = dietncl.parsestring( [[
         </head>
         <body>
                 <media id="m" />
-                <link xconnector="c">
-                        <bind role="onBegin" component="m" />
+                <context id="online">
+                        <property name="prop" />
+                        <link xconnector="_______2">
+                                <bind role="onPause" component="m" />
+                                <bind role="abort" component="m" />
+                                <bind role="pause" component="m" />
+                                <bind role="__7" interface="prop" />
+                                <bind role="__8" interface="prop" />
+                                <bind role="__11" interface="prop" />
+                                <bind role="__12" interface="prop" />
+                        </link>
+                        <link xconnector="_______3">
+                                <bind role="onAbort" component="m" />
+                                <bind role="abort" component="m" />
+                                <bind role="pause" component="m" />
+                                <bind role="__9" interface="prop" />
+                                <bind role="__10" interface="prop" />
+                                <bind role="__11" interface="prop" />
+                                <bind role="__12" interface="prop" />
+                        </link>
+                </context>
+                <property name="__2" />
+                <link xconnector="_______1">
                         <bind role="onEnd" component="m" />
-                        <bind role="onResume" component="m" />
-                        <bind role="onAbort" component="m" />
-                        <bind role="__0" interface="__2" />
-                        <bind role="__1" interface="__2" />
+                        <bind role="start" component="m" />
+                        <bind role="pause" component="m" />
                         <bind role="__3" interface="__2" />
                         <bind role="__4" interface="__2" />
                         <bind role="__5" interface="__2" />
                         <bind role="__6" interface="__2" />
                 </link>
-                <property name="__2" />
+                <link xconnector="_______4">
+                        <bind role="onBegin" component="m" />
+                        <bind role="start" component="m" />
+                        <bind role="pause" component="m" />
+                        <bind role="__0" interface="__2" />
+                        <bind role="__1" interface="__2" />
+                        <bind role="__5" interface="__2" />
+                        <bind role="__6" interface="__2" />
+                        <bind role="__15" interface="__2" />
+                        <bind role="__16" interface="__2" />
+                </link>
+                <link xconnector="_______5">
+                        <bind role="onResume" component="m" />
+                        <bind role="start" component="m" />
+                        <bind role="pause" component="m" />
+                        <bind role="__5" interface="__2" />
+                        <bind role="__6" interface="__2" />
+                        <bind role="__13" interface="__2" />
+                        <bind role="__14" interface="__2" />
+                        <bind role="__15" interface="__2" />
+                        <bind role="__16" interface="__2" />
+                </link>
         </body>
 </ncl>]])
 
