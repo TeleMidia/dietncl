@@ -32,6 +32,31 @@ local xml = require ('dietncl.xmlsugar')
 local aux = require ('dietncl.nclaux')
 _ENV = nil
 
+local function include_tautological (action, element, temp_comp, new_compound, new_connector, ncl)
+    if element.operator == 'and' then
+        local tauto
+        local attrA = {0, 0}
+        tauto = xml.new ('assessmentStatement')
+        tauto.comparator = 'eq'
+        for i, attr_elem in ipairs (attrA) do
+            attr_elem = xml.new ('attributeStatement')
+            attr_elem.role = aux.gen_id (ncl)
+            attr_elem.eventType = 'attribution'
+            tauto:insert (attr_elem)
+        end
+
+        if new_compound then
+            new_compound:insert (tauto)
+        else
+            temp_comp:insert (tauto)
+        end
+
+        if action then
+            new_connector:insert (action:clone())
+        end
+
+    end
+end
 
 function filter.apply (ncl)
     local condition = true
@@ -89,7 +114,7 @@ function filter.apply (ncl)
                 end
 
                 for i, element in ipairs (comp) do
-                    if #element >= 3 and element.operator == 'or' then
+                    if #element >= 3 then
                         local temp_stat = {}
                         local new_compound
 
@@ -130,6 +155,9 @@ function filter.apply (ncl)
                                         end
                                     end
                                     temp_comp:insert (copy)
+
+                                    include_tautological (action, element, temp_comp, new_compound, new_connector, ncl)
+
                                 elseif temp_stat[1] then
                                     local new_compound = xml.new ('compoundStatement')
                                     new_compound.operator = 'and'
@@ -143,17 +171,19 @@ function filter.apply (ncl)
                                             new_compound:insert (transfer)
                                         end
                                     end
+
+                                    include_tautological (action, element, temp_comp, new_compound, new_connector, ncl)
+
                                     if #new_compound > 0 then
                                         new_compound:insert (temp_stat[1]:clone())
                                         temp_comp:insert (new_compound:clone())
                                     else
                                         temp_comp:insert (temp_stat[1]:clone())
                                     end
+
                                 end
+
                                 new_connector:insert (temp_comp)
-                                if action then
-                                    new_connector:insert (action:clone())
-                                end
                                 conn:parent():insert (new_connector)
                                 for link in ncl:gmatch ('link', 'xconnector', conn.id) do
                                     local new_link = link:clone()
@@ -186,8 +216,7 @@ function filter.apply (ncl)
                         condition = true
 
                         element = xml.remove (element:parent(), element)
-                    elseif i == #comp then
-
+                    elseif i == #comp and action then
                         conn:insert (action)
                     end
                 if #conn == 0 then
