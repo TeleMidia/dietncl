@@ -16,6 +16,7 @@ You should have received a copy of the GNU General Public License along
 with DietNCL.  If not, see <http://www.gnu.org/licenses/>.  ]]--
 
 local assert = assert
+local print = print
 
 local dietncl = require ('dietncl')
 local filter = require ('dietncl.filter.norm1')
@@ -44,10 +45,6 @@ local str = dietncl.parsestring ([[
                                                         <attributeStatement role="__0" eventType="attribution" />
                                                         <attributeStatement role="__1" eventType="attribution" />
                                                 </assessmentStatement>
-                                                <assessmentStatement comparator="eq">
-                                                        <attributeStatement role="__7" eventType="attribution" />
-                                                        <attributeStatement role="__8" eventType="attribution" />
-                                                </assessmentStatement>
                                         </compoundStatement>
                                 </compoundCondition>
                                 <compoundAction operator="and">
@@ -70,10 +67,6 @@ local str = dietncl.parsestring ([[
                                                 <assessmentStatement comparator="eq">
                                                         <attributeStatement role="__3" eventType="attribution" />
                                                         <attributeStatement role="__4" eventType="attribution" />
-                                                </assessmentStatement>
-                                                <assessmentStatement comparator="eq">
-                                                        <attributeStatement role="__7" eventType="attribution" />
-                                                        <attributeStatement role="__8" eventType="attribution" />
                                                 </assessmentStatement>
                                         </compoundStatement>
                                 </compoundCondition>
@@ -192,20 +185,16 @@ local str = dietncl.parsestring ([[
                                         <simpleCondition role="onBegin" />
                                         <compoundStatement operator="and">
                                                 <assessmentStatement comparator="eq">
-                                                        <attributeStatement role="__7" eventType="attribution" />
-                                                        <attributeStatement role="__8" eventType="attribution" />
-                                                </assessmentStatement>
-                                                <assessmentStatement comparator="eq">
-                                                        <attributeStatement role="__5" eventType="attribution" />
-                                                        <attributeStatement role="__6" eventType="attribution" />
-                                                </assessmentStatement>
-                                                <assessmentStatement comparator="eq">
                                                         <attributeStatement role="__0" eventType="attribution" />
                                                         <attributeStatement role="__1" eventType="attribution" />
                                                 </assessmentStatement>
                                                 <assessmentStatement comparator="eq">
                                                         <attributeStatement role="__7" eventType="attribution" />
                                                         <attributeStatement role="__8" eventType="attribution" />
+                                                </assessmentStatement>
+                                                <assessmentStatement comparator="eq">
+                                                        <attributeStatement role="__5" eventType="attribution" />
+                                                        <attributeStatement role="__6" eventType="attribution" />
                                                 </assessmentStatement>
                                         </compoundStatement>
                                 </compoundCondition>
@@ -219,20 +208,16 @@ local str = dietncl.parsestring ([[
                                         <simpleCondition role="onEnd" />
                                         <compoundStatement operator="and">
                                                 <assessmentStatement comparator="eq">
-                                                        <attributeStatement role="__7" eventType="attribution" />
-                                                        <attributeStatement role="__8" eventType="attribution" />
-                                                </assessmentStatement>
-                                                <assessmentStatement comparator="eq">
-                                                        <attributeStatement role="__5" eventType="attribution" />
-                                                        <attributeStatement role="__6" eventType="attribution" />
-                                                </assessmentStatement>
-                                                <assessmentStatement comparator="eq">
                                                         <attributeStatement role="__3" eventType="attribution" />
                                                         <attributeStatement role="__4" eventType="attribution" />
                                                 </assessmentStatement>
                                                 <assessmentStatement comparator="eq">
                                                         <attributeStatement role="__7" eventType="attribution" />
                                                         <attributeStatement role="__8" eventType="attribution" />
+                                                </assessmentStatement>
+                                                <assessmentStatement comparator="eq">
+                                                        <attributeStatement role="__5" eventType="attribution" />
+                                                        <attributeStatement role="__6" eventType="attribution" />
                                                 </assessmentStatement>
                                         </compoundStatement>
                                 </compoundCondition>
@@ -773,3 +758,4 @@ local str = dietncl.parsestring( [[
 
 assert (filter.apply (ncl))
 assert (ncl:equal (str))
+

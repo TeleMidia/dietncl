@@ -26,6 +26,7 @@ with DietNCL.  If not, see <http://www.gnu.org/licenses/>.  ]]--
 local filter = {}
 
 local ipairs = ipairs
+local print = print
 
 local xml = require ('dietncl.xmlsugar')
 local aux = require ('dietncl.nclaux')
@@ -75,7 +76,7 @@ function filter.apply (ncl)
                 end
 
                 for i, element in ipairs (comp) do
-                    if first_stat then
+                    if first_stat and #element == 2 then
                         if first_stat:tag() == 'assessmentStatement' then
                             element:insert (first_stat:clone())
                         elseif first_stat:tag() == 'compoundStatement' then
