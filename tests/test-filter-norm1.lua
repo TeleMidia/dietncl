@@ -167,7 +167,7 @@ local ncl = dietncl.parsestring ([[
                         <bind role="__3" interface="__2" />
                         <bind role="__4" interface="__2" />
                         <bind role="__5" interface="__2" />
-                        <bind role="__5" interface="__2" />
+                        <bind role="__6" interface="__2" />
                         <bind role="__7" interface="__2" />
                         <bind role="__8" interface="__2" />
                 </link>
@@ -179,7 +179,7 @@ local str = dietncl.parsestring ([[
 <ncl>
         <head>
                 <connectorBase>
-                        <causalConnector id="__0">
+                        <causalConnector id="__01">
                                 <compoundCondition operator="and">
                                         <simpleCondition role="onBegin" />
                                         <compoundStatement operator="and">
@@ -202,7 +202,7 @@ local str = dietncl.parsestring ([[
                                         <simpleAction role="pause" />
                                 </compoundAction>
                         </causalConnector>
-                        <causalConnector id="__1">
+                        <causalConnector id="__11">
                                 <compoundCondition operator="and">
                                         <simpleCondition role="onEnd" />
                                         <compoundStatement operator="and">
@@ -230,25 +230,25 @@ local str = dietncl.parsestring ([[
         <body>
                 <media id="m" />
                 <property name="__2" />
-                <link xconnector="__0">
+                <link xconnector="__01">
                         <bind role="onBegin" component="m" />
                         <bind role="start" component="m" />
                         <bind role="pause" component="m" />
                         <bind role="__0" interface="__2" />
                         <bind role="__1" interface="__2" />
                         <bind role="__5" interface="__2" />
-                        <bind role="__5" interface="__2" />
+                        <bind role="__6" interface="__2" />
                         <bind role="__7" interface="__2" />
                         <bind role="__8" interface="__2" />
                 </link>
-                <link xconnector="__1">
+                <link xconnector="__11">
                         <bind role="onEnd" component="m" />
                         <bind role="start" component="m" />
                         <bind role="pause" component="m" />
                         <bind role="__3" interface="__2" />
                         <bind role="__4" interface="__2" />
                         <bind role="__5" interface="__2" />
-                        <bind role="__5" interface="__2" />
+                        <bind role="__6" interface="__2" />
                         <bind role="__7" interface="__2" />
                         <bind role="__8" interface="__2" />
                 </link>
@@ -352,7 +352,7 @@ local str = dietncl.parsestring ([[
 <ncl>
         <head>
                 <connectorBase>
-                        <causalConnector id="__0">
+                        <causalConnector id="__01">
                                 <compoundCondition operator="and">
                                         <simpleCondition role="onBegin" />
                                         <compoundStatement operator="and">
@@ -371,7 +371,7 @@ local str = dietncl.parsestring ([[
                                         <simpleAction role="pause" />
                                 </compoundAction>
                         </causalConnector>
-                        <causalConnector id="__1">
+                        <causalConnector id="__11">
                                 <compoundCondition operator="and">
                                         <simpleCondition role="onEnd" />
                                         <compoundStatement operator="and">
@@ -390,7 +390,7 @@ local str = dietncl.parsestring ([[
                                         <simpleAction role="pause" />
                                 </compoundAction>
                         </causalConnector>
-                        <causalConnector id="__2">
+                        <causalConnector id="__21">
                                 <compoundCondition operator="and">
                                         <simpleCondition role="onPause" />
                                         <compoundStatement operator="and">
@@ -409,7 +409,7 @@ local str = dietncl.parsestring ([[
                                         <simpleAction role="pause" />
                                 </compoundAction>
                         </causalConnector>
-                        <causalConnector id="__3">
+                        <causalConnector id="__31">
                                 <compoundCondition operator="and">
                                         <simpleCondition role="onAbort" />
                                         <compoundStatement operator="and">
@@ -433,7 +433,7 @@ local str = dietncl.parsestring ([[
         <body>
                 <media id="m" />
                 <property name="__2" />
-                <link xconnector="__0">
+                <link xconnector="__01">
                         <bind role="onBegin" component="m" />
                         <bind role="start" component="m" />
                         <bind role="pause" component="m" />
@@ -442,7 +442,7 @@ local str = dietncl.parsestring ([[
                         <bind role="__5" interface="__2" />
                         <bind role="__6" interface="__2" />
                 </link>
-                <link xconnector="__1">
+                <link xconnector="__11">
                         <bind role="onEnd" component="m" />
                         <bind role="start" component="m" />
                         <bind role="pause" component="m" />
@@ -451,7 +451,7 @@ local str = dietncl.parsestring ([[
                         <bind role="__5" interface="__2" />
                         <bind role="__6" interface="__2" />
                 </link>
-                <link xconnector="__2">
+                <link xconnector="__21">
                         <bind role="onPause" component="m" />
                         <bind role="start" component="m" />
                         <bind role="pause" component="m" />
@@ -460,7 +460,7 @@ local str = dietncl.parsestring ([[
                         <bind role="__11" interface="__2" />
                         <bind role="__12" interface="__2" />
                 </link>
-                <link xconnector="__3">
+                <link xconnector="__31">
                         <bind role="onAbort" component="m" />
                         <bind role="start" component="m" />
                         <bind role="pause" component="m" />
@@ -592,7 +592,7 @@ local str = dietncl.parsestring( [[
 <ncl>
         <head>
                 <connectorBase>
-                        <causalConnector id="_______1">
+                        <causalConnector id="_______11">
                                 <compoundCondition operator="and">
                                         <simpleCondition role="onEnd" />
                                         <compoundStatement operator="and">
@@ -611,7 +611,7 @@ local str = dietncl.parsestring( [[
                                         <simpleAction role="pause" />
                                 </compoundAction>
                         </causalConnector>
-                        <causalConnector id="_______2">
+                        <causalConnector id="_______21">
                                 <compoundCondition operator="and">
                                         <simpleCondition role="onPause" />
                                         <compoundStatement operator="and">
@@ -630,7 +630,7 @@ local str = dietncl.parsestring( [[
                                         <simpleAction role="pause" />
                                 </compoundAction>
                         </causalConnector>
-                        <causalConnector id="_______3">
+                        <causalConnector id="_______31">
                                 <compoundCondition operator="and">
                                         <simpleCondition role="onAbort" />
                                         <compoundStatement operator="and">
@@ -649,7 +649,7 @@ local str = dietncl.parsestring( [[
                                         <simpleAction role="pause" />
                                 </compoundAction>
                         </causalConnector>
-                        <causalConnector id="_______4">
+                        <causalConnector id="_______41">
                                 <compoundCondition operator="and">
                                         <simpleCondition role="onBegin" />
                                         <compoundStatement operator="and">
@@ -672,7 +672,7 @@ local str = dietncl.parsestring( [[
                                         <simpleAction role="pause" />
                                 </compoundAction>
                         </causalConnector>
-                        <causalConnector id="_______5">
+                        <causalConnector id="_______51">
                                 <compoundCondition operator="and">
                                         <simpleCondition role="onResume" />
                                         <compoundStatement operator="and">
@@ -701,7 +701,7 @@ local str = dietncl.parsestring( [[
                 <media id="m" />
                 <context id="online">
                         <property name="prop" />
-                        <link xconnector="_______2">
+                        <link xconnector="_______21">
                                 <bind role="onPause" component="m" />
                                 <bind role="abort" component="m" />
                                 <bind role="pause" component="m" />
@@ -710,7 +710,7 @@ local str = dietncl.parsestring( [[
                                 <bind role="__11" interface="prop" />
                                 <bind role="__12" interface="prop" />
                         </link>
-                        <link xconnector="_______3">
+                        <link xconnector="_______31">
                                 <bind role="onAbort" component="m" />
                                 <bind role="abort" component="m" />
                                 <bind role="pause" component="m" />
@@ -721,7 +721,7 @@ local str = dietncl.parsestring( [[
                         </link>
                 </context>
                 <property name="__2" />
-                <link xconnector="_______1">
+                <link xconnector="_______11">
                         <bind role="onEnd" component="m" />
                         <bind role="start" component="m" />
                         <bind role="pause" component="m" />
@@ -730,7 +730,7 @@ local str = dietncl.parsestring( [[
                         <bind role="__5" interface="__2" />
                         <bind role="__6" interface="__2" />
                 </link>
-                <link xconnector="_______4">
+                <link xconnector="_______41">
                         <bind role="onBegin" component="m" />
                         <bind role="start" component="m" />
                         <bind role="pause" component="m" />
@@ -741,7 +741,7 @@ local str = dietncl.parsestring( [[
                         <bind role="__15" interface="__2" />
                         <bind role="__16" interface="__2" />
                 </link>
-                <link xconnector="_______5">
+                <link xconnector="_______51">
                         <bind role="onResume" component="m" />
                         <bind role="start" component="m" />
                         <bind role="pause" component="m" />
@@ -757,7 +757,6 @@ local str = dietncl.parsestring( [[
 
 assert (filter.apply (ncl))
 assert (ncl:equal (str))
-
 
 local ncl = dietncl.parsestring ([[
 <ncl>
@@ -807,7 +806,7 @@ local ncl = dietncl.parsestring ([[
                         <bind role="__3" interface="__2" />
                         <bind role="__4" interface="__2" />
                         <bind role="__5" interface="__2" />
-                        <bind role="__5" interface="__2" />
+                        <bind role="__6" interface="__2" />
                         <bind role="__7" interface="__2" />
                         <bind role="__8" interface="__2" />
                 </link>
@@ -819,7 +818,7 @@ local str = dietncl.parsestring ([[
 <ncl>
         <head>
                 <connectorBase>
-                        <causalConnector id="__0">
+                        <causalConnector id="__01">
                                 <compoundCondition operator="and">
                                         <simpleCondition role="onBegin" />
                                         <compoundStatement operator="and">
@@ -842,7 +841,7 @@ local str = dietncl.parsestring ([[
                                         <simpleAction role="pause" />
                                 </compoundAction>
                         </causalConnector>
-                        <causalConnector id="__1">
+                        <causalConnector id="__11">
                                 <compoundCondition operator="and">
                                         <simpleCondition role="onEnd" />
                                         <compoundStatement operator="and">
@@ -870,25 +869,104 @@ local str = dietncl.parsestring ([[
         <body>
                 <media id="m" />
                 <property name="__2" />
-                <link xconnector="__0">
+                <link xconnector="__01">
                         <bind role="onBegin" component="m" />
                         <bind role="start" component="m" />
                         <bind role="pause" component="m" />
                         <bind role="__0" interface="__2" />
                         <bind role="__1" interface="__2" />
                         <bind role="__5" interface="__2" />
-                        <bind role="__5" interface="__2" />
+                        <bind role="__6" interface="__2" />
                         <bind role="__7" interface="__2" />
                         <bind role="__8" interface="__2" />
                 </link>
-                <link xconnector="__1">
+                <link xconnector="__11">
                         <bind role="onEnd" component="m" />
                         <bind role="start" component="m" />
                         <bind role="pause" component="m" />
                         <bind role="__3" interface="__2" />
                         <bind role="__4" interface="__2" />
                         <bind role="__5" interface="__2" />
+                        <bind role="__6" interface="__2" />
+                        <bind role="__7" interface="__2" />
+                        <bind role="__8" interface="__2" />
+                </link>
+        </body>
+</ncl>
+
+<ncl>
+        <head>
+                <connectorBase>
+                        <causalConnector id="__01">
+                                <compoundCondition operator="and">
+                                        <simpleCondition role="onBegin" />
+                                        <compoundStatement operator="and">
+                                                <assessmentStatement comparator="eq">
+                                                        <attributeStatement role="__0" eventType="attribution" />
+                                                        <attributeStatement role="__1" eventType="attribution" />
+                                                </assessmentStatement>
+                                                <assessmentStatement comparator="eq">
+                                                        <attributeStatement role="__7" eventType="attribution" />
+                                                        <attributeStatement role="__8" eventType="attribution" />
+                                                </assessmentStatement>
+                                                <assessmentStatement comparator="eq">
+                                                        <attributeStatement role="__5" eventType="attribution" />
+                                                        <attributeStatement role="__6" eventType="attribution" />
+                                                </assessmentStatement>
+                                        </compoundStatement>
+                                </compoundCondition>
+                                <compoundAction operator="and">
+                                        <simpleAction role="start" delay="15s" />
+                                        <simpleAction role="pause" />
+                                </compoundAction>
+                        </causalConnector>
+                        <causalConnector id="__11">
+                                <compoundCondition operator="and">
+                                        <simpleCondition role="onEnd" />
+                                        <compoundStatement operator="and">
+                                                <assessmentStatement comparator="eq">
+                                                        <attributeStatement role="__3" eventType="attribution" />
+                                                        <attributeStatement role="__4" eventType="attribution" />
+                                                </assessmentStatement>
+                                                <assessmentStatement comparator="eq">
+                                                        <attributeStatement role="__7" eventType="attribution" />
+                                                        <attributeStatement role="__8" eventType="attribution" />
+                                                </assessmentStatement>
+                                                <assessmentStatement comparator="eq">
+                                                        <attributeStatement role="__5" eventType="attribution" />
+                                                        <attributeStatement role="__6" eventType="attribution" />
+                                                </assessmentStatement>
+                                        </compoundStatement>
+                                </compoundCondition>
+                                <compoundAction operator="and">
+                                        <simpleAction role="start" delay="15s" />
+                                        <simpleAction role="pause" />
+                                </compoundAction>
+                        </causalConnector>
+                </connectorBase>
+        </head>
+        <body>
+                <media id="m" />
+                <property name="__2" />
+                <link xconnector="__01">
+                        <bind role="onBegin" component="m" />
+                        <bind role="start" component="m" />
+                        <bind role="pause" component="m" />
+                        <bind role="__0" interface="__2" />
+                        <bind role="__1" interface="__2" />
                         <bind role="__5" interface="__2" />
+                        <bind role="__6" interface="__2" />
+                        <bind role="__7" interface="__2" />
+                        <bind role="__8" interface="__2" />
+                </link>
+                <link xconnector="__11">
+                        <bind role="onEnd" component="m" />
+                        <bind role="start" component="m" />
+                        <bind role="pause" component="m" />
+                        <bind role="__3" interface="__2" />
+                        <bind role="__4" interface="__2" />
+                        <bind role="__5" interface="__2" />
+                        <bind role="__6" interface="__2" />
                         <bind role="__7" interface="__2" />
                         <bind role="__8" interface="__2" />
                 </link>
@@ -896,5 +974,213 @@ local str = dietncl.parsestring ([[
 </ncl>]])
 
 assert (filter.apply (ncl))
-print(ncl)
---assert (ncl:equal (str))
+assert (ncl:equal (str))
+
+local ncl = dietncl.parsestring ([[
+<ncl>
+        <head>
+                <connectorBase>
+                        <causalConnector id="c">
+                                <compoundCondition operator="and">
+                                        <compoundCondition operator="and">
+                                                <simpleCondition role="onBegin" />
+                                                <assessmentStatement comparator="eq">
+                                                        <attributeStatement role="__0" eventType="attribution" />
+                                                        <attributeStatement role="__1" eventType="attribution" />
+                                                </assessmentStatement>
+                                        </compoundCondition>
+                                        <compoundCondition operator="and">
+                                                    <compoundCondition operator="and">
+                                                        <simpleCondition role="onResume" />
+                                                        <assessmentStatement comparator="eq">
+                                                            <attributeStatement role="__3" eventType="attribution" />
+                                                            <attributeStatement role="__4" eventType="attribution" />
+                                                        </assessmentStatement>
+                                                    </compoundCondition>
+                                                    <compoundCondition operator="and">
+                                                        <simpleCondition role="onEnd" />
+                                                        <assessmentStatement comparator="eq">
+                                                            <attributeStatement role="__12" eventType="attribution" />
+                                                            <attributeStatement role="__11" eventType="attribution" />
+                                                        </assessmentStatement>
+                                                    </compoundCondition>
+                                                    <assessmentStatement comparator="eq">
+                                                        <attributeStatement role="__9" eventType="attribution" />
+                                                        <attributeStatement role="__10" eventType="attribution" />
+                                                    </assessmentStatement>
+                                        </compoundCondition>
+                                        <assessmentStatement comparator="eq">
+                                                <attributeStatement role="__5" eventType="attribution" />
+                                                <attributeStatement role="__6" eventType="attribution" />
+                                        </assessmentStatement>
+                                </compoundCondition>
+                                <compoundAction operator="and">
+                                    <simpleAction role="start" delay="15s" />
+                                    <simpleAction role="pause" />
+                                </compoundAction>
+                                <assessmentStatement comparator="eq">
+                                    <attributeStatement role="__7" eventType="attribution" />
+                                    <attributeStatement role="__8" eventType="attribution" />
+                                </assessmentStatement>
+                        </causalConnector>
+                </connectorBase>
+        </head>
+        <body>
+                <media id="m" />
+                <link xconnector="c">
+                        <bind role="onBegin" component="m" />
+                        <bind role="onEnd" component="m" />
+                        <bind role="onResume" component="m" />
+                        <bind role="start" component="m" />
+                        <bind role="pause" component="m" />
+                        <bind role="__0" interface="__2" />
+                        <bind role="__1" interface="__2" />
+                        <bind role="__3" interface="__2" />
+                        <bind role="__4" interface="__2" />
+                        <bind role="__5" interface="__2" />
+                        <bind role="__6" interface="__2" />
+                        <bind role="__7" interface="__2" />
+                        <bind role="__8" interface="__2" />
+                        <bind role="__9" interface="__2" />
+                        <bind role="__10" interface="__2" />
+                        <bind role="__11" interface="__2" />
+                        <bind role="__12" interface="__2" />
+                </link>
+                <property name="__2" />
+        </body>
+</ncl>]])
+
+local str = dietncl.parsestring ([[
+<ncl>
+        <head>
+                <connectorBase>
+                        <causalConnector id="__01">
+                                <compoundCondition operator="and">
+                                        <simpleCondition role="onBegin" />
+                                        <compoundStatement operator="and">
+                                                <assessmentStatement comparator="eq">
+                                                        <attributeStatement role="__0" eventType="attribution" />
+                                                        <attributeStatement role="__1" eventType="attribution" />
+                                                </assessmentStatement>
+                                                <assessmentStatement comparator="eq">
+                                                        <attributeStatement role="__7" eventType="attribution" />
+                                                        <attributeStatement role="__8" eventType="attribution" />
+                                                </assessmentStatement>
+                                                <assessmentStatement comparator="eq">
+                                                        <attributeStatement role="__5" eventType="attribution" />
+                                                        <attributeStatement role="__6" eventType="attribution" />
+                                                </assessmentStatement>
+                                        </compoundStatement>
+                                </compoundCondition>
+                                <compoundAction operator="and">
+                                        <simpleAction role="start" delay="15s" />
+                                        <simpleAction role="pause" />
+                                </compoundAction>
+                        </causalConnector>
+                        <causalConnector id="__21">
+                                <compoundCondition operator="and">
+                                        <simpleCondition role="onResume" />
+                                        <compoundStatement operator="and">
+                                                <assessmentStatement comparator="eq">
+                                                        <attributeStatement role="__5" eventType="attribution" />
+                                                        <attributeStatement role="__6" eventType="attribution" />
+                                                </assessmentStatement>
+                                                <assessmentStatement comparator="eq">
+                                                        <attributeStatement role="__9" eventType="attribution" />
+                                                        <attributeStatement role="__10" eventType="attribution" />
+                                                </assessmentStatement>
+                                                <assessmentStatement comparator="eq">
+                                                        <attributeStatement role="__3" eventType="attribution" />
+                                                        <attributeStatement role="__4" eventType="attribution" />
+                                                </assessmentStatement>
+                                                <assessmentStatement comparator="eq">
+                                                        <attributeStatement role="__7" eventType="attribution" />
+                                                        <attributeStatement role="__8" eventType="attribution" />
+                                                </assessmentStatement>
+                                        </compoundStatement>
+                                </compoundCondition>
+                                <compoundAction operator="and">
+                                        <simpleAction role="start" delay="15s" />
+                                        <simpleAction role="pause" />
+                                        <simpleAction role="set" value="1" />
+                                </compoundAction>
+                        </causalConnector>
+                        <causalConnector id="__31">
+                                <compoundCondition operator="and">
+                                        <simpleCondition role="onEnd" />
+                                        <compoundStatement operator="and">
+                                                <assessmentStatement comparator="eq">
+                                                        <attributeStatement role="__5" eventType="attribution" />
+                                                        <attributeStatement role="__6" eventType="attribution" />
+                                                </assessmentStatement>
+                                                <assessmentStatement comparator="eq">
+                                                        <attributeStatement role="__9" eventType="attribution" />
+                                                        <attributeStatement role="__10" eventType="attribution" />
+                                                </assessmentStatement>
+                                                <assessmentStatement comparator="eq">
+                                                        <attributeStatement role="__12" eventType="attribution" />
+                                                        <attributeStatement role="__11" eventType="attribution" />
+                                                </assessmentStatement>
+                                                <assessmentStatement comparator="eq">
+                                                        <attributeStatement role="__7" eventType="attribution" />
+                                                        <attributeStatement role="__8" eventType="attribution" />
+                                                </assessmentStatement>
+                                        </compoundStatement>
+                                </compoundCondition>
+                                <compoundAction operator="and">
+                                        <simpleAction role="start" delay="15s" />
+                                        <simpleAction role="pause" />
+                                        <simpleAction role="set" value="1" />
+                                </compoundAction>
+                        </causalConnector>
+                </connectorBase>
+        </head>
+        <body>
+                <media id="m" />
+                <property name="__2" />
+                <link xconnector="__01">
+                        <bind role="onBegin" component="m" />
+                        <bind role="start" component="m" />
+                        <bind role="pause" component="m" />
+                        <bind role="__0" interface="__2" />
+                        <bind role="__1" interface="__2" />
+                        <bind role="__5" interface="__2" />
+                        <bind role="__6" interface="__2" />
+                        <bind role="__7" interface="__2" />
+                        <bind role="__8" interface="__2" />
+                </link>
+                <link xconnector="__21">
+                        <bind role="onResume" component="m" />
+                        <bind role="start" component="m" />
+                        <bind role="pause" component="m" />
+                        <bind role="__3" interface="__2" />
+                        <bind role="__4" interface="__2" />
+                        <bind role="__5" interface="__2" />
+                        <bind role="__6" interface="__2" />
+                        <bind role="__7" interface="__2" />
+                        <bind role="__8" interface="__2" />
+                        <bind role="__9" interface="__2" />
+                        <bind role="__10" interface="__2" />
+                        <bind role="set" interface="__42" />
+                </link>
+                <link xconnector="__31">
+                        <bind role="onEnd" component="m" />
+                        <bind role="start" component="m" />
+                        <bind role="pause" component="m" />
+                        <bind role="__5" interface="__2" />
+                        <bind role="__6" interface="__2" />
+                        <bind role="__7" interface="__2" />
+                        <bind role="__8" interface="__2" />
+                        <bind role="__9" interface="__2" />
+                        <bind role="__10" interface="__2" />
+                        <bind role="__11" interface="__2" />
+                        <bind role="__12" interface="__2" />
+                        <bind role="set" interface="__52" />
+                </link>
+                <property name="__42" value="0" />
+                <property name="__52" value="0" />
+        </body>
+</ncl>]])
+
+assert (filter.apply(ncl))
+assert (ncl:equal (str))

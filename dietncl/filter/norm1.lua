@@ -26,37 +26,40 @@ with DietNCL.  If not, see <http://www.gnu.org/licenses/>.  ]]--
 local filter = {}
 
 local ipairs = ipairs
-local print = print
 
 local xml = require ('dietncl.xmlsugar')
 local aux = require ('dietncl.nclaux')
 _ENV = nil
 
-local function include_tautological (action, element, temp_comp, new_compound, new_connector, ncl)
-    if element.operator == 'and' then
-        local tauto
-        local attrA = {0, 0}
-        tauto = xml.new ('assessmentStatement')
-        tauto.comparator = 'eq'
-        for i, attr_elem in ipairs (attrA) do
-            attr_elem = xml.new ('attributeStatement')
-            attr_elem.role = aux.gen_id (ncl)
-            attr_elem.eventType = 'attribution'
-            tauto:insert (attr_elem)
-        end
+local function include_tautological (action, element, conn, new_connector, ncl)
+    local property
+    local new_action
 
-        if new_compound then
-            new_compound:insert (tauto)
-        else
-            temp_comp:insert (tauto)
-        end
+    if element.operator == 'and' and element:tag() == 'compoundCondition' then
+
+        new_action = xml.new ('simpleAction')
+        new_action.role = 'set'
+        new_action.value = '1'
 
         if action then
-            new_connector:insert (action:clone())
+            local copy = action:clone()
+            copy:insert (new_action)
+            new_connector:insert (copy)
+            goto out
+        else
+            new_connnector:insert (new_action)
         end
 
     end
+
+    if action then
+        new_connector:insert (action:clone())
+    end
+
+    ::out::
+
 end
+
 
 function filter.apply (ncl)
     local condition = true
@@ -67,6 +70,8 @@ function filter.apply (ncl)
         condition = false
         for index, conn in ipairs (conn_list) do
             local first_stat
+            local new_connector
+
 
             for first in conn:gmatch ('compoundStatement') do
                 if first:parent() == conn then
@@ -137,11 +142,18 @@ function filter.apply (ncl)
                             new_compound:insert (temp_stat[1])
                         end
 
+
                         for child in element:gmatch ('compoundCondition') do
                             if child:parent() == element then
+                                local track = 1
                                 local temp_comp = xml.remove (child:parent(), child)
-                                local new_connector = xml.new ('causalConnector')
-                                new_connector.id = aux.gen_id (ncl)
+                                new_connector = xml.new ('causalConnector')
+                                new_connector.id = aux.gen_id (ncl) .. '1'
+                                new_connector:insert (temp_comp)
+                                conn:parent():insert (new_connector)
+
+                                include_tautological (action, element, conn, new_connector, ncl)
+
                                 if new_compound then
                                     local copy = new_compound:clone()
                                     for assessmt in temp_comp:gmatch ('assessmentStatement') do
@@ -155,8 +167,6 @@ function filter.apply (ncl)
                                         end
                                     end
                                     temp_comp:insert (copy)
-
-                                    include_tautological (action, element, temp_comp, new_compound, new_connector, ncl)
 
                                 elseif temp_stat[1] then
                                     local new_compound = xml.new ('compoundStatement')
@@ -172,7 +182,9 @@ function filter.apply (ncl)
                                         end
                                     end
 
-                                    include_tautological (action, element, temp_comp, new_compound, new_connector, ncl)
+                                    if action then
+                                        new_connector:insert (action:clone())
+                                    end
 
                                     if #new_compound > 0 then
                                         new_compound:insert (temp_stat[1]:clone())
@@ -183,12 +195,11 @@ function filter.apply (ncl)
 
                                 end
 
-                                new_connector:insert (temp_comp)
-                                conn:parent():insert (new_connector)
                                 for link in ncl:gmatch ('link', 'xconnector', conn.id) do
                                     local new_link = link:clone()
                                     new_link.xconnector = new_connector.id
                                     link:parent():insert (new_link)
+
                                     for bind in new_link:gmatch('bind') do
                                         for simple in new_connector:gmatch ('simpleCondition', 'role', bind.role) do
                                             goto _next
@@ -205,7 +216,9 @@ function filter.apply (ncl)
                                         xml.remove (bind:parent(), bind)
                                         ::_next::
                                     end
+
                                 end
+
                             end
                         end
 
@@ -225,6 +238,24 @@ function filter.apply (ncl)
                 break
             end
 
+        end
+    end
+
+    for conn in ncl:gmatch ('causalConnector') do
+        for trigger in conn:gmatch ('simpleAction', 'role', 'set') do
+            for link in ncl:gmatch ('link', 'xconnector', conn.id) do
+                local property = xml.new ('property')
+                property.name = aux.gen_id (ncl) .. '2'
+                property.value = 0
+                link:parent():insert (property)
+                local new_bind = xml.new ('bind')
+                new_bind.role = trigger.role
+                new_bind.interface = property.name
+                if link:parent().id then
+                    new_bind.component = link:parent().id
+                end
+                link:insert (new_bind)
+            end
         end
     end
 
