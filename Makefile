@@ -1,5 +1,5 @@
 # Makefile -- Builds DietNCL.
-# Copyright (C) 2013-2014 PUC-Rio/Laboratorio TeleMidia
+# Copyright (C) 2013-2015 PUC-Rio/Laboratorio TeleMidia
 #
 # This file is part of DietNCL.
 #
@@ -62,7 +62,7 @@ XFAIL_TESTS =\
 all:
 .PHONY: all
 
-COPYRIGHT_YEAR := 2014
+COPYRIGHT_YEAR := 2015
 COPYRIGHT_HOLDER := PUC-Rio/Laboratorio\sTeleMidia
 update_copyright_ :=\
   s:(\W*Copyright\s\(C\)\s\d+)-?\d*(\s$(COPYRIGHT_HOLDER)\b)\
