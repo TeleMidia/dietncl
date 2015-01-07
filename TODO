@@ -24,6 +24,10 @@ DietNCL TODO -- Tasks that need implementing.                  -*-outline-*-
 
 * OPTIMIZATION AND CLEAN UP
 
+  + dietncl/filter/prenorm*.lua: Revise pre-norm filters.
+
+    Some are unfinished.
+
 
 Local Variables:
 mode: outline
