@@ -35,6 +35,7 @@ TESTS =\
  test-filter-prenorm5.lua\
  test-filter-region.lua\
  test-filter-transition.lua\
+ test-filter-unused_media.lua\
  test-init-parse.lua\
  test-init-parsestring.lua\
  test-nclaux-gen-id.lua\
