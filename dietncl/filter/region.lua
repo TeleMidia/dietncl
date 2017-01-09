@@ -16,11 +16,8 @@ for more details.
 You should have received a copy of the GNU General Public License along
 with DietNCL.  If not, see <http://www.gnu.org/licenses/>.  ]]--
 
--- The REGION filter removes all regions from a given NCL document.  It
--- proceeds by transforming each region into a set of equivalent parameters
--- of the associated descriptors.
---
--- Depends: IMPORT.
+--- XML filter
+-- @module region
 
 local filter = {}
 
@@ -234,6 +231,15 @@ local function unnest (region)
    end
    return true
 end
+
+---
+-- The REGION filter removes all regions from a given NCL document.  It
+-- proceeds by transforming each region into a set of equivalent parameters
+-- of the associated descriptors.
+--
+-- Depends: IMPORT.
+-- @param ncl NCL document.
+-- @return NCL document.
 
 function filter.apply (ncl)
    for base in ncl:gmatch ('regionBase') do

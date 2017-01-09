@@ -16,24 +16,33 @@ for more details.
 You should have received a copy of the GNU General Public License along
 with DietNCL.  If not, see <http://www.gnu.org/licenses/>.  ]]--
 
--- Remove media elements that are not being referenced by link or port
--- elements.
+--- XML filter
+-- @module unused_media
 
 local print = print
-
+local ipairs = ipairs
 local filter = {}
 local xml = require ('dietncl.xmlsugar')
 _ENV = nil
 
+---
+-- The UNUSED MEDIA filter removes all media elements that are not being
+-- referenced by link or port from a given NCL document.
+-- @param ncl NCL document.
+-- @return NCL document.
+
 function filter.apply (ncl)
-   for med in ncl:gmatch ('media') do
-      local list = {ncl:match ('port', 'component', med.id)}
-      
-      if #list == 0 then
-	 xml.remove(med:parent (), med)
+   for _,s in ipairs {'media', 'context'} do
+      for elt in ncl:gmatch (s) do
+	 local listl = {ncl:match ('bind', 'component', elt.id)}
+	 local listp = {ncl:match ('port', 'component', elt.id)}
+	 
+	 if #listp == 0 and #listl == 0  then
+	    xml.remove (elt:parent (), elt)
+	 end
       end
    end
-
+   
    print (ncl)
    return (ncl)
 end

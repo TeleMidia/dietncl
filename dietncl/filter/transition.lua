@@ -16,12 +16,8 @@ for more details.
 You should have received a copy of the GNU General Public License along
 with DietNCL.  If not, see <http://www.gnu.org/licenses/>.  ]]--
 
--- The TRANSITION filter removes the <transition> and <transitionBase>
--- elements from a given NCL document.  It proceeds by expanding the
--- definition of each transition into the associated <property>,
--- <descriptor>, or <descriptorParam> elements.
---
--- Depends: IMPORT.
+--- XML filter
+-- @module transition
 
 local filter = {}
 
@@ -105,6 +101,16 @@ local function expand (ncl, id)
       trans.borderWidth   or '0',
       trans.borderColor   or 'black')
 end
+
+---
+-- The TRANSITION filter removes the <transition> and <transitionBase>
+-- elements from a given NCL document.  It proceeds by expanding the
+-- definition of each transition into the associated <property>,
+-- <descriptor>, or <descriptorParam> elements.
+--
+-- Depends: IMPORT.
+-- @param ncl NCL document.
+-- @return NCL document.
 
 function filter.apply (ncl)
    for desc in ncl:gmatch ('descriptor', '^trans[IO].*$', nil, 2) do
