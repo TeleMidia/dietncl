@@ -21,7 +21,7 @@ local package = _G.package
 _ENV = nil
 
 --- XML path
--- @module xml
+-- @module path
 
 ---
 -- Returns the character at position I in string S.
