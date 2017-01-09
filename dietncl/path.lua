@@ -20,6 +20,9 @@ local path = {}
 local package = _G.package
 _ENV = nil
 
+--- XML path
+-- @module xml
+
 ---
 -- Returns the character at position I in string S.
 --
@@ -53,7 +56,9 @@ end
 
 ---
 -- Returns true if path name P is absolute.
---
+-- @param p path name.
+-- @return true if P is absolute.
+
 function path.absolute (p)
    if isslash (at (p, 1)) then
       return true
@@ -66,7 +71,9 @@ end
 
 ---
 -- Returns true if path name P is relative.
---
+-- @param p path name.
+-- @return true if P is relative.
+
 function path.relative (p)
    return not path.absolute (p)
 end
@@ -74,7 +81,11 @@ end
 ---
 -- Returns the dirname and basename parts of path name P.
 -- If there is no dirname part, the first returned value will be empty.
---
+-- @param p path name.
+-- @return dirname part of P, if successful.
+-- @return empty, otherwise.
+-- @return basename part of P.
+
 function path.split (p)
    local base = filesystem_prefix_len (p)
    local i = #p
@@ -86,7 +97,10 @@ end
 
 ---
 -- Returns the result of concatenating path names P and Q.
---
+-- @param p path name.
+-- @param q path name.
+-- @return string of P and Q concatenated
+
 function path.join (p, q)
    if #p == 0 then
       return q
