@@ -21,11 +21,15 @@ local assert = assert
 local xml = require ('dietncl.xmlsugar')
 _ENV = nil
 
+--- XML init
+-- @module dietncl
+
 ---
 -- Parses document string S.
--- Returns a new document handle if successful,
--- otherwise returns nil plus error message.
---
+-- @param s document string.
+-- @return a new document handle if successful.
+-- @return 'nil' plus error message, otherwise.
+
 function dietncl.parsestring (s)
    local ncl, err = xml.eval (assert (s))
    if ncl == nil then
@@ -36,9 +40,10 @@ end
 
 ---
 -- Parses document at path name PATHNAME.
--- Returns a new document handle if successful,
--- otherwise returns nil plus error message.
---
+-- @param pathname path name.
+-- @return a new document handle, if successful.
+-- @return 'nil' plus error message, otherwise.
+
 function dietncl.parse (pathname)
    local ncl, err = xml.load (assert (pathname))
    if ncl == nil then
