@@ -16,17 +16,23 @@ for more details.
 You should have received a copy of the GNU General Public License along
 with DietNCL.  If not, see <http://www.gnu.org/licenses/>.  ]]--
 
+--- XML filter
+-- @module prenorm3
+
+local filter = {}
+
+local aux = require ('dietncl.nclaux')
+_ENV = nil
+
+---
 -- The PRENORM1-5 filters simplify links and connectors from a given NCL
 -- document.  This filter, PRENORM3, implements the third pre-normalization
 -- step: It guarantees that the compound conditions and compound actions of
 -- all connectors have no "delay" attribute.
 --
 -- Depends: PRENORM1.
-
-local filter = {}
-
-local aux = require ('dietncl.nclaux')
-_ENV = nil
+-- @param ncl NCL document.
+-- @return NCL document.
 
 local function remove_compound_delay_tail (x, delay)
    if x:tag () == 'connectorParam' then

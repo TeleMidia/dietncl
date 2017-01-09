@@ -16,14 +16,8 @@ for more details.
 You should have received a copy of the GNU General Public License along
 with DietNCL.  If not, see <http://www.gnu.org/licenses/>.  ]]--
 
--- The PRENORM1-5 filters simplify links and connectors from a given NCL
--- document.  This filter, PRENORM5, implements the fifth pre-normalization
--- step: It guarantees that the compound actions and compound statements of
--- all connectors are binary and its compound conditions are either binary
--- or ternary, and have exactly one child (assessment or compound)
--- statement.
---
--- Depends: PRENORM1.
+--- XML filter
+-- @module prenorm5
 
 local filter = {}
 
@@ -222,8 +216,16 @@ local function make_ternary_tree (ncl, conn, parent)
 end
 
 ---
--- Applies filter for restriction (5)
+-- The PRENORM1-5 filters simplify links and connectors from a given NCL
+-- document.  This filter, PRENORM5, implements the fifth pre-normalization
+-- step: It guarantees that the compound actions and compound statements of
+-- all connectors are binary and its compound conditions are either binary
+-- or ternary, and have exactly one child (assessment or compound)
+-- statement.
 --
+-- Depends: PRENORM1.
+-- @param ncl NCL document.
+-- @return NCL document.
 
 function filter.apply (ncl)
    local compound

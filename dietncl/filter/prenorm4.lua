@@ -16,12 +16,8 @@ for more details.
 You should have received a copy of the GNU General Public License along
 with DietNCL.  If not, see <http://www.gnu.org/licenses/>.  ]]--
 
--- The PRENORM1-5 filters simplify links and connectors from a given NCL
--- document.  This filter, PRENORM4, implements the fourth pre-normalization
--- step: It guarantees that the simple conditions and simple actions of all
--- connectors are referenced by exacbly one bind in the associated links.
---
--- Depends: PRENORM1.
+--- XML filter
+-- @module prenorm4
 
 local filter = {}
 
@@ -62,6 +58,16 @@ do
       t[2] = alias
    end
 end
+
+---
+-- The PRENORM1-5 filters simplify links and connectors from a given NCL
+-- document.  This filter, PRENORM4, implements the fourth pre-normalization
+-- step: It guarantees that the simple conditions and simple actions of all
+-- connectors are referenced by exacbly one bind in the associated links.
+--
+-- Depends: PRENORM1.
+-- @param ncl NCL document.
+-- @return NCL document.
 
 function filter.apply (ncl)
    for link in ncl:gmatch ('link') do
