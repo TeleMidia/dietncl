@@ -16,12 +16,8 @@ for more details.
 You should have received a copy of the GNU General Public License along
 with DietNCL.  If not, see <http://www.gnu.org/licenses/>.  ]]--
 
--- The NORM1-2 filters simplify links and connectors from a given NCL
--- document. This filter NORM1, under the First Normal Form (NF1), guarantees
--- that for any ABS program S there is an equivalent program S' such that each link L
--- of S' has condition and action degrees zero.
---
--- Depends: PRENORM5.
+--- XML filter
+-- @module norm1
 
 local filter = {}
 
@@ -60,6 +56,15 @@ local function include_tautological (action, element, conn, new_connector, ncl)
 
 end
 
+---
+-- The NORM1-2 filters simplify links and connectors from a given NCL
+-- document. This filter NORM1, under the First Normal Form (NF1), guarantees
+-- that for any ABS program S there is an equivalent program S' such that each link L
+-- of S' has condition and action degrees zero.
+--
+-- Depends: PRENORM5.
+-- @param ncl NCL document.
+-- @return NCL document.
 
 function filter.apply (ncl)
     local condition = true
