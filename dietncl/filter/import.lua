@@ -14,11 +14,10 @@ FITNESS FOR A PARTICULAR PURPOSE.  See the GNU General Public License
 for more details.
 
 You should have received a copy of the GNU General Public License along
-with DietNCL.  If not, see <http://www.gnu.org/licenses/>.  ]]--
+   with DietNCL.  If not, see <http://www.gnu.org/licenses/>.  ]]--
 
--- The IMPORT filter resolves the external references and removes the
--- <importNCL>, <importBase>, and <importedDocumentBase> elements from a
--- given document.
+--- XML import
+-- @module import
 
 local filter = {}
 
@@ -267,6 +266,13 @@ local function resolve_importncl (ncl, e)
    xml.remove (parent, e)
    return true
 end
+
+---
+-- This filter resolves the external references and removes the
+-- <importNCL>, <importBase>, and <importedDocumentBase> elements from a
+-- given document.
+-- @param ncl NCL document.
+-- @return NCL document.
 
 function filter.apply (ncl)
    local status
