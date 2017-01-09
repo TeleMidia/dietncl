@@ -16,7 +16,7 @@ for more details.
 You should have received a copy of the GNU General Public License along
    with DietNCL.  If not, see <http://www.gnu.org/licenses/>.  ]]--
 
---- XML import
+--- XML filter
 -- @module import
 
 local filter = {}
