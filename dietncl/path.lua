@@ -1,5 +1,5 @@
 --[[ dietncl.path -- Path-name manipulation.
-     Copyright (C) 2013-2015 PUC-Rio/Laboratorio TeleMidia
+     Copyright (C) 2013-2017 PUC-Rio/Laboratorio TeleMidia
 
 This file is part of DietNCL.
 

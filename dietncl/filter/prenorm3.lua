@@ -1,5 +1,5 @@
 --[[ filter.prenorm3 -- Third pre-normalization step.
-     Copyright (C) 2013-2015 PUC-Rio/Laboratorio TeleMidia
+     Copyright (C) 2013-2017 PUC-Rio/Laboratorio TeleMidia
 
 This file is part of DietNCL.
 
