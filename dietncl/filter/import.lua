@@ -17,7 +17,7 @@ You should have received a copy of the GNU General Public License along
    with DietNCL.  If not, see <http://www.gnu.org/licenses/>.  ]]--
 
 --- XML filter
--- @module import
+-- @module dietncl.filter.import
 
 local filter = {}
 

@@ -16,30 +16,29 @@ for more details.
 You should have received a copy of the GNU General Public License along
 with DietNCL.  If not, see <http://www.gnu.org/licenses/>.  ]]--
 
---- XML filter
--- @module region
-
-local filter = {}
-
-local assert   = assert
-local math     = math
-local pairs    = pairs
+local assert = assert
+local math = math
+local pairs = pairs
 local tonumber = tonumber
 
 local xml = require ('dietncl.xmlsugar')
 local aux = require ('dietncl.nclaux')
+local filter = {}
 _ENV = nil
 
 ---
--- Returns the number value of pixel value S.
+-- Removes all `<region>` elements from an NCL document.
 --
+-- Dependencies: `dietncl.filter.import`
+-- @module dietncl.filter.region
+---
+
+-- Returns the number value of pixel value S.
 local function pixeltonumber (s)
    return tonumber (s:match ('^(%d+)$') or s:match ('^(%d+)[Pp][Xx]$'))
 end
 
----
 -- Returns number value of percent value S.
---
 local function percenttonumber (s)
    local x = tonumber (s:match ('^(%d*%.?%d*)%%$'))
    if x == nil then
@@ -92,11 +91,9 @@ local function ispercent (s) return percenttonumber (s) ~= nil end
 --                  %     %     %        %
 --                  -----------------------------
 
----
 -- Updates width or height attribute ATTR of region REGION based on the
--- value of the corresponding attributes in its parent.
--- Returns true if successful, otherwise returns false plus error message.
---
+-- value of the corresponding attributes in its parent.  Returns true if
+-- successful, otherwise returns false plus error message.
 local function update_wh (region, attr)
    local parent                 -- pointer to parent
    local regval                 -- value of ATTR in REGION
@@ -122,11 +119,9 @@ local function update_wh (region, attr)
    return true
 end
 
----
 -- Updates top, bottom, left, or right attribute ATTR of region REGION based
 -- on the value of the corresponding attributes in the parent region.
 -- Returns true if successful, otherwise returns false plus error message.
---
 local function update_tblr_tail (parent, region, attr, dim)
    local regval = region[attr]
    local parval = parent[attr] or '100%'
@@ -202,10 +197,8 @@ local attribute_to_update_function = {
    right  = update_tblr,
 }
 
----
--- Un-nests all regions rooted at parent region REGION.
--- Returns true if successful, otherwise returns false plus error message.
---
+-- Un-nests all regions rooted at parent region REGION.  Returns true if
+-- successful, otherwise returns false plus error message.
 local function unnest (region)
    while #region > 0 do
       local parent              -- pointer to parent
@@ -233,14 +226,12 @@ local function unnest (region)
 end
 
 ---
--- The REGION filter removes all regions from a given NCL document.  It
--- proceeds by transforming each region into a set of equivalent parameters
--- of the associated descriptors.
---
--- Depends: IMPORT.
--- @param ncl NCL document.
--- @return NCL document.
-
+-- Removes all regions from NCL document.  The function proceeds by
+-- transforming the attributes of each region into equivalent parameters of
+-- into associated descriptors.
+-- @param ncl NCL document (root element).
+-- @return the modified NCL document (root element).
+---
 function filter.apply (ncl)
    for base in ncl:gmatch ('regionBase') do
       for i=1,#base do
@@ -250,7 +241,6 @@ function filter.apply (ncl)
          end
       end
    end
-
    for desc in ncl:gmatch ('descriptor', 'region') do
       local region = assert (ncl:match ('region', 'id', desc.region))
       for k,v in region:attributes () do
@@ -265,11 +255,9 @@ function filter.apply (ncl)
       end
       desc.region = nil
    end
-
    for base in ncl:gmatch ('regionBase') do
       xml.remove (base:parent (), base)
    end
-
    return ncl
 end
 
