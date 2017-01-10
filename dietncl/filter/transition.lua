@@ -14,10 +14,7 @@ FITNESS FOR A PARTICULAR PURPOSE.  See the GNU General Public License
 for more details.
 
 You should have received a copy of the GNU General Public License along
-with DietNCL.  If not, see <http://www.gnu.org/licenses/>.  ]]--
-
---- XML filter
--- @module transition
+   with DietNCL.  If not, see <http://www.gnu.org/licenses/>.  ]]--
 
 local filter = {}
 
@@ -28,6 +25,14 @@ local table  = table
 local xml = require ('dietncl.xmlsugar')
 local aux = require ('dietncl.nclaux')
 _ENV = nil
+
+---
+-- Removes all `<transition>` and `<transitionBase>` elements from an
+-- NCL document.
+--
+-- Dependencies: `dietncl.filter.import`
+-- @module dietncl.filter.transition
+---
 
 -- List of non-descriptor attributes that may point to transitions.
 local query = {
@@ -103,15 +108,13 @@ local function expand (ncl, id)
 end
 
 ---
--- The TRANSITION filter removes the <transition> and <transitionBase>
--- elements from a given NCL document.  It proceeds by expanding the
+-- Removes all <transition> and <transitionBase> elements from an
+-- NCL document. The function proceeds by expanding the
 -- definition of each transition into the associated <property>,
 -- <descriptor>, or <descriptorParam> elements.
---
--- Depends: IMPORT.
--- @param ncl NCL document.
--- @return NCL document.
-
+-- @param ncl NCL document (root element).
+-- @return the modified NCL document (root element).
+---
 function filter.apply (ncl)
    for desc in ncl:gmatch ('descriptor', '^trans[IO].*$', nil, 2) do
       if desc.transIn then

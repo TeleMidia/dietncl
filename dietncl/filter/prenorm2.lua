@@ -16,13 +16,17 @@ for more details.
 You should have received a copy of the GNU General Public License along
 with DietNCL.  If not, see <http://www.gnu.org/licenses/>.  ]]--
 
---- XML filter
--- @module prenorm2
-
 local filter = {}
-
 local xml = require ('dietncl.xmlsugar')
 _ENV = nil
+
+---
+-- Guarantees that all connectors and links contain no link, bind
+-- or connector parameters.
+--
+-- Dependencies: `dietncl.filter.prenorm1`
+-- @module dietncl.filter.prenorm2
+---
 
 ---
 -- The PRENORM1-5 filters simplify links and connectors from a given NCL
@@ -30,11 +34,9 @@ _ENV = nil
 -- step: It guarantees that all connectors and links contain no link, bind,
 -- or connector parameters, i.e., no <linkParam>, <bindParm>, or
 -- <connectorParam> elements (except if "pega-dali" is used).
---
--- Depends: PRENORM1.
--- @param ncl NCL document.
--- @return NCL document.
-
+-- @param ncl NCL document (root element).
+-- @return the modified NCL document (root element).
+---
 function filter.apply (ncl)
    for conn in ncl:gmatch ('causalConnector') do
 

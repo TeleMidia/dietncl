@@ -16,9 +16,6 @@ for more details.
 You should have received a copy of the GNU General Public License along
 with DietNCL.  If not, see <http://www.gnu.org/licenses/>.  ]]--
 
---- XML filter
--- @module prenorm5
-
 local filter = {}
 
 local ipairs = ipairs
@@ -26,6 +23,16 @@ local ipairs = ipairs
 local xml = require ('dietncl.xmlsugar')
 local aux = require ('dietncl.nclaux')
 _ENV = nil
+
+---
+-- Guarantees that the compound actions and compound statements of
+-- all connectors are binary and its compound conditions are either binary
+-- or ternary, and have exactly one child (assessment or compound)
+-- statement.
+--
+-- Dependencies: `dietncl.filter.prenorm1`
+-- @module dietncl.filter.prenorm5
+---
 
 ---
 -- Insert a tautological statement to turn a compound element into a binary one.
@@ -222,11 +229,9 @@ end
 -- all connectors are binary and its compound conditions are either binary
 -- or ternary, and have exactly one child (assessment or compound)
 -- statement.
---
--- Depends: PRENORM1.
--- @param ncl NCL document.
--- @return NCL document.
-
+-- @param ncl NCL document (root element).
+-- @return the modified NCL document (root element).
+---
 function filter.apply (ncl)
    local compound
    local parent

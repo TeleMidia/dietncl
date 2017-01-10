@@ -16,9 +16,6 @@ for more details.
 You should have received a copy of the GNU General Public License along
 with DietNCL.  If not, see <http://www.gnu.org/licenses/>.  ]]--
 
---- XML filter
--- @module prenorm4
-
 local filter = {}
 
 local assert = assert
@@ -27,6 +24,14 @@ local pairs = pairs
 local xml = require ('dietncl.xmlsugar')
 local aux = require ('dietncl.nclaux')
 _ENV = nil
+
+---
+-- Guarantees that the simple conditions and simple actions of all
+-- connectors are referenced by exactly one bind in the associated links.
+--
+-- Dependencies: `dietncl.filter.prenorm1`
+-- @module dietncl.filter.prenorm4
+---
 
 local alias_map = {
 -- ALIAS                  EVENT_TYPE      TRANSITION
@@ -63,12 +68,10 @@ end
 -- The PRENORM1-5 filters simplify links and connectors from a given NCL
 -- document.  This filter, PRENORM4, implements the fourth pre-normalization
 -- step: It guarantees that the simple conditions and simple actions of all
--- connectors are referenced by exacbly one bind in the associated links.
---
--- Depends: PRENORM1.
--- @param ncl NCL document.
--- @return NCL document.
-
+-- connectors are referenced by exactly one bind in the associated links.
+-- @param ncl NCL document (root element).
+-- @return the modified NCL document (root element).
+---
 function filter.apply (ncl)
    for link in ncl:gmatch ('link') do
       local conn = ncl:match ('causalConnector', 'id', link.xconnector)

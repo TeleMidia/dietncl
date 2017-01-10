@@ -16,9 +16,6 @@ for more details.
 You should have received a copy of the GNU General Public License along
 with DietNCL.  If not, see <http://www.gnu.org/licenses/>.  ]]--
 
---- XML filter
--- @module unused_media
-
 local print = print
 local ipairs = ipairs
 local filter = {}
@@ -26,11 +23,18 @@ local xml = require ('dietncl.xmlsugar')
 _ENV = nil
 
 ---
+-- Removes all `<media>` elements that are not being referenced from
+-- NCL document.
+--
+-- @module dietncl.filter.unused_media
+---
+
+---
 -- The UNUSED MEDIA filter removes all media elements that are not being
 -- referenced by link or port from a given NCL document.
--- @param ncl NCL document.
--- @return NCL document.
-
+-- @param ncl NCL document (root element).
+-- @return the modified NCL document (root element).
+---
 function filter.apply (ncl)
    for _,s in ipairs {'media', 'context'} do
       for elt in ncl:gmatch (s) do

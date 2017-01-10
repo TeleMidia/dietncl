@@ -16,9 +16,6 @@ for more details.
 You should have received a copy of the GNU General Public License along
    with DietNCL.  If not, see <http://www.gnu.org/licenses/>.  ]]--
 
---- XML filter
--- @module dietncl.filter.import
-
 local filter = {}
 
 local assert = assert
@@ -28,6 +25,13 @@ local dietncl = require ('dietncl')
 local xml = require ('dietncl.xmlsugar')
 local path = require ('dietncl.path')
 _ENV = nil
+
+---
+-- Removes all `<importNCL>`, `<importBase>`, and `<importedDocumentBase>`
+-- elements from an NCL document.
+--
+-- @module dietncl.filter.import
+---
 
 -- List of possible <importBase> parents.
 local importbase_parent_list = {
@@ -268,12 +272,11 @@ local function resolve_importncl (ncl, e)
 end
 
 ---
--- This filter resolves the external references and removes the
--- <importNCL>, <importBase>, and <importedDocumentBase> elements from a
--- given document.
--- @param ncl NCL document.
--- @return NCL document.
-
+-- Resolves the external references and removes the <importNCL>,
+-- <importBase>, and <importedDocumentBase> elements from NCL document.
+-- @param ncl NCL document (root element).
+-- @return the modified NCL document (root element).
+---
 function filter.apply (ncl)
    local status
    local err

@@ -16,24 +16,26 @@ for more details.
 You should have received a copy of the GNU General Public License along
 with DietNCL.  If not, see <http://www.gnu.org/licenses/>.  ]]--
 
---- XML filter
--- @module prenorm1
-
 local filter = {}
 local xml = require ('dietncl.xmlsugar')
 local aux = require ('dietncl.nclaux')
 _ENV = nil
 
 ---
+-- Guarantees that each connector is referenced by exactly one link.
+--
+-- Dependencies: `dietncl.filter.import`
+-- @module dietncl.filter.prenorm1
+---
+
+---
 -- The PRENORM1-5 filters simplify links and connectors from a given NCL
 -- document.  This filter, PRENORM1, implements the first pre-normalization
 -- step: It guarantees that each connector is referenced by exactly one
 -- link.
---
--- Depends: IMPORT.
--- @param ncl NCL document.
--- @return NCL document.
-
+-- @param ncl NCL document (root element).
+-- @return the modified NCL document (root element).
+---
 function filter.apply (ncl)
    for conn in ncl:gmatch ('causalConnector') do
       local list = {ncl:match ('link', 'xconnector', conn.id)}

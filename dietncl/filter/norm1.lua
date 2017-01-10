@@ -16,8 +16,6 @@ for more details.
 You should have received a copy of the GNU General Public License along
 with DietNCL.  If not, see <http://www.gnu.org/licenses/>.  ]]--
 
---- XML filter
--- @module norm1
 
 local filter = {}
 
@@ -26,6 +24,14 @@ local ipairs = ipairs
 local xml = require ('dietncl.xmlsugar')
 local aux = require ('dietncl.nclaux')
 _ENV = nil
+
+---
+-- Guarantees that for any ABS program S there is an equivalent program S'
+-- such that each link L of S' has condition and action degrees zero.
+--
+-- Dependencies: `dietncl.filter.prenorm5`
+-- @module dietncl.filter.norm1
+---
 
 local function include_tautological (action, element, conn, new_connector, ncl)
     local property
@@ -61,11 +67,9 @@ end
 -- document. This filter NORM1, under the First Normal Form (NF1), guarantees
 -- that for any ABS program S there is an equivalent program S' such that each link L
 -- of S' has condition and action degrees zero.
---
--- Depends: PRENORM5.
--- @param ncl NCL document.
--- @return NCL document.
-
+-- @param ncl NCL document (root element).
+-- @return the modified NCL document (root element).
+---
 function filter.apply (ncl)
     local condition = true
 
