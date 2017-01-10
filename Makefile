@@ -16,17 +16,17 @@
 # You should have received a copy of the GNU General Public License
 # along with DietNCL.  If not, see <http://www.gnu.org/licenses/>.
 
-BUGSTO = gflima@telemidia.puc-rio.br
-sinclude config
-LUA          ?= lua
-COLOR_TESTS  ?= yes
+BUGSTO= gflima@telemidia.puc-rio.br
+COLOR_TESTS?= yes
+LDOC?= ldoc
+LUA?= lua
 
-TESTS_ENVIRONMENT =\
+TESTS_ENVIRONMENT=\
  LUA_PATH="./tests/?.lua;./?.lua;./?/init.lua;$$LUA_PATH;;" $(LUA)\
  $(NULL)
 
-TESTS_DIR = tests
-TESTS =\
+TESTS_DIR= tests
+TESTS=\
  test-filter-import.lua\
  test-filter-prenorm1.lua\
  test-filter-prenorm2.lua\
@@ -57,7 +57,7 @@ TESTS =\
  test-xmlsugar-userdata.lua\
  $(NULL)
 
-XFAIL_TESTS =\
+XFAIL_TESTS=\
  $(NULL)
 
 all:
@@ -68,6 +68,14 @@ COPYRIGHT_HOLDER := PUC-Rio/Laboratorio\sTeleMidia
 update_copyright_ :=\
   s:(\W*Copyright\s\(C\)\s\d+)-?\d*(\s$(COPYRIGHT_HOLDER)\b)\
    :$$1-$(COPYRIGHT_YEAR)$$2:x
+
+.PHONY: clean
+clean:
+	-rm -rf ./doc
+
+.PHONY: doc
+doc:
+	$(LDOC) .
 
 .PHONY: update-copyright
 update-copyright:
@@ -81,11 +89,11 @@ syntax-check:
 	@./build-aux/syntax-check $(all_src)
 
 # Adapted from GNU Automake 1.12.6.
-tty_colors = \
+tty_colors= \
 red=; grn=; lgn=; blu=; std=; \
 test "X$(COLOR_TESTS)" != Xno \
 && test "X$$TERM" != Xdumb \
-&& { test "X$(COLOR_TESTS)" = Xalways || test -t 1 2>/dev/null; } \
+&& { test "X$(COLOR_TESTS)"= Xalways || test -t 1 2>/dev/null; } \
 && { \
   red='[0;31m'; \
   grn='[0;32m'; \
