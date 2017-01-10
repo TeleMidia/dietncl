@@ -63,6 +63,11 @@ local function sugarize (e)
    return e
 end
 
+
+--- Methods
+-- @section Methods
+---
+
 ---
 -- Parses XML string.
 -- @param s XML string.
