@@ -16,16 +16,17 @@ for more details.
 You should have received a copy of the GNU General Public License along
 with DietNCL.  If not, see <http://www.gnu.org/licenses/>.  ]]--
 
-local path = {}
 local package = _G.package
+
+local path = {}
 _ENV = nil
 
---- XML path
--- @module path
-
 ---
+-- Manipulation of path-names.
+-- @module dietncl.path
+---
+
 -- Returns the character at position I in string S.
---
 local function at (s, i)
    return s:sub (i,i)
 end
@@ -33,9 +34,7 @@ end
 -- True if we're on MS Windows.
 local iswindows = at (package.config, 1) == '\\'
 
----
 -- Returns true if char C is a path separator.
---
 local function isslash (c)
    if iswindows then
       return c == '/' or c == '\\'
@@ -44,9 +43,7 @@ local function isslash (c)
    end
 end
 
----
 -- Returns the length of file system prefix in path name P.
---
 local function filesystem_prefix_len (p)
    if iswindows and (at (p, 1)):match ('[a-zA-Z]') and at (p, 2) == ':' then
       return 2
@@ -54,11 +51,13 @@ local function filesystem_prefix_len (p)
    return 0
 end
 
+
 ---
--- Returns true if path name P is absolute.
--- @param p path name.
--- @return true if P is absolute.
-
+-- Tests whether path-name is absolute.
+-- @param p path-name.
+-- @return `true`, if successful.
+-- @return `false`, otherwise.
+---
 function path.absolute (p)
    if isslash (at (p, 1)) then
       return true
@@ -70,22 +69,21 @@ function path.absolute (p)
 end
 
 ---
--- Returns true if path name P is relative.
--- @param p path name.
--- @return true if P is relative.
-
+-- Tests whether path-name is relative.
+-- @param p path-name.
+-- @return `true`, if successful.
+-- @return `false`, otherwise.
+---
 function path.relative (p)
    return not path.absolute (p)
 end
 
 ---
--- Returns the dirname and basename parts of path name P.
--- If there is no dirname part, the first returned value will be empty.
--- @param p path name.
--- @return dirname part of P, if successful.
--- @return empty, otherwise.
--- @return basename part of P.
-
+-- Gets the dirname and basename parts of path-name
+-- @param p path-name.
+-- @return dirname part of *p* or `nil` (none).
+-- @return basename part of *p* or `nil` (none).
+---
 function path.split (p)
    local base = filesystem_prefix_len (p)
    local i = #p
@@ -96,11 +94,11 @@ function path.split (p)
 end
 
 ---
--- Returns the result of concatenating path names P and Q.
--- @param p path name.
--- @param q path name.
--- @return string of P and Q concatenated
-
+-- Concatenates path-names P and Q.
+-- @param p path-name.
+-- @param q path-name.
+-- @return the resulting path-name.
+---
 function path.join (p, q)
    if #p == 0 then
       return q

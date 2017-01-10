@@ -16,20 +16,23 @@ for more details.
 You should have received a copy of the GNU General Public License along
 with DietNCL.  If not, see <http://www.gnu.org/licenses/>.  ]]--
 
-local dietncl = {}
 local assert = assert
-local xml = require ('dietncl.xmlsugar')
+
+local xml = require'dietncl.xmlsugar'
+local dietncl = {}
 _ENV = nil
 
---- XML init
+---
+-- Parsing, representation, and manipulation of NCL documents.
 -- @module dietncl
+---
 
 ---
--- Parses document string S.
+-- Parses document string.
 -- @param s document string.
--- @return a new document handle if successful.
--- @return 'nil' plus error message, otherwise.
-
+-- @return[1] document tree (root element), if successful.
+-- @return[2] `nil` plus error message, otherwise.
+---
 function dietncl.parsestring (s)
    local ncl, err = xml.eval (assert (s))
    if ncl == nil then
@@ -39,17 +42,17 @@ function dietncl.parsestring (s)
 end
 
 ---
--- Parses document at path name PATHNAME.
--- @param pathname path name.
--- @return a new document handle, if successful.
--- @return 'nil' plus error message, otherwise.
-
-function dietncl.parse (pathname)
-   local ncl, err = xml.load (assert (pathname))
+-- Parses document file.
+-- @param path path to document file.
+-- @return[1] document tree (root element), if successful.
+-- @return[2] `nil` plus error message, otherwise.
+---
+function dietncl.parse (path)
+   local ncl, err = xml.load (assert (path))
    if ncl == nil then
       return nil, err
    end
-   ncl:setuserdata ('pathname', pathname)
+   ncl:setuserdata ('pathname', path)
    return ncl
 end
 
