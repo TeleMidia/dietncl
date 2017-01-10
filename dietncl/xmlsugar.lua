@@ -16,12 +16,6 @@ for more details.
 You should have received a copy of the GNU General Public License along
 with DietNCL.  If not, see <http://www.gnu.org/licenses/>.  ]]--
 
-local xml = require ('LuaXml')
-
--- Workaround bugs in LuaXml eval() and tag().
-_G.xml = xml
-_G.TAG = xml.TAG
-
 local assert = assert
 local bit = bit32.extract
 local getmetatable = getmetatable
@@ -30,41 +24,37 @@ local next = next
 local pcall = pcall
 local table = table
 local type = type
+
+-- Workaround bugs in LuaXml eval() and tag().
+local xml = require'LuaXml'
+_G.xml = xml
+_G.TAG = xml.TAG
 _ENV = nil
 
---- XML trees.
--- @module xml.
-
-xml.PARENT = -1
-xml.USERDATA = -2
-xml._eval = xml.eval
-xml._load = xml.load
-
 ---
--- Checks whether E is a LuaXML element.
--- @tab e metatable.
--- @return E.
+-- Parsing, representation, and manipulation of XML trees.
+-- @classmod dietncl.xmlsugar
+---
+do
+   xml.PARENT = -1
+   xml.USERDATA = -2
+   xml._eval = xml.eval
+   xml._load = xml.load
+end
 
+-- Checks whether E is a LuaXML element.
 local function checkxml (e)
    local t = getmetatable (e)
    assert (t and t.__index == xml)
    return e
 end
 
----
 -- Sets PARENT to be the parent element of E.
--- @param e LuaXML element
--- @param parent LuaXML element
-
 local function setparent (e, parent)
    e[xml.PARENT] = parent
 end
 
----
--- Adds sugar to the LibXML tree rooted at E.
--- @param e LuaXML element.
--- @return E.
-
+-- Adds sugar to the tree rooted at E.
 local function sugarize (e)
    for i=1,#e do
       setparent (e[i], e)
@@ -74,12 +64,13 @@ local function sugarize (e)
 end
 
 ---
--- Parses the XML string S.
--- @string s XML string.
--- @return new XML handle, if successful.
--- @return 'nil' plus error message, otherwise.
-
-function xml.eval (s)
+-- Parses XML string.
+-- @param s XML string.
+-- @return[1] XML tree (root element), if successful.
+-- @return[2] `nil` plus error message, otherwise.
+---
+function xml:eval (s)
+   local s = s or self
    local status, e = pcall (xml._eval, s)
    if status == false or e == nil then
       return nil, e
@@ -88,13 +79,14 @@ function xml.eval (s)
 end
 
 ---
--- Parses the XML document.
--- @string s XML string.
--- @return new XML handle, if successful.
--- @return 'nil' plus error message, otherwise.
-
-function xml.load (s)
-   local status, e = pcall (xml._load, s)
+-- Parses XML file.
+-- @string path path to XML file.
+-- @return[1] XML tree (root element), if successful.
+-- @return[2] `nil` plus error message, otherwise.
+---
+function xml:load (path)
+   local path = path or self
+   local status, e = pcall (xml._load, path)
    if status == false or e == nil then
       return nil, e
    end
@@ -102,32 +94,30 @@ function xml.load (s)
 end
 
 ---
--- Searches for the parent of E.
--- @param e LuaXML element.
--- @return parent of E.
-
-function xml.parent(e)
-   checkxml (e)
-   return e[xml.PARENT]
+-- Gets element's parent.
+-- @return parent element.
+---
+function xml:parent()
+   checkxml (self)
+   return self[xml.PARENT]
 end
 
 ---
--- Searches for a given child element of E.
--- @param e LuaXML element.
--- @param child the searched element or its position in child list of E.
--- @return the searched element.
--- @return its position.
-
-function xml.findchild (e, child)
+-- Searches for element's child.  This function assumes that *child* is in
+-- element's child list.
+-- @param child the searched child or its position in child list.
+-- @return *child* and its position in child list.
+---
+function xml:findchild (child)
    local pos
    if type (child) == 'number' then
       pos = child
-      child = assert (e[pos])
+      child = assert (self[pos])
    else
       checkxml (child)
-      assert (child[xml.PARENT] == e)
-      for i=1,#e do
-         if child == e[i] then
+      assert (child[xml.PARENT] == self)
+      for i=1,#self do
+         if child == self[i] then
             pos = i
          end
       end
@@ -137,111 +127,89 @@ function xml.findchild (e, child)
 end
 
 ---
--- Inserts element CHILD at position POS in child list of E.
--- If POS is nil, assume #E+1.
--- @param e LuaXML element.
--- @param pos position to be inserted.
--- @param child element to be inserted.
--- @return position.
-
-function xml.insert (e, pos, child)
-   checkxml (e)
+-- Inserts child element.
+-- @param[opt] pos position in child list or `nil` (last+1).
+-- @param child child to be inserted.
+-- @return the position where *child* was inserted.
+---
+function xml:insert (pos, child)
+   checkxml (self)
    if child == nil then
       child = pos
-      pos = #e + 1
+      pos = #self + 1
    end
-   if pos < 1 or pos > #e+1 then
-      return nil
-   end
+   assert (pos >= 1 and pos <= #self + 1)
    assert (child[xml.PARENT] == nil)
-   setparent (child, e)
-   table.insert (e, pos, child)
+   setparent (child, self)
+   table.insert (self, pos, child)
    return pos
 end
 
 ---
--- Replacement for the original xml.append() function.
--- @param e LuaXML element.
--- @param child LuaXML element.
--- @return very own table.
-
-function xml.append (e, child)
-   return xml.insert (e, child)
-end
-
+-- Removes child element.
+-- @param child child to be removed or its position in child list.
+-- @return *child* and its position in child list.
 ---
--- Removes an element from child list of E.
--- @param e LuaXML element.
--- @param child element to be removed or its position.
--- @return the removed element.
--- @return the position of the element removed.
-
-function xml.remove (e, child)
-   checkxml (e)
-   local child, pos = xml.findchild (e, child)
-   table.remove (e, pos)
+function xml:remove (child)
+   checkxml (self)
+   local child, pos = self:findchild (child)
+   table.remove (self, pos)
    setparent (child, nil)
    return child, pos
 end
 
 ---
--- Replaces an element in child list of E.
--- @param e LuaXML element.
--- @param old the element to be replaced or its position.
+-- Replaces child element.
+-- @param old child to be replaced or its position in child list.
 -- @param new the replacement element.
--- @return the replaced element.
--- @return its position.
-
-function xml.replace (e, old, new)
-   checkxml (e)
+-- @return *old* and its position in child list.
+---
+function xml:replace (old, new)
+   checkxml (self)
    checkxml (new)
    assert (new[xml.PARENT] == nil)
-   local old, pos = xml.findchild (e, old)
-   e[pos] = new
-   setparent (new, e)
+   local old, pos = self:findchild (old)
+   self[pos] = new
+   setparent (new, self)
    setparent (old, nil)
    return old, pos
 end
 
 ---
--- Find user data previously attached to element E.
--- @param e LuaXML element.
--- @param key the key the user data was attached to.
--- @return user data previously attached to E.
-
-function xml.getuserdata (e, key)
-   checkxml (e)
-   if e[xml.USERDATA] == nil then
+-- Gets element user data.
+-- @param key key the data was attached to.
+-- @return the data with the given key if any.
+---
+function xml:getuserdata (key)
+   checkxml (self)
+   if self[xml.USERDATA] == nil then
       return nil
    end
-   return e[xml.USERDATA][key]
+   return self[xml.USERDATA][key]
 end
 
 ---
--- Attaches user data to element E.
--- @param e LuaXML element.
--- @param key the key to attach the user data to.
--- @param userdata is a user data to attach to the element.
-
-function xml.setuserdata (e, key, userdata)
-   checkxml (e)
-   if e[xml.USERDATA] == nil then
-      e[xml.USERDATA] = {}
+-- Sets element user data.
+-- @param key key to attach the data to.
+-- @param data data to attach to the element.
+---
+function xml:setuserdata (key, data)
+   checkxml (self)
+   if self[xml.USERDATA] == nil then
+      self[xml.USERDATA] = {}
    end
-   e[xml.USERDATA][key] = userdata
+   self[xml.USERDATA][key] = data
 end
 
 ---
--- Returns an iterator function that, each time it is called, returns the
--- next element in the child list of E.
--- @param e LuaXML element.
--- @return iterator function.
-
-function xml.children (e)
-   checkxml (e)
+-- Gets child list iterator.
+-- @return iterator function for element's child list.
+---
+function xml:children ()
+   checkxml (self)
    local t = {}
-   for i=1,#e do
-      t[i] = e[i]
+   for i=1,#self do
+      t[i] = self[i]
    end
    local i = 1
    return function ()
@@ -255,18 +223,16 @@ function xml.children (e)
 end
 
 ---
--- Returns an iterator function that, each time it is called, returns the
--- next attribute-value pair in the attribute table of E.
--- @param e LuaXML element.
--- @return iterator function.
-
-function xml.attributes (e)
-   checkxml (e)
+-- Gets attribute table iterator.
+-- @return iterator function for element's attribute table.
+---
+function xml:attributes ()
+   checkxml (self)
    local i = nil
    return function ()
-      local k, v = next (e, i)
+      local k, v = next (self, i)
       while type (k) == 'number' do
-         k, v = next (e, k)
+         k, v = next (self, k)
       end
       i = k
       return k, v
@@ -274,11 +240,12 @@ function xml.attributes (e)
 end
 
 ---
--- Checks whether tree E1 is equal to tree E2.
--- @param e1 LuaXML element.
--- @param e2 LuaXML element.
--- @return boolean for element parity.
-
+-- Tests whether the element tree is equal to another tree.
+-- @function xml:equal
+-- @param other XML tree (root element).
+-- @return[1] `true`, if successful.
+-- @return[2] `false`, otherwise.
+---
 local function equal_attributes (e1, e2)
    for k,_ in e1:attributes () do
       if e1[k] ~= e2[k] then
@@ -288,18 +255,18 @@ local function equal_attributes (e1, e2)
    return true
 end
 
-function xml.equal (e1, e2)
-   checkxml (e1)
-   checkxml (e2)
-   if (e1:tag () ~= e2:tag ())
-      or (not equal_attributes (e1, e2))
-      or (not equal_attributes (e2, e1))
-      or (#e1 ~= #e2) then
+function xml:equal (other)
+   checkxml (self)
+   checkxml (other)
+   if (self:tag () ~= other:tag ())
+      or (not equal_attributes (self, other))
+      or (not equal_attributes (other, self))
+      or (#self ~= #other) then
       return false
    end
-   for i=1,#e1 do
-      if (not e1[i]:equal (e2[i]))
-         or (not e2[i]:equal (e1[i])) then
+   for i=1,#self do
+      if (not self[i]:equal (other[i]))
+         or (not other[i]:equal (self[i])) then
          return false
       end
    end
@@ -307,50 +274,48 @@ function xml.equal (e1, e2)
 end
 
 ---
--- Create an identical copy of tree E.
--- @param e LuaXML element.
--- @return copy of E.
-
-function xml.clone (e)
-   checkxml (e)
-   local t = xml.new (e:tag ())
-   for k,v in e:attributes () do
+-- Clones element tree.
+-- @return a copy of element tree (root element).
+---
+function xml:clone ()
+   checkxml (self)
+   local t = xml.new (self:tag ())
+   for k,v in self:attributes () do
       t[k] = v
    end
-   for i=1,#e do
-      t[i] = (e[i]:clone ())
+   for i=1,#self do
+      t[i] = (self[i]:clone ())
       setparent (t[i], t)
    end
    return t
 end
 
 ---
--- Walks across the elements of tree E.
--- @param e LuaXML element.
--- @param action a function to be called at each element.
-
-function xml.walk (e, action)
-   checkxml (e)
-   action (e)
-   for i=1,#e do
-      xml.walk (e[i], action)
+-- Traverses element tree.
+-- @param action a function to be applied to each traversed element.
+---
+function xml:walk (action)
+   checkxml (self)
+   action (self)
+   for i=1,#self do
+      self[i]:walk (action)
    end
 end
 
 ---
--- Looks for all elements that match the triple (tag,attribute,value) of
--- tree E and returns the matched elements.
--- @function xml.match
--- @param e LuaXML element.
--- @param tag  a tag name or nil (any).
--- @param attr an attribute name or nil (any).
--- @param value a value string or nil (any).
--- @param regexp an (optional) integer between 0-7 that determines whether TAG,
--- ATTR, and VALUE are to be interpret as regular expressions: if the third
--- bit of REGEXP is set, treat TAG as regexp; if its second bit is set,
--- treat ATTR as regexp; if its first bit is set, treat VALUE as regexp.
+-- Searches for all elements that match the given search criterion in the
+-- element's tree.
+-- @function xml:match
+-- @param[opt] tag tag name or `nil` (any).
+-- @param[opt] attr attribute name or `nil` (any).
+-- @param[opt] value attribute value or `nil` (any).
+-- @param[opt=0] regexp integer between 0-7 that determines whether *tag*,
+-- *attr*, or *value* are to be interpreted as regular expressions: if the
+-- third bit of *regexp* is set, treat *tag* as regexp; if its second bit is
+-- set, treat *attr* as regexp; if its first bit is set, treat *value* as
+-- regexp.
 -- @return the matched elements.
-
+---
 local function eq (s, pattern, regexp)
    if regexp then
       return s:match (pattern) ~= nil
@@ -413,20 +378,20 @@ local function domatch (e, tag, attr, value, regexp)
    return result
 end
 
-function xml.match (...)
-  return table.unpack (domatch (...))
+function xml:match (...)
+  return table.unpack (domatch (self, ...))
 end
 
 ---
--- Create an iterator function that, each time is called, returns the next
--- element of tree E that matches the triple (tag,attribute,value).
--- @param tag a tag name or nil (any).
--- @param attr an attribute name or nil (any).
--- @param value a value string or nil (any).
--- @return an iterator function.
-
-function xml.gmatch (...)
-   local t = domatch (...)
+-- Gets match iterator.
+-- @param[opt] tag tag name or `nil` (any).
+-- @param[opt] attr attribute name or `nil` (any).
+-- @param[opt] value a value string or `nil` (any).
+-- @param[opt=0] regexp see `xml:match`.
+-- @return an iterator function for the given search criterion.
+---
+function xml:gmatch (...)
+   local t = domatch (self, ...)
    local i = 1
    return function ()
       if i <= #t then

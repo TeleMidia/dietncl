@@ -16,6 +16,7 @@ You should have received a copy of the GNU General Public License along
 with DietNCL.  If not, see <http://www.gnu.org/licenses/>.  ]]--
 
 local assert = assert
+local pcall = pcall
 local xml = require ('dietncl.xmlsugar')
 _ENV = nil
 
@@ -25,8 +26,8 @@ local y = xml.new ('y')
 local z = xml.new ('z')
 local w = xml.new ('w')
 
-assert (root:insert (-1, x) == nil)
-assert (root:insert (5, x) == nil)
+assert (not pcall (root.insert, root, -1, x))
+assert (not pcall (root.insert, root, 5, x))
 
 assert (root:insert (x) == 1)
 assert (root:insert (y) == 2)
