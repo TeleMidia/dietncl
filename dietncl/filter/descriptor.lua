@@ -79,6 +79,12 @@ function filter.apply (ncl)
       ::done::
       xml.remove (desc:parent(), desc)
    end
+
+   local base = ncl:match ('descriptorBase')
+   
+   if base then
+      xml.remove (base:parent(), base)
+   end
    
    print (ncl)
    return (ncl)

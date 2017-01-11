@@ -166,3 +166,40 @@ local result = dietncl.parsestring ([[
 ]])
 
 assert (xml.equal (ncl, result))
+
+
+-- Removes descriptorBase and unreferenced descriptor ('d2').
+
+
+local str = [[
+<ncl>
+  <head>
+   <descriptorBase>
+    <descriptor id='d1' top='5%'>
+      <descriptorParam name='top' value='6%'/>
+      <descriptorParam name='left' value='10%'/>
+    </descriptor>
+    <descriptor id='d2'/>
+   </descriptorBase>
+  </head>
+  <body>
+    <port id='p' component='m'/>
+    <media id='m' src='test.png'/>
+  </body>
+</ncl>
+]]
+
+local ncl = dietncl.parsestring (str)
+assert (filter.apply (ncl))
+
+local result = dietncl.parsestring ([[
+<ncl>
+  <head/>
+  <body>
+    <port id='p' component='m'/>
+    <media id='m' src='test.png'/>
+  </body>
+</ncl>
+]])
+
+assert (xml.equal (ncl, result))
