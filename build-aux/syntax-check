@@ -1,11 +1,10 @@
-#!/usr/bin/perl -wnl
-my $VERSION = '2014-02-05 20:12'; # UTC
-# The definition above must lie within the first 8 lines in order for the
-# Emacs time-stamp write hook (at end) to update it.  If you change this
-# file with Emacs, please let the write hook do its job.  Otherwise, update
-# this string manually.
+eval '(exit $?0)' && eval 'exec perl -wnl "$0" ${1+"$@"}'
+  & eval 'exec perl -wnl "$0" $argv:q'
+    if 0;
+# Check the syntax of input files.
+my $VERSION = '2015-06-07 04:05 UTC';
 
-# Copyright (C) 2014 Free Software Foundation, Inc.
+# Copyright (C) 2014-2015 Free Software Foundation, Inc.
 #
 # This program is free software: you can redistribute it and/or modify
 # it under the terms of the GNU General Public License as published by
@@ -25,7 +24,8 @@ my $VERSION = '2014-02-05 20:12'; # UTC
 use strict;
 (my $ME = $0) =~ s|.*/||;
 
-my ($nfailure) = 0;
+my $nfailure;
+BEGIN { $nfailure = 0; }
 
 sub _fail {
     my ($file, $line, $msg) = @_;
@@ -66,6 +66,15 @@ sub ARGV_LUA {
     return $ARGV =~ /.*\.lua$/;
 }
 
+sub ARGV_MK {
+    return ($ARGV =~ /.*\.(am|mk)$/
+            or $ARGV =~ /(Makefile|Makefile\..*)$/);
+}
+
+sub ARGV_SH {
+    return `head -n1 $ARGV` =~ m:#\s*!\s*/bin/(ba|c|tc|)?sh:;
+}
+
 my (@lua_global_functions) = qw(assert collectgarbage dofile error
     getmetatable ipairs load loadfile next pairs pcall print rawequal rawget
     rawlen rawset require select setmetatable tonumber tostring type
@@ -88,7 +97,7 @@ do {
 
 sub lua_function_is_used {
     my ($func, $file) = @_;
-    return match qr/\b$func\s*\(/, $file;
+    return match qr/\b$func\s*[\(\{\'\"]/, $file;
 }
 
 sub lua_module_is_used {
@@ -99,7 +108,7 @@ sub lua_module_is_used {
 # Sanity checks:
 
 ARGV_ANY and do {
-    /\t/g
+    ((not ARGV_MK) and /\t/g)
         and fail_at 'don\'t use tabs';
 
     /.*(\s+)$/ and ($1 ne "\cL" or length $_ > 1)
@@ -139,8 +148,26 @@ ARGV_LUA and do {
         and fail_at "module '$1' declared but not used";
 };
 
-eof and do {
+ARGV_MK and do {
+    /^\w+\s+(=|:=|\+=|\?=)/
+        and fail_at 'useless space before assignment operator';
 
+    /^\w+(=|:=|\+=|\?=)[^\\ ]/
+        and fail_at 'missing space after assignment operator';
+
+    /^\t?\ \S/
+        and fail_at 'don\'t mix tabs and spaces';
+
+    /^\t?(\ +)/ and length ($1) % 2 != 0
+        and fail_at 'uneven indentation';
+};
+
+ARGV_SH and do {
+    /^(\ +)/ and length ($1) %2 != 0
+        and fail_at 'uneven indentation';
+};
+
+eof and do {
     ARGV_ANY and do {
         local $.;
         open FP, '<', $ARGV or die $!;
@@ -167,9 +194,9 @@ END {
 
 # Local Variables:
 # mode: perl
-# eval: (add-hook 'write-file-hooks 'time-stamp)
+# eval: (add-hook 'write-file-functions 'time-stamp)
 # time-stamp-start: "my $VERSION = '"
-# time-stamp-format: "%:y-%02m-%02d %02H:%02M"
+# time-stamp-format: "%:y-%02m-%02d %02H:%02M UTC"
 # time-stamp-time-zone: "UTC"
-# time-stamp-end: "'; # UTC"
+# time-stamp-end: "';"
 # End:
