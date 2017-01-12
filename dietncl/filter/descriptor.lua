@@ -60,37 +60,29 @@ function filter.apply (ncl)
    for desc in ncl:gmatch ('descriptor') do
       local list = {ncl:match ('media', 'descriptor', desc.id)}
       if #list == 0  then
-	 goto done 
+         goto done
       end
 
       for _,media in ipairs (list) do
-	 for descpar in desc:children() do
-	    insert_properties (ncl, media, descpar.name, descpar.value)	  
-	 end
+         for descpar in desc:children() do
+            insert_properties (ncl, media, descpar.name, descpar.value)
+         end
 
 
-	 for name, value in desc:attributes() do
-	    insert_properties (ncl, media, name, value)
-	 end
+         for name, value in desc:attributes() do
+            insert_properties (ncl, media, name, value)
+         end
 
-	 media.descriptor = nil
+         media.descriptor = nil
       end
-      
+
       ::done::
       xml.remove (desc:parent(), desc)
    end
 
-   local base = ncl:match ('descriptorBase')
-   
-   if base then
-      xml.remove (base:parent(), base)
-   end
-   
    print (ncl)
    return (ncl)
 end
 
 
 return filter
-
-
