@@ -22,6 +22,11 @@ DietNCL TODO -- Tasks that need implementing.                  -*-outline-*-
     previous call.  If this is the case, they should silently remove the
     <importBase> or <importNCL> element from the source document and return.
 
+  + filter.descriptorSwitch: Create this filter.
+
+    Also, at the end of it, delete <descriptorBase>. Add the descriptor
+    filter as a dependency to be run first.
+
 * OPTIMIZATION AND CLEAN UP
 
   + dietncl/filter/prenorm*.lua: Revise pre-norm filters.
