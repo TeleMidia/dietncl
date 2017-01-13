@@ -19,6 +19,7 @@ with DietNCL.  If not, see <http://www.gnu.org/licenses/>.  ]]--
 local filter = {}
 local xml = require ('dietncl.xmlsugar')
 local aux = require ('dietncl.nclaux')
+local ipairs = ipairs
 _ENV = nil
 
 ---
@@ -49,12 +50,16 @@ function filter.apply (ncl)
          goto continue          -- nothing to do
       end
 
-      for i=1,#list-1 do
+      for _,link in ipairs (list) do
+         if link == list[#list] then
+            goto continue
+         end
+
          local parent = conn:parent ()
          local dup = conn:clone ()
 
          dup.id = aux.gen_id (ncl)
-         list[i].xconnector = dup.id
+         link.xconnector = dup.id
          parent:insert (dup)
       end
       ::continue::
