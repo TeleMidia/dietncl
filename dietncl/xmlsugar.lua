@@ -25,8 +25,8 @@ local pcall = pcall
 local table = table
 local type = type
 
--- Workaround bugs in LuaXml eval() and tag().
-local xml = require'LuaXml'
+-- Workaround bugs in LuaXML eval() and tag().
+local xml = require'LuaXML'
 _G.xml = xml
 _G.TAG = xml.TAG
 _ENV = nil

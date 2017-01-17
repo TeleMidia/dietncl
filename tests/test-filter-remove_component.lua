@@ -20,7 +20,7 @@ local ipairs = ipairs
 local print = print
 local dietncl = require ('dietncl')
 local xml = require ('dietncl.xmlsugar')
-local filter = require ('dietncl.filter.unused_media')
+local filter = require ('dietncl.filter.remove_component')
 
 _ENV = nil
 
@@ -96,7 +96,7 @@ local result = dietncl.parsestring ([[
   <port id="g" component="z"/>
   <media id="z"/>
   <context id="a"/>
-  <media id="x"/>  
+  <media id="x"/>
   <media id="y"/>
   <link id="l">
    <bind role="onSelection" component="a"/>

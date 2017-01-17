@@ -23,30 +23,43 @@ local xml = require ('dietncl.xmlsugar')
 _ENV = nil
 
 ---
--- Removes all `<media>` elements that are not being referenced from
--- NCL document.
+-- Removes all `<media>` and `<context>` elements that are not being
+-- referenced from NCL document.
 --
--- @module dietncl.filter.unused_media
+-- @module dietncl.filter.remove_component
 ---
 
 ---
--- The UNUSED MEDIA filter removes all media elements that are not being
--- referenced by link or port from a given NCL document.
+-- The REMOVE COMPONENT filter removes all media and context elements that
+-- are not being referenced by link or port from a given NCL document.
 -- @param ncl NCL document (root element).
 -- @return the modified NCL document (root element).
 ---
 function filter.apply (ncl)
    for _,s in ipairs {'media', 'context'} do
       for elt in ncl:gmatch (s) do
-	 local listl = {ncl:match ('bind', 'component', elt.id)}
-	 local listp = {ncl:match ('port', 'component', elt.id)}
-	 
-	 if #listp == 0 and #listl == 0  then
-	    xml.remove (elt:parent (), elt)
-	 end
+         local listl = {ncl:match ('bind', 'component', elt.id)}
+         local listp = {ncl:match ('port', 'component', elt.id)}
+
+         for _,c in elt:children() do
+            local listlc = {ncl:match ('bind', 'component', c.id)}
+            local listpc = {ncl:match ('port', 'component', c.id)}
+
+            if #listpc == 0 and #listlc == 0  then
+               xml.remove (c:parent (), c)
+            end
+
+            goto out
+         end
+
+         if #listp == 0 and #listl == 0  then
+            xml.remove (elt:parent (), elt)
+         end
+
+         ::out::
       end
    end
-   
+
    print (ncl)
    return (ncl)
 end
