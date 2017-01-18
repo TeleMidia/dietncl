@@ -20,6 +20,7 @@ local print = print
 local ipairs = ipairs
 local filter = {}
 local xml = require ('dietncl.xmlsugar')
+local table = table
 _ENV = nil
 
 ---
@@ -41,28 +42,32 @@ function filter.apply (ncl)
          local listl = {ncl:match ('bind', 'component', elt.id)}
          local listp = {ncl:match ('port', 'component', elt.id)}
 
-         for _,c in elt:children() do
-            local listlc = {ncl:match ('bind', 'component', c.id)}
-            local listpc = {ncl:match ('port', 'component', c.id)}
-
-            if #listpc == 0 and #listlc == 0  then
-               xml.remove (c:parent (), c)
-            end
-
-            goto out
+         if s == 'media' then
+            goto jump
          end
 
+         for child in elt:children () do
+            for i = 1, #listp do
+               if listp[i] == child then
+                  table.remove (listp, i)
+               end
+            end
+
+            for i = 1, #listl do
+               if listl[i] == child then
+                  table.remove (listl, i)
+               end
+            end
+         end
+
+         ::jump::
          if #listp == 0 and #listl == 0  then
             xml.remove (elt:parent (), elt)
          end
-
-         ::out::
       end
    end
 
-   print (ncl)
    return (ncl)
 end
-
 
 return filter

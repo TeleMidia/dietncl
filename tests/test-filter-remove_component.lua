@@ -31,7 +31,8 @@ local str = [[
 <ncl>
  <head/>
  <body/>
-</ncl>]]
+</ncl>
+]]
 
 local ncl = dietncl.parsestring (str)
 assert (filter.apply (ncl))
@@ -43,11 +44,11 @@ assert (xml.equal (ncl, result))
 -- Remove unused media/context (all).
 local str = [[
 <ncl>
- <head/>
- <body>
-  <context id="a"/>
-  <media id="x"/>
- </body>
+  <head/>
+  <body>
+    <context id="a"/>
+    <media id="x"/>
+  </body>
 </ncl>
 ]]
 
@@ -56,8 +57,8 @@ assert (filter.apply (ncl))
 
 local result = dietncl.parsestring ([[
 <ncl>
- <head/>
- <body/>
+  <head/>
+  <body/>
 </ncl>
 ]])
 
@@ -67,20 +68,20 @@ assert (xml.equal (ncl, result))
 -- Remove unused media ("d").
 local str = [[
 <ncl>
- <head/>
- <body>
-  <port id="p" component="y"/>
-  <port id="e" component="x"/>
-  <port id="g" component="z"/>
-  <media id="z"/>
-  <context id="a"/>
-  <media id="d"/>
-  <media id="x"/>
-  <media id="y"/>
-  <link id="l">
-   <bind role="onSelection" component="a"/>
-  </link>
- </body>
+  <head/>
+  <body>
+    <port id="p" component="y"/>
+    <port id="e" component="x"/>
+    <port id="g" component="z"/>
+    <media id="z"/>
+    <context id="a"/>
+    <media id="d"/>
+    <media id="x"/>
+    <media id="y"/>
+    <link id="l">
+      <bind role="onSelection" component="a"/>
+    </link>
+  </body>
 </ncl>
 ]]
 
@@ -89,19 +90,19 @@ assert (filter.apply (ncl))
 
 local result = dietncl.parsestring ([[
 <ncl>
- <head/>
- <body>
-  <port id="p" component="y"/>
-  <port id="e" component="x"/>
-  <port id="g" component="z"/>
-  <media id="z"/>
-  <context id="a"/>
-  <media id="x"/>
-  <media id="y"/>
-  <link id="l">
-   <bind role="onSelection" component="a"/>
-  </link>
- </body>
+  <head/>
+  <body>
+    <port id="p" component="y"/>
+    <port id="e" component="x"/>
+    <port id="g" component="z"/>
+    <media id="z"/>
+    <context id="a"/>
+    <media id="x"/>
+    <media id="y"/>
+    <link id="l">
+      <bind role="onSelection" component="a"/>
+    </link>
+  </body>
 </ncl>
 ]])
 
@@ -111,31 +112,133 @@ assert (xml.equal (ncl, result))
 -- Single, pre-normalized port-context pair: do nothing.
 local str = [[
 <ncl>
- <head/>
- <body>
- <context id="a">
- </context>
- <link id="l">
-  <bind role="onSelection" component="b"/>
- </link>
- <port id="e" component="a"/>
- </body>
-</ncl>]]
+  <head/>
+  <body>
+    <context id="a">
+    </context>
+    <link id="l">
+      <bind role="onSelection" component="b"/>
+    </link>
+    <port id="e" component="a"/>
+  </body>
+</ncl>
+]]
 
 local ncl = dietncl.parsestring (str)
 assert (filter.apply (ncl))
 
 local result = dietncl.parsestring ([[
 <ncl>
- <head/>
- <body>
- <context id="a">
- </context>
- <link id="l">
-  <bind role="onSelection" component="b"/>
- </link>
- <port id="e" component="a"/>
- </body>
-</ncl>]])
+  <head/>
+  <body>
+    <context id="a">
+    </context>
+    <link id="l">
+      <bind role="onSelection" component="b"/>
+    </link>
+    <port id="e" component="a"/>
+  </body>
+</ncl>
+]])
+
+assert (xml.equal (ncl, result))
+
+
+-- Remove only the context that is being referenced only within itself
+local str = [[
+<ncl>
+  <head/>
+  <body>
+    <port id="p0" component="c1"/>
+    <context id="c1">
+      <port id="p1" component="c2"/>
+      <context id="c2"/>
+      <context id="c3">
+        <context id="c4"/>
+        <port id="p2" component="c3"/>
+      </context>
+    </context>
+  </body>
+</ncl>
+]]
+
+local ncl = dietncl.parsestring (str)
+assert (filter.apply (ncl))
+
+local result = dietncl.parsestring ([[
+<ncl>
+  <head/>
+  <body>
+    <port id="p0" component="c1"/>
+    <context id="c1">
+      <port id="p1" component="c2"/>
+      <context id="c2"/>
+    </context>
+  </body>
+</ncl>
+]])
+
+assert (xml.equal (ncl, result))
+
+
+-- Remove all contexts
+local str = [[
+<ncl>
+  <head/>
+  <body>
+    <context id="c1">
+      <port id="p1" component="c2"/>
+      <context id="c2"/>
+      <context id="c3">
+        <context id="c4"/>
+        <port id="p2" component="c3"/>
+      </context>
+    </context>
+  </body>
+</ncl>
+]]
+
+local ncl = dietncl.parsestring (str)
+assert (filter.apply (ncl))
+
+local result = dietncl.parsestring ([[
+<ncl>
+  <head/>
+  <body/>
+</ncl>
+]])
+
+assert (xml.equal (ncl, result))
+
+
+-- Remove unreferenced contexts
+local str = [[
+<ncl>
+  <head/>
+  <body>
+    <port id="p0" component="c1"/>
+    <context id="c1">
+      <context id="c2"/>
+      <context id="c3">
+        <context id="c4"/>
+        <port id="p2" component="c3"/>
+      </context>
+    </context>
+  </body>
+</ncl>
+]]
+
+local ncl = dietncl.parsestring (str)
+assert (filter.apply (ncl))
+
+local result = dietncl.parsestring ([[
+<ncl>
+  <head/>
+  <body>
+    <port id="p0" component="c1"/>
+    <context id="c1"/>
+  </body>
+</ncl>
+]])
 
 assert (xml.equal (ncl, result))
