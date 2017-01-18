@@ -18,7 +18,7 @@
 
 BUGSTO= gflima@telemidia.puc-rio.br
 COLOR_TESTS?= yes
-LDOC?= ldoc
+LDOC?= luadoc
 LUA?= lua
 
 TESTS_ENVIRONMENT=\
@@ -35,7 +35,7 @@ TESTS=\
  test-filter-prenorm5.lua\
  test-filter-region.lua\
  test-filter-transition.lua\
- test-filter-unused_media.lua\
+ test-filter-remove_component.lua\
  test-init-parse.lua\
  test-init-parsestring.lua\
  test-nclaux-gen-id.lua\
