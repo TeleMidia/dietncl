@@ -80,7 +80,6 @@ function filter.apply (ncl)
       xml.remove (desc:parent(), desc)
    end
 
-   print (ncl)
    return (ncl)
 end
 

@@ -99,7 +99,7 @@ local result = dietncl.parsestring ([[
 assert (xml.equal (ncl, result))
 
 
--- Descriptor with no parameters.
+-- Descriptor with no parameters attached (only descriptorParam).
 
 local str = [[
 <ncl>
@@ -168,7 +168,7 @@ local result = dietncl.parsestring ([[
 assert (xml.equal (ncl, result))
 
 
--- Removes descriptorBase and unreferenced descriptor ('d2').
+-- Removes unreferenced descriptor ('d2').
 
 
 local str = [[
@@ -194,7 +194,9 @@ assert (filter.apply (ncl))
 
 local result = dietncl.parsestring ([[
 <ncl>
-  <head/>
+  <head>
+    <descriptorBase/>
+  </head>
   <body>
     <port id='p' component='m'/>
     <media id='m' src='test.png'/>

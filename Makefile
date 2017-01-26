@@ -36,6 +36,7 @@ TESTS=\
  test-filter-region.lua\
  test-filter-transition.lua\
  test-filter-remove_component.lua\
+ test-filter-descriptor.lua\
  test-init-parse.lua\
  test-init-parsestring.lua\
  test-nclaux-gen-id.lua\
