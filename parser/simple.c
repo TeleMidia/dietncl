@@ -1,7 +1,5 @@
 /* This code needs to be called recursively by lua in order for the
    tables to be set appropriately */
-/* Call the dump function inside the code for debugging */
-/* Define the properties inside a table that goes in the 0 key */
 /* The comments could be passed back to lua as a table with the key
    'comments' inside the table where the comment was made */
 
@@ -144,7 +142,7 @@ static int l_parse_file (lua_State *L) {
   return 1;
 }
 
-int luaopen_simple2 (lua_State *L) {
+int luaopen_simple (lua_State *L) {
   lua_pushcfunction (L, l_parse_file);
   return 1;
 }

@@ -1,8 +1,8 @@
--- Script to test the simple2 lib
+-- Script to test the simple lib
 
-f = require 'simple2'
+f = require 'simple'
 
-local t = f'simple.xml'
+local t = f'test1.xml'
 
 print (t[0])
 
