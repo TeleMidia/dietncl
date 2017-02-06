@@ -5,7 +5,7 @@
 
 gchar *current_animal_noise = NULL;
 
-void identate (int n) {
+static void identate (int n) {
 
   int i;
 
@@ -15,7 +15,7 @@ void identate (int n) {
 
 /* The handler functions. */
 
-void start_element (GMarkupParseContext *context,
+static void start_element (GMarkupParseContext *context,
                     const gchar         *elt,
                     const gchar        **names,
                     const gchar        **values,
@@ -37,7 +37,7 @@ void start_element (GMarkupParseContext *context,
   g_print (">\n");
 }
 
-void text(GMarkupParseContext *context,
+static void text(GMarkupParseContext *context,
     const gchar         *text,
     gsize                text_len,
     gpointer             data,
@@ -52,7 +52,7 @@ void text(GMarkupParseContext *context,
   }
 }
 
-void end_element (GMarkupParseContext *context,
+static void end_element (GMarkupParseContext *context,
     const gchar         *elt,
     gpointer             data,
     GError             **error)
@@ -72,36 +72,36 @@ static GMarkupParser parser = {
   NULL
 };
 
-/* Code to grab the file into memory and parse it. */
-int main(int argc, char *argv[]) {
+/* Code to grab the file into memory and parse it */
+void parse_file (char *file) {
   char *text;
   gsize length;
-  gsize level;
+  int level = 0;
   GMarkupParseContext *context =  g_markup_parse_context_new (&parser, 0,
                                                               &level, NULL);
 
-  /* seriously crummy error checking */
-  int i;
 
-  for (i=1; i<argc; i++) {
+  if (g_file_get_contents (file, &text, &length, NULL) == FALSE) {
+    printf("Couldn't load XML\n");
+    exit(255);
+  }
 
-    level = 0;
-
-    if (g_file_get_contents (argv[i], &text, &length, NULL) == FALSE) {
-      printf("Couldn't load XML\n");
-      exit(255);
-    }
-
-    if (g_markup_parse_context_parse (context, text, length, NULL) == FALSE) {
-      printf("Parse failed\n");
-      exit(255);
-    }
+  if (g_markup_parse_context_parse (context, text, length, NULL) == FALSE) {
+    printf("Parse failed\n");
+    exit(255);
   }
 
   g_free(text);
+
   g_markup_parse_context_free (context);
 
-
-  return 0;
 }
-/* EOF */
+
+/* Don't forget to initialize this variables and free the memory after the
+   call to parse_file () */
+
+/* char *text;
+   gsize length;
+   GMarkupParseContext *context =  g_markup_parse_context_new (&parser, 0,
+   &level, NULL);
+   g_markup_parse_context_free (context); */

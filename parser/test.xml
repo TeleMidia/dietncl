@@ -1,8 +1,8 @@
 <zoo>
   <animal>
-    <lion/>
-    <bunny/>
-    <cat/>
+    <lion noise="roar"/>
+    <bunny noise="sniffle"/>
+    <cat noise="lol"/>
   </animal>
   <keeper>
   </keeper>
