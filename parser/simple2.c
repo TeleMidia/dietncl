@@ -42,6 +42,16 @@ static void start_element (GMarkupParseContext *context,
 
   lua_pushstring (L, elt);
   lua_rawset (L, -3);
+
+  while (*names != NULL) {
+
+    lua_pushstring (L, *names);
+    lua_pushstring (L, *values);
+    lua_rawset (L, -3);
+    names++;
+    values++;
+  }
+
   lua_pushinteger (L, index);
 }
 
