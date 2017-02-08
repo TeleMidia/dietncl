@@ -10,8 +10,6 @@
 #include <lua.h>
 #include <lauxlib.h>
 
-gchar *current_animal_noise = NULL;
-
 /* The handler functions. */
 static void start_element (GMarkupParseContext *context,
                            const gchar         *elt,
@@ -79,33 +77,6 @@ static GMarkupParser parser = {
   NULL
 };
 
-/* Code to grab the file into memory and parse it */
-static gboolean G_GNUC_UNUSED parse_file (const char *file, lua_State *L) {
-  char *text;
-  gsize length;
-  GMarkupParseContext *context =  g_markup_parse_context_new (&parser, 0,
-                                                              L, NULL);
-
-  lua_newtable (L);
-  lua_pushvalue (L, -1);
-  lua_pushinteger (L, -1);
-
-  if (g_file_get_contents (file, &text, &length, NULL) == FALSE) {
-    printf("Couldn't load XML\n");
-    return FALSE;
-  }
-
-  if (g_markup_parse_context_parse (context, text, length, NULL) == FALSE) {
-    printf("Parse failed\n");
-    return FALSE;
-  }
-
-  g_free(text);
-  g_markup_parse_context_free (context);
-  return TRUE;
-
-}
-
 static void dump (lua_State *L) {
   int n = lua_gettop (L);
   int i = 0;
@@ -114,35 +85,72 @@ static void dump (lua_State *L) {
     c = lua_type (L, i);
     switch (c) {
     case LUA_TNIL:
-      printf ("NIL\n");
+      printf ("#%d: NIL\n", i);
       break;
     case LUA_TNUMBER:
     case LUA_TSTRING:
-      printf ("%s\n", lua_tostring (L, i));
+      printf ("#%d: %s\n", i, lua_tostring (L, i));
       break;
     case LUA_TBOOLEAN:
       if (lua_toboolean (L, i) == 0)
-        printf ("FALSE\n");
+        printf ("#%d: FALSE\n", i);
       else
-        printf ("TRUE\n");
+        printf ("#%d: TRUE\n", i);
       break;
     case LUA_TTABLE:
     case LUA_TFUNCTION:
     case LUA_TUSERDATA:
-      printf ("%p\n", lua_topointer(L, i));
+      printf ("#%d: %p\n", i, lua_topointer(L, i));
       break;
     }
   }
 }
 
+/* Parses XML string */
+static int l_parse_string (lua_State *L) {
+  gsize length;
+  const char *text = lua_tolstring (L, -1, &length);
+  GMarkupParseContext *context =  g_markup_parse_context_new (&parser, 0,
+                                                              L, NULL);
+
+  lua_newtable (L);
+  lua_pushvalue (L, -1);
+  lua_pushinteger (L, -1);
+
+  if (g_markup_parse_context_parse (context, text, length, NULL) == FALSE) {
+    g_markup_parse_context_free (context);
+    lua_pushliteral (L, "Parse failed");
+    return lua_error (L);
+  }
+
+  g_markup_parse_context_free (context);
+
+  return 1;
+}
+
+/* Load XML file */
 static int l_parse_file (lua_State *L) {
   const char *str = luaL_checkstring (L, 1);
-  parse_file (str, L);
+  char *text;
+  gsize length;
+
+  if (g_file_get_contents (str, &text, &length, NULL) == FALSE) {
+    lua_pushliteral (L, "Couldn't load XML");
+    return lua_error (L);
+  }
+
+  lua_pushlstring (L, text, length);
+
+  l_parse_string (L);
+
+  g_free(text);
   dump (L);
   return 1;
 }
 
 int luaopen_simple (lua_State *L) {
   lua_pushcfunction (L, l_parse_file);
-  return 1;
+  lua_pushcfunction (L, l_parse_string);
+
+  return 2;
 }
