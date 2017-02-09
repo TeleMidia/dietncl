@@ -148,9 +148,13 @@ static int l_parse_file (lua_State *L) {
   return 1;
 }
 
-int luaopen_simple (lua_State *L) {
-  lua_pushcfunction (L, l_parse_file);
-  lua_pushcfunction (L, l_parse_string);
+static const struct luaL_Reg funcs[] = {
+  {"parse_file", l_parse_file},
+  {"parse_string", l_parse_string},
+  {NULL, NULL}
+};
 
-  return 2;
+int luaopen_simplelib (lua_State *L) {
+  luaL_newlib (L, funcs);
+  return 1;
 }

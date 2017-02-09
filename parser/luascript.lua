@@ -1,20 +1,55 @@
 -- Script to test the simple lib
 
-f = require 'simple'
+xml = require 'simple'
+f = require 'simplelib'
 
-local t = f'test1.xml'
+for k, v in pairs (xml) do
+   print (k, v)
+end
 
+local t = f.parse_file 'test1.xml'
+
+local s = xml.str (t)
+
+
+print ('-----------------------------------------------------------')
+print ('- xml.str test, print xml string --------------------------')
+print (s)
+print ('\n')
+
+
+print ('-----------------------------------------------------------')
+print ('- xml.tag test, return tag of LuaXML object ---------------')
+print (xml.tag (t))
+print ('\n')
+
+
+print ('- xml.tag test, set tag of LuaXML object ------------------')
+xml.tag (t, "This")
 print (t[0])
+xml.tag (t, 'zoo')
+print ('\n')
 
-print (t[1][0])
 
-print (t[1][1][0])
-print (t[1]["noise"])
+print ('-----------------------------------------------------------')
+print ('- xml.new test, create new LuaXML object setting its tag --')
+print (xml.tag (xml.new ('is')))
+print ('\n')
 
-print (t[2][1][0])
-print (t[2]["noise"])
 
-print (t[3][1][0])
-print (t[3]["noise"])
+print ('- xml.new test, set metatable of Lua table ----------------')
+xml.new (t)
+-- How to know if there is a metatable set
+print ('\n')
 
-print (t[4][0])
+
+print ('-----------------------------------------------------------')
+print ('- xml.append test, append a new subordinate LuaXML object -')
+xml.append (t, 'a')
+print (xml.tag (t[5]))
+print ('\n')
+
+
+print ('-----------------------------------------------------------')
+print ('- xml.find, find a LuaXML object in a table (if it exists)-')
+print (xml.find (t, 'lion'))
