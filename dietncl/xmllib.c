@@ -154,7 +154,7 @@ static const struct luaL_Reg funcs[] = {
   {NULL, NULL}
 };
 
-int luaopen_simplelib (lua_State *L) {
+int luaopen_dietncl_xmllib (lua_State *L) {
   luaL_newlib (L, funcs);
   return 1;
 }

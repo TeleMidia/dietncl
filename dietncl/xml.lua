@@ -1,4 +1,4 @@
-local xml = require("simplelib")
+local xml = require'dietncl.xmllib'
 local type = type
 local tostring = tostring
 local setmetatable = setmetatable

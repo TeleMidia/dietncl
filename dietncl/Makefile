@@ -2,9 +2,9 @@ MODULES= glib-2.0 lua5.2
 CFLAGS= -Wall -fpic `pkg-config --cflags $(MODULES)`
 LDFLAGS= `pkg-config --libs $(MODULES)`
 
-all: simplelib.so
+all: xmllib.so
 
-simplelib.so: simplelib.o
+xmllib.so: xmllib.o
 	$(CC) $(CFLAGS) $(LDFLAGS) -shared -o $@ $<
 
 clean:

@@ -39,13 +39,14 @@ print ('\n')
 
 print ('- xml.new test, set metatable of Lua table ----------------')
 xml.new (t)
--- How to know if there is a metatable set
+print (t:tag(t:tag('a')))
 print ('\n')
+t:tag('zoo')
 
 
 print ('-----------------------------------------------------------')
 print ('- xml.append test, append a new subordinate LuaXML object -')
-xml.append (t, 'a')
+xml.append (t, 'test')
 print (xml.tag (t[5]))
 print ('\n')
 

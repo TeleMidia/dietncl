@@ -62,6 +62,7 @@ XFAIL_TESTS=\
  $(NULL)
 
 all:
+	$(MAKE) -C dietncl $@
 .PHONY: all
 
 COPYRIGHT_YEAR := 2015
@@ -72,6 +73,7 @@ update_copyright_ :=\
 
 .PHONY: clean
 clean:
+	$(MAKE) -C dietncl $@
 	-rm -rf ./doc
 
 .PHONY: doc
