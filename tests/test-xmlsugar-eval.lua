@@ -16,6 +16,8 @@ You should have received a copy of the GNU General Public License along
 with DietNCL.  If not, see <http://www.gnu.org/licenses/>.  ]]--
 
 local assert = assert
+local print = print
+local error = error
 local xml = require ('dietncl.xmlsugar')
 _ENV = nil
 
@@ -25,18 +27,18 @@ assert (xml.eval (nil) == nil)
 
 local root = xml.eval ([[
 <root>
- <x/>
- <y>
-  <a/>
-  <b/>
-  <c>
-   <r>
-    <s/>
-   </r>
-  </c>
- </y>
- <z/>
- <w/>
+  <x/>
+  <y>
+    <a/>
+    <b/>
+    <c>
+      <r>
+        <s/>
+      </r>
+    </c>
+  </y>
+  <z/>
+  <w/>
 </root>
 ]])
 assert (root)

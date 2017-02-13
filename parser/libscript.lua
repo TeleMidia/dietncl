@@ -1,12 +1,12 @@
 -- Script to test the simple lib
 
-f = require 'simplelib'
+f = require ('dietncl.xmlsugar')
 
 for k, v in pairs (f) do
    print (k, v)
 end
 
-local t = f.parse_file 'test1.xml'
+local t = f.parse_file ('test1.xml')
 
 print (t[0])
 

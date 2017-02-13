@@ -1,5 +1,5 @@
 MODULES= glib-2.0 lua5.2
-CFLAGS= -Wall -fpic `pkg-config --cflags $(MODULES)`
+CFLAGS= -Wall -g -O0 -fpic `pkg-config --cflags $(MODULES)`
 LDFLAGS= `pkg-config --libs $(MODULES)`
 
 all: xmllib.so

@@ -10,6 +10,10 @@
 #include <lua.h>
 #include <lauxlib.h>
 
+/* Registry key for the canvas metatable.  */
+#define XML "dietncl.xml"
+
+
 /* The handler functions. */
 static void start_element (GMarkupParseContext *context,
                            const gchar         *elt,
@@ -26,12 +30,23 @@ static void start_element (GMarkupParseContext *context,
   lua_pushinteger (L, index);
 
   if (lua_tointeger (L, -1) > 0) {
+    /* create table and set its metatable */
     lua_newtable (L);
+    luaL_setmetatable (L, XML);
+
+    /* set table */
     lua_pushvalue (L, -3);
     lua_pushvalue (L, -3);
     lua_pushvalue (L, -3);
     lua_rawset (L, -3);
     lua_pop (L, 1);
+
+    /* set parent */
+    lua_pushinteger (L, -1);
+    lua_pushvalue (L, -4);
+    lua_rawset (L, -3);
+
+    /* set table index */
     lua_pushinteger (L, 0);
     index = lua_tointeger (L, -1);
   }
@@ -77,7 +92,7 @@ static GMarkupParser parser = {
   NULL
 };
 
-static void dump (lua_State *L) {
+static void G_GNUC_UNUSED dump (lua_State *L) {
   int n = lua_gettop (L);
   int i = 0;
   int c;
@@ -108,24 +123,35 @@ static void dump (lua_State *L) {
 
 /* Parses XML string */
 static int l_parse_string (lua_State *L) {
+  GMarkupParseContext *context;
+  const char *text;
   gsize length;
-  const char *text = lua_tolstring (L, -1, &length);
-  GMarkupParseContext *context =  g_markup_parse_context_new (&parser, 0,
-                                                              L, NULL);
+  GError *error = NULL;
+
+  context = g_markup_parse_context_new (&parser, 0, L, NULL);
+  g_assert_nonnull (context);
+
+  text = luaL_checklstring (L, -1, &length);
+  g_assert_nonnull (text);
 
   lua_newtable (L);
+  luaL_setmetatable (L, XML);
   lua_pushvalue (L, -1);
   lua_pushinteger (L, -1);
 
-  if (g_markup_parse_context_parse (context, text, length, NULL) == FALSE) {
-    g_markup_parse_context_free (context);
-    lua_pushliteral (L, "Parse failed");
-    return lua_error (L);
-  }
+  if (!g_markup_parse_context_parse (context, text, length, &error))
+    goto fail;
+
+  if (!g_markup_parse_context_end_parse (context, &error))
+    goto fail;
 
   g_markup_parse_context_free (context);
-
   return 1;
+
+fail:
+  g_markup_parse_context_free (context);
+  lua_pushfstring (L, "parse string failed: %s", error->message);
+  return lua_error (L);
 }
 
 /* Load XML file */
@@ -144,7 +170,6 @@ static int l_parse_file (lua_State *L) {
   l_parse_string (L);
 
   g_free(text);
-  dump (L);
   return 1;
 }
 
@@ -155,6 +180,11 @@ static const struct luaL_Reg funcs[] = {
 };
 
 int luaopen_dietncl_xmllib (lua_State *L) {
-  luaL_newlib (L, funcs);
+  g_assert (luaL_newmetatable (L, XML) != 0);
+  lua_pushvalue (L, -1);
+  lua_setfield (L, -2, "__index");
+  /* lua_pushliteral (L, "not your business"); */
+  /* lua_setfield (L, -2, "__metatable"); */
+  luaL_setfuncs (L, funcs, 0);
   return 1;
 }
