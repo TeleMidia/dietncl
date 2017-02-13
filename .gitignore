@@ -23,5 +23,5 @@
 .dirstamp
 .libs
 .patch_number
-/LuaXml.lua
 /doc
+/parser/*
