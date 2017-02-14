@@ -24,17 +24,30 @@ static void start_element (GMarkupParseContext *context,
 
   lua_State* L = (lua_State*) data;
   gsize index;
+  gint line_n;
+  gint char_n;
+
+  g_markup_parse_context_get_position (context, &line_n, &char_n);
 
   index = lua_tointeger (L, -1) + 1;
   lua_pop (L, 1);
   lua_pushinteger (L, index);
 
-  if (lua_tointeger (L, -1) > 0) {
-    /* create table and set its metatable */
-    lua_newtable (L);
+  /* create and set element table*/
+  lua_newtable (L);
+  lua_pushvalue (L, -3);
+  lua_pushvalue (L, -3);
+  lua_pushvalue (L, -3);
+  lua_rawset (L, -3);
+  lua_pop (L, 1);
+
+  if (index > 0) {
+    /* set metatable */
     luaL_setmetatable (L, XML);
 
-    /* set table */
+    /* create and set identification table */
+    lua_pushinteger (L, 0);
+    lua_newtable (L);
     lua_pushvalue (L, -3);
     lua_pushvalue (L, -3);
     lua_pushvalue (L, -3);
@@ -42,28 +55,33 @@ static void start_element (GMarkupParseContext *context,
     lua_pop (L, 1);
 
     /* set parent */
-    lua_pushinteger (L, -1);
-    lua_pushvalue (L, -4);
+    lua_pushstring (L, "parent");
+    lua_pushvalue (L, -6);
     lua_rawset (L, -3);
-
-    /* set table index */
-    lua_pushinteger (L, 0);
-    index = lua_tointeger (L, -1);
   }
 
-  lua_pushstring (L, elt);
+  /* set starting line and character */
+  lua_pushstring (L, "start_line");
+  lua_pushinteger (L, line_n);
+  lua_rawset (L, -3);
+  lua_pushstring (L, "start_char");
+  lua_pushinteger (L, char_n);
   lua_rawset (L, -3);
 
-  while (*names != NULL) {
+  /* set tag */
+  lua_pushstring (L, "tag");
+  lua_pushstring (L, elt);
+  lua_rawset (L, -3);
+  lua_pop (L, 1);
 
+  while (*names != NULL) {
+    /* set element attributes */
     lua_pushstring (L, *names);
     lua_pushstring (L, *values);
-    lua_rawset (L, -3);
+    lua_rawset (L, -4);
     names++;
     values++;
   }
-
-  lua_pushinteger (L, index);
 }
 
 static void text(GMarkupParseContext *context,
@@ -79,8 +97,24 @@ static void end_element (GMarkupParseContext *context,
     GError             **error) {
 
   lua_State* L = (lua_State*) data;
+  gint line_n;
+  gint char_n;
 
-  lua_pop (L, 2);
+  g_markup_parse_context_get_position (context, &line_n, &char_n);
+
+  /* get table at index 0 */
+  lua_rawgeti (L, -2, 0);
+
+  /* set ending line and character */
+  lua_pushstring (L, "end_line");
+  lua_pushinteger (L, line_n);
+  lua_rawset (L, -3);
+  lua_pushstring (L, "end_char");
+  lua_pushinteger (L, char_n);
+  lua_rawset (L, -3);
+
+  /* end element */
+  lua_pop (L, 3);
 }
 
 /* The list of what handler does what. */

@@ -33,12 +33,6 @@ local print = print
 local xml = require'dietncl.xmllib'
 _ENV = nil
 
--- Symbolic name for tag, parent and userdata index, this allows accessing
--- the tag by var[TAG], var[PARENT], var[USERDATA].
-local TAG = 0
-local PARENT = -1
-local USERDATA = -2
-
 -- Checks whether E is a LuaXML element.
 local function checkxml (e)
    local t = getmetatable (e)
@@ -48,7 +42,7 @@ end
 
 -- Sets PARENT to be the parent element of E.
 local function setparent (e, parent)
-   e[PARENT] = parent
+   e[0].parent = parent
 end
 
 
@@ -60,10 +54,10 @@ end
 -- Sets or returns tag of a LuaXML object.
 function xml.tag (var, tag)
    if tag == nil then
-      return var[TAG]
+      return var[0].tag
    end
 
-   var[TAG] = assert (tostring (tag))
+   var[0].tag = assert (tostring (tag))
 end
 
 -- Creates a new LuaXML object either by setting the metatable of an
@@ -74,11 +68,11 @@ function xml.new (arg)
       return arg
    end
 
-   local var = {}
+   local var = {[0] = {}}
    setmetatable (var, {__index=xml, __tostring=xml.str})
 
    if type (arg) == "string" then
-      var[TAG] = arg
+      var[0].tag = arg
    end
 
    return var
@@ -99,7 +93,7 @@ function xml.str (var, level)
    local indent = '\t'
    local child = ''
 
-   s = indent:rep (level) .. '<' .. var[TAG]
+   s = indent:rep (level) .. '<' .. var[0].tag
 
    for k, v in pairs (var) do
       if type (k) == "string" then
@@ -114,7 +108,7 @@ function xml.str (var, level)
    if child == '' then
       s = s .. '/>\n'
    else
-      s = s .. '>\n' .. child .. indent:rep (level) .. '</' .. var[TAG] .. '>\n'
+      s = s .. '>\n' .. child .. indent:rep (level) .. '</' .. var[0].tag .. '>\n'
    end
    return s
 end
@@ -137,7 +131,7 @@ function xml.find (var, tag, key, value)
    end
 
    -- compare this table:
-   if var[TAG] == tag and (value == nil or var[key] == value) then
+   if var[0].tag == tag and (value == nil or var[key] == value) then
       setmetatable (var, {__index=xml, __tostring=xml.str})
       return var
    end
@@ -191,7 +185,7 @@ end
 ---
 function xml:parent()
    checkxml (self)
-   return self[PARENT]
+   return self[0].parent
 end
 
 ---
@@ -207,7 +201,7 @@ function xml:findchild (child)
       child = assert (self[pos])
    else
       checkxml (child)
-      assert (child[PARENT] == self)
+      assert (child[0].parent == self)
       for i=1,#self do
          if child == self[i] then
             pos = i
@@ -231,7 +225,7 @@ function xml:insert (pos, child)
       pos = #self + 1
    end
    assert (pos >= 1 and pos <= #self + 1)
-   assert (child[PARENT] == nil)
+   assert (child[0].parent == nil)
    setparent (child, self)
    table.insert (self, pos, child)
    return pos
@@ -259,7 +253,7 @@ end
 function xml:replace (old, new)
    checkxml (self)
    checkxml (new)
-   assert (new[PARENT] == nil)
+   assert (new[0].parent == nil)
    local old, pos = self:findchild (old)
    self[pos] = new
    setparent (new, self)
@@ -274,10 +268,10 @@ end
 ---
 function xml:getuserdata (key)
    checkxml (self)
-   if self[USERDATA] == nil then
+   if self[0].userdata == nil then
       return nil
    end
-   return self[USERDATA][key]
+   return self[0].userdata[key]
 end
 
 ---
@@ -287,10 +281,10 @@ end
 ---
 function xml:setuserdata (key, data)
    checkxml (self)
-   if self[USERDATA] == nil then
-      self[USERDATA] = {}
+   if self[0].userdata == nil then
+      self[0].userdata = {}
    end
-   self[USERDATA][key] = data
+   self[0].userdata[key] = data
 end
 
 ---
