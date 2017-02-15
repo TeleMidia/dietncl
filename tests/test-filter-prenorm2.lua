@@ -25,7 +25,7 @@ _ENV = nil
 
 -- Expand link, bind, and connector parameters.
 
-local ncl = dietncl.parsestring ([[
+local ncl, errmsg = dietncl.parsestring ([[
 <ncl>
  <head>
   <connectorBase>
@@ -44,10 +44,11 @@ local ncl = dietncl.parsestring ([[
    <bind role='onBegin'/>
    <bind role='start'>
     <bindParam name='p2' value='10s'/>
+   </bind>
   </link>
  </body>
 </ncl>]])
-
+assert (ncl, errmsg)
 assert (filter.apply (ncl))
 assert (ncl:equal (dietncl.parsestring ([[
 <ncl>
@@ -64,6 +65,7 @@ assert (ncl:equal (dietncl.parsestring ([[
   <link xconnector='c'>
    <bind role='onBegin'/>
    <bind role='start'/>
+  </link>
  </body>
 </ncl>]])))
 
@@ -134,7 +136,7 @@ local ncl = dietncl.parsestring ([[
   </link>
  </body>
 </ncl>]])
-
+assert (ncl)
 assert (filter.apply (ncl))
 assert (ncl:equal (dietncl.parsestring ([[
 <ncl>
@@ -199,3 +201,4 @@ assert (ncl:equal (dietncl.parsestring ([[
   </link>
  </body>
 </ncl>]])))
+

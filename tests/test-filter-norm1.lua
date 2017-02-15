@@ -24,7 +24,7 @@ _ENV = nil
 
 -- First test makes sure that the function does not alter code that is already in the correct form.
 
-local str = dietncl.parsestring ([[
+local str = assert (dietncl.parsestring ([[
 <ncl>
         <head>
                 <connectorBase>
@@ -94,7 +94,7 @@ local str = dietncl.parsestring ([[
                 </link>
 
                 <context id="vortex">
-                    <property name="__9">
+                    <property name="__9"/>
                     <link xconnector="__1">
                         <bind role="onEnd" component="m" />
                         <bind role="start" component="m" />
@@ -111,7 +111,7 @@ local str = dietncl.parsestring ([[
                 </context>
 
         </body>
-</ncl>]])
+</ncl>]]))
 
 local ncl = str
 assert (filter.apply (ncl))

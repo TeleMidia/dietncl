@@ -38,7 +38,7 @@ AM_COLOR_TESTS= always
 DISABLE_HARD_ERRORS= true
 TEST_EXTENSIONS= .lua .sh
 LOG_COMPILER= $(_VALGRIND)
-LUA_LOG_COMPILER= $(_VALGRIND) $(builddir)/lua
+LUA_LOG_COMPILER= $(_VALGRIND) lua
 SH_LOG_COMPILER= $(SHELL)
 
 # Setup tests environment.
