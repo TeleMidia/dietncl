@@ -21,8 +21,8 @@ _ENV = nil
 
 assert (dietncl.parse ('') == nil)
 
-local pathname = 'tests/test-init-parse-sample.ncl'
-local ncl = dietncl.parse ('tests/test-init-parse-sample.ncl')
+local pathname = 'test-init-parse-sample.ncl'
+local ncl = dietncl.parse ('test-init-parse-sample.ncl')
 assert (ncl:getuserdata ('pathname') == pathname)
 assert (ncl:tag () == 'ncl')
 assert (ncl.id == 'test-init-parse-sample')

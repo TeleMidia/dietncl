@@ -22,7 +22,7 @@ _ENV = nil
 
 assert (dietncl.parsestring ('') == nil)
 
-local file, err = io.open ('tests/test-init-parse-sample.ncl', 'r')
+local file, err = io.open ('test-init-parse-sample.ncl', 'r')
 assert (file ~= nil)
 
 local ncl = dietncl.parsestring (file:read ('*a'))
