@@ -34,16 +34,16 @@ along with DietNCL.  If not, see <http://www.gnu.org/licenses/>.  */
 /* Registry key for the xmllib metatable.  */
 #define XML "dietncl.xml"
 
-
 /* The handler functions. */
-static void start_element (GMarkupParseContext *context,
-                           const gchar         *elt,
-                           const gchar        **names,
-                           const gchar        **values,
-                           gpointer             data,
-                           arg_unused (GError             **error)) {
+static void
+start_element (GMarkupParseContext * context,
+               const gchar * elt,
+               const gchar ** names,
+               const gchar ** values,
+               gpointer data, arg_unused (GError ** error))
+{
 
-  lua_State* L = (lua_State*) data;
+  lua_State *L = (lua_State *) data;
   lua_Integer index;
   gint line_n;
   gint char_n;
@@ -54,7 +54,7 @@ static void start_element (GMarkupParseContext *context,
   lua_pop (L, 1);
   lua_pushinteger (L, index);
 
-  /* create and set element table*/
+  /* create and set element table */
   lua_newtable (L);
   lua_pushvalue (L, -3);
   lua_pushvalue (L, -3);
@@ -62,24 +62,25 @@ static void start_element (GMarkupParseContext *context,
   lua_rawset (L, -3);
   lua_pop (L, 1);
 
-  if (index > 0) {
-    /* set metatable */
-    luaL_setmetatable (L, XML);
+  if (index > 0)
+    {
+      /* set metatable */
+      luaL_setmetatable (L, XML);
 
-    /* create and set identification table */
-    lua_pushinteger (L, 0);
-    lua_newtable (L);
-    lua_pushvalue (L, -3);
-    lua_pushvalue (L, -3);
-    lua_pushvalue (L, -3);
-    lua_rawset (L, -3);
-    lua_pop (L, 1);
+      /* create and set identification table */
+      lua_pushinteger (L, 0);
+      lua_newtable (L);
+      lua_pushvalue (L, -3);
+      lua_pushvalue (L, -3);
+      lua_pushvalue (L, -3);
+      lua_rawset (L, -3);
+      lua_pop (L, 1);
 
-    /* set parent */
-    lua_pushstring (L, "parent");
-    lua_pushvalue (L, -6);
-    lua_rawset (L, -3);
-  }
+      /* set parent */
+      lua_pushstring (L, "parent");
+      lua_pushvalue (L, -6);
+      lua_rawset (L, -3);
+    }
 
   /* set starting line and character */
   lua_pushstring (L, "start_line");
@@ -95,22 +96,24 @@ static void start_element (GMarkupParseContext *context,
   lua_rawset (L, -3);
   lua_pop (L, 1);
 
-  while (*names != NULL) {
-    /* set element attributes */
-    lua_pushstring (L, *names);
-    lua_pushstring (L, *values);
-    lua_rawset (L, -4);
-    names++;
-    values++;
-  }
+  while (*names != NULL)
+    {
+      /* set element attributes */
+      lua_pushstring (L, *names);
+      lua_pushstring (L, *values);
+      lua_rawset (L, -4);
+      names++;
+      values++;
+    }
 }
 
-static void end_element (GMarkupParseContext *context,
-    const gchar         *elt,
-    gpointer             data,
-    GError             **error) {
+static void
+end_element (GMarkupParseContext * context,
+             arg_unused (const gchar * elt), gpointer data,
+             arg_unused (GError ** error))
+{
 
-  lua_State* L = (lua_State*) data;
+  lua_State *L = (lua_State *) data;
   gint line_n;
   gint char_n;
 
@@ -140,40 +143,48 @@ static GMarkupParser parser = {
   NULL
 };
 
-static void G_GNUC_UNUSED dump (lua_State *L) {
+static void G_GNUC_UNUSED
+dump (lua_State * L)
+{
   int n = lua_gettop (L);
   int i = 0;
   int c;
-  for (i=1; i<=n; i++) {
-    c = lua_type (L, i);
-    switch (c) {
-    case LUA_TNIL:
-      printf ("#%d: NIL\n", i);
-      break;
-    case LUA_TNUMBER:
-    case LUA_TSTRING:
-      printf ("#%d: %s\n", i, lua_tostring (L, i));
-      break;
-    case LUA_TBOOLEAN:
-      if (lua_toboolean (L, i) == 0)
-        printf ("#%d: FALSE\n", i);
-      else
-        printf ("#%d: TRUE\n", i);
-      break;
-    case LUA_TTABLE:
-    case LUA_TFUNCTION:
-    case LUA_TUSERDATA:
-      printf ("#%d: %p\n", i, lua_topointer(L, i));
-      break;
+  for (i = 1; i <= n; i++)
+    {
+      c = lua_type (L, i);
+      switch (c)
+        {
+        case LUA_TNIL:
+          printf ("#%d: NIL\n", i);
+          break;
+        case LUA_TNUMBER:
+        case LUA_TSTRING:
+          printf ("#%d: %s\n", i, lua_tostring (L, i));
+          break;
+        case LUA_TBOOLEAN:
+          if (lua_toboolean (L, i) == 0)
+            printf ("#%d: FALSE\n", i);
+          else
+            printf ("#%d: TRUE\n", i);
+          break;
+        case LUA_TTABLE:
+        case LUA_TFUNCTION:
+        case LUA_TUSERDATA:
+          printf ("#%d: %p\n", i, lua_topointer (L, i));
+          break;
+        default:
+          break;
+        }
     }
-  }
 }
 
 /* Parses XML string */
-static int l_parse_string (lua_State *L) {
+static int
+l_parse_string (lua_State * L)
+{
   GMarkupParseContext *context;
   const char *text;
-  gsize length;
+  size_t length;
   GError *error = NULL;
 
   context = g_markup_parse_context_new (&parser, 0, L, NULL);
@@ -187,7 +198,7 @@ static int l_parse_string (lua_State *L) {
   lua_pushvalue (L, -1);
   lua_pushinteger (L, -1);
 
-  if (!g_markup_parse_context_parse (context, text, length, &error))
+  if (!g_markup_parse_context_parse (context, text, (gssize) length, &error))
     goto fail;
 
   if (!g_markup_parse_context_end_parse (context, &error))
@@ -196,28 +207,31 @@ static int l_parse_string (lua_State *L) {
   g_markup_parse_context_free (context);
   return 1;
 
-fail:
+ fail:
   g_markup_parse_context_free (context);
   lua_pushfstring (L, "parse string failed: %s", error->message);
   return lua_error (L);
 }
 
 /* Load XML file */
-static int l_parse_file (lua_State *L) {
+static int
+l_parse_file (lua_State * L)
+{
   const char *str = luaL_checkstring (L, 1);
   char *text;
   gsize length;
 
-  if (g_file_get_contents (str, &text, &length, NULL) == FALSE) {
-    lua_pushliteral (L, "Couldn't load XML");
-    return lua_error (L);
-  }
+  if (g_file_get_contents (str, &text, &length, NULL) == FALSE)
+    {
+      lua_pushliteral (L, "Couldn't load XML");
+      return lua_error (L);
+    }
 
   lua_pushlstring (L, text, length);
 
   l_parse_string (L);
 
-  g_free(text);
+  g_free (text);
   return 1;
 }
 
@@ -227,7 +241,11 @@ static const struct luaL_Reg funcs[] = {
   {NULL, NULL}
 };
 
-int luaopen_dietncl_xmllib (lua_State *L) {
+int luaopen_dietncl_xmllib (lua_State *);
+
+int
+luaopen_dietncl_xmllib (lua_State * L)
+{
   g_assert (luaL_newmetatable (L, XML) != 0);
   lua_pushvalue (L, -1);
   lua_setfield (L, -2, "__index");

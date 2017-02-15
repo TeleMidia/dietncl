@@ -1,6 +1,5 @@
 <zoo>
 
-
   <animal noise="roar">
     <lion/>
   </animal>

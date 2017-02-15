@@ -68,7 +68,6 @@ function filter.apply (ncl)
             insert_properties (ncl, media, descpar.name, descpar.value)
          end
 
-
          for name, value in desc:attributes() do
             insert_properties (ncl, media, name, value)
          end
@@ -82,6 +81,5 @@ function filter.apply (ncl)
 
    return (ncl)
 end
-
 
 return filter

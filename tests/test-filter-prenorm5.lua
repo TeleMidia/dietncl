@@ -92,7 +92,6 @@ local str = dietncl.parsestring([[
 assert (filter.apply (ncl))
 assert (ncl:equal (str))
 
-
 local str = [[
 <ncl>
     <head>
@@ -196,7 +195,6 @@ local ncl = dietncl.parsestring ([[
         </link>
     </body>
 </ncl>]])
-
 
 local str =  [[
 <ncl>
@@ -376,7 +374,6 @@ local str = [[
         </link>
     </body>
 </ncl>]]
-
 
 local ncl = dietncl.parsestring (str)
 assert (filter.apply (ncl))

@@ -16,7 +16,6 @@ for more details.
 You should have received a copy of the GNU General Public License along
 with DietNCL.  If not, see <http://www.gnu.org/licenses/>.  ]]--
 
-
 local filter = {}
 
 local ipairs = ipairs
@@ -80,7 +79,6 @@ function filter.apply (ncl)
         for index, conn in ipairs (conn_list) do
             local first_stat
             local new_connector
-
 
             for first in conn:gmatch ('compoundStatement') do
                 if first:parent() == conn then
@@ -150,7 +148,6 @@ function filter.apply (ncl)
                         if new_compound then
                             new_compound:insert (temp_stat[1])
                         end
-
 
                         for child in element:gmatch ('compoundCondition') do
                             if child:parent() == element then

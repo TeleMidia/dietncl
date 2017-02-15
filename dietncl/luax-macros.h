@@ -30,7 +30,7 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.  */
 #include "macros.h"
 
 static void ATTR_UNUSED
-luax_getfield (lua_State *L, int i, const char *k)
+luax_getfield (lua_State * L, int i, const char *k)
 {
   int top;
   const char *begin;
@@ -192,7 +192,7 @@ luax_getfield (lua_State *L, int i, const char *k)
   _luax_dump_stack ((L), 1)
 
 static void ATTR_UNUSED
-_luax_dump_value (lua_State *L, int index)
+_luax_dump_value (lua_State * L, int index)
 {
   index = lua_absindex (L, index);
   switch (lua_type (L, index))
@@ -232,7 +232,7 @@ _luax_dump_value (lua_State *L, int index)
 }
 
 static void ATTR_UNUSED
-_luax_dump_table (lua_State *L, int index, int depth)
+_luax_dump_table (lua_State * L, int index, int depth)
 {
   int first = 1;
   int table = lua_absindex (L, index);
@@ -269,7 +269,7 @@ _luax_dump_table (lua_State *L, int index, int depth)
 }
 
 static void ATTR_UNUSED
-_luax_dump_stack (lua_State *L, int depth)
+_luax_dump_stack (lua_State * L, int depth)
 {
   int i;
 

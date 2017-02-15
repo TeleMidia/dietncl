@@ -280,5 +280,4 @@ function filter.apply (ncl)
 
 end
 
-
 return filter

@@ -170,7 +170,6 @@ assert (xml.equal (ncl, result))
 
 -- Removes unreferenced descriptor ('d2').
 
-
 local str = [[
 <ncl>
   <head>

@@ -45,7 +45,6 @@ local function setparent (e, parent)
    e[0].parent = parent
 end
 
-
 
 --- Methods
 -- @section Methods
@@ -121,7 +120,6 @@ function xml.save(var,filename)
    file:write (xml.str (var))
    io.close (file)
 end
-
 
 -- Recursively parses a Lua table for a substatement fitting to the provided
 -- tag and attribute.
