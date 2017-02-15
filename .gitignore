@@ -26,7 +26,6 @@
 .version
 /ChangeLog
 /INSTALL
-/README
 /aclocal.m4
 /build-aux/*
 !/build-aux/Makefile.am.common
@@ -47,7 +46,6 @@
 !/build-aux/vc-list-files
 !/build-aux/visibility.m4
 !/build-aux/warnings.m4
-/COPYING
 /config.cache
 /config.log
 /config.status

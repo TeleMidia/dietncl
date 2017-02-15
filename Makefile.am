@@ -23,7 +23,7 @@ ACLOCAL_AMFLAGS= -I build-aux ${ACLOCAL_FLAGS}
 
 # Setup code coverage.
 include $(top_srcdir)/build-aux/Makefile.am.coverage
-COVERAGE_EXCLUDE+= tests/\* lib/macros.h lib/luax-macros.h
+COVERAGE_EXCLUDE+= tests/\* dietncl/macros.h dietncl/luax-macros.h
 
 # Setup version.
 BUILT_SOURCES= .version
@@ -34,7 +34,6 @@ BUILT_SOURCES= .version
 include $(top_srcdir)/build-aux/Makefile.am.gitlog
 dist-hook:
 	@echo $(VERSION) > $(distdir)/.tarball-version
-	@cp -r $(srcdir)/contrib $(srcdir)/examples $(distdir)
 
 EXTRA_DIST=\
   .version\
@@ -77,6 +76,6 @@ MAINTAINERCLEANFILES+=\
   build-aux/mkinstalldirs\
   build-aux/test-driver\
   configure\
-  lib/config.h.in\
-  lib/config.h.in~\
+  dietncl/config.h.in\
+  dietncl/config.h.in~\
   $(NULL)
