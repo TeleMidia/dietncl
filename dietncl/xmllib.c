@@ -1,16 +1,37 @@
+/* dietncl.xmllib -- A simple XML parser.
+   Copyright (C) 2013-2017 PUC-Rio/Laboratorio TeleMidia
+
+This file is part of DietNCL.
+
+DietNCL is free software: you can redistribute it and/or modify
+it under the terms of the GNU General Public License as published by
+the Free Software Foundation, either version 3 of the License, or
+(at your option) any later version.
+
+DietNCL is distributed in the hope that it will be useful,
+but WITHOUT ANY WARRANTY; without even the implied warranty of
+MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+GNU General Public License for more details.
+
+You should have received a copy of the GNU General Public License
+along with DietNCL.  If not, see <http://www.gnu.org/licenses/>.  */
+
 /* This code needs to be called recursively by lua in order for the
    tables to be set appropriately */
 /* The comments could be passed back to lua as a table with the key
    'comments' inside the table where the comment was made */
 
-#include <glib.h>
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
+
+#include <glib.h>
 #include <lua.h>
 #include <lauxlib.h>
 
-/* Registry key for the canvas metatable.  */
+#include "macros.h"
+
+/* Registry key for the xmllib metatable.  */
 #define XML "dietncl.xml"
 
 
@@ -20,10 +41,10 @@ static void start_element (GMarkupParseContext *context,
                            const gchar        **names,
                            const gchar        **values,
                            gpointer             data,
-                           GError             **error) {
+                           arg_unused (GError             **error)) {
 
   lua_State* L = (lua_State*) data;
-  gsize index;
+  lua_Integer index;
   gint line_n;
   gint char_n;
 
@@ -84,13 +105,6 @@ static void start_element (GMarkupParseContext *context,
   }
 }
 
-static void text(GMarkupParseContext *context,
-    const gchar         *text,
-    gsize                text_len,
-    gpointer             data,
-    GError             **error) {
-}
-
 static void end_element (GMarkupParseContext *context,
     const gchar         *elt,
     gpointer             data,
@@ -121,7 +135,7 @@ static void end_element (GMarkupParseContext *context,
 static GMarkupParser parser = {
   start_element,
   end_element,
-  text,
+  NULL,
   NULL,
   NULL
 };
