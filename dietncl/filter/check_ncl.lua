@@ -67,7 +67,8 @@ end
 ---
 function filter.apply (ncl)
 
-   -- remember to change table acces from syntax.arg.parent to syntax.arg.parent[1]
+   -- remember to change table acces from syntax.arg.parent to
+   -- syntax.arg.parent[1] (first one returns a table, not a string)
 
    local arg = ncl[0].tag
 
