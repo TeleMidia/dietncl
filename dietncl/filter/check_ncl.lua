@@ -67,6 +67,8 @@ end
 ---
 function filter.apply (ncl)
 
+   -- remember to change table acces from syntax.arg.parent to syntax.arg.parent[1]
+
    local arg = ncl[0].tag
 
    if !syntax.arg then -- test tag
