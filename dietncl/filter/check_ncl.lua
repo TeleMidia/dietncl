@@ -30,6 +30,8 @@ _ENV = nil
 -- @module dietncl.filter.check_ncl
 ---
 
+-- Add '?, *' elements after first couple of tests
+
 local syntax = {
    ncl = {
       parent = nil,
