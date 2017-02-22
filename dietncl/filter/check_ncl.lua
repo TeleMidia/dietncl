@@ -36,24 +36,47 @@ _ENV = nil
 -- Local functions
 --
 
---
-local function sequence (ncl, ttable, arg)
-   if op ~= nil then
-      operator[op] ()
-   end
+-- makes children list from the table with the outer [op] before calling
+-- the operation function
+local function test_child ()
 
-   for k, v in ipairs (ncl) do
-      if v[0].tag == ttable[k] then
-         filter.apply (ncl[k])
-      else
-         print ('wrong child')
-      end
-   end
 end
 
 --
-local function pipe ()
+local function sequence (ncl, children) -- children is a list
+   for _, v in ipairs (children) do
+      local index = 1
 
+      if v == ncl[index][0].tag then
+         index = index + 1
+      end
+   end
+
+   if ncl[index] then
+      print ('wrong child (sequence)')
+      return nil
+   end
+
+   return children
+end
+
+--
+local function pipe (ncl, children)
+   for _, v in ipairs (ncl) do
+      local index = 1
+
+      for i=1, #children do
+         if v[0].tag == children[i] then
+            index = i
+            break
+         end
+      end
+
+      if v[0].tag ~= children[index] then
+         print ('wrong child (pipe)')
+         return nil
+      end
+   end
 end
 
 --
@@ -175,30 +198,14 @@ function filter.apply (ncl)
       end
    end
 
-   -- to do
-   -- local list_child = syntax[arg].children
+   if ncl[1] ~= nil then
+      -- test children
+      local child_list = {}
+      test_child (ncl, child_list)
 
-   -- for k in ipairs (ncl) do
-   --    for i=1, #list_child do
-   --       if ncl[k][0].tag == list_child[i] then
-   --          filter.apply (ncl[k])
-   --          index = i
-   --          break
-   --       end
-   --    end
-
-   --    if ncl[k][0].tag ~= list_child[index] then -- test children
-   --       print ('wrong children')
-   --       return nil
-   --    end
-   -- end
-
-   while syntax[arg].children.op != nil do
-      for k, v in pairs (operator) do
-         if k == syntax[arg].children.op then
-            v ()
-            break
-         end
+      -- call filter recursively for each children
+      for k in ipairs (ncl) do
+         filter.apply (ncl[k])
       end
    end
 
