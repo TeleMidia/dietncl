@@ -42,7 +42,7 @@ local function test_child ()
 
 end
 
---
+-- done
 local function sequence (ncl, children) -- children is a list
    local index = 1
 
@@ -50,17 +50,17 @@ local function sequence (ncl, children) -- children is a list
       if v == ncl[index][0].tag then
          index = index + 1
       end
+
+      if ncl[index] == nil then
+         return 1 -- no problems
+      end
    end
 
-   if ncl[index] then
-      print ('wrong child (sequence)')
-      return nil
-   end
-
-   return children
+   print ('wrong child (sequence)')
+   return nil
 end
 
---
+-- done
 local function pipe (ncl, children)
    for _, v in ipairs (ncl) do
       local index = 1
@@ -77,50 +77,54 @@ local function pipe (ncl, children)
          return nil
       end
    end
+
+   return 1
 end
 
---
+-- done
 local function one_or_more (ncl, children)
-   local index
+   for i=1, #children do
+      local count = 0
 
-   for _, c in ipairs (children) do
-      for k, v in ipairs (ncl) do
-         if v[0].tag == c then
-            index = k
-            break
+      for _, v in ipairs (ncl) do
+         if v[0].tag == children[i] then
+            count = count + 1
          end
       end
 
-      if ncl[index][0].tag ~= c then
+      if count < 1 then
          print ('wrong child (one_or_more)')
          return nil
-   end
-end
-
---
-local function zero_or_more ()
-   local index
-
-   for _, v in ipairs (ncl) do
-      for i=1, #children do
-         if children[i] == v[0].tag then
-            index = i
-            break
-         end
-      end
-
-      if children[index] ~= v[0].tag then
-         print ('wrong child (zero_or_more)')
-         return nil
       end
    end
+
+   return 1
 end
 
---
+-- -- is this function really needed?
+-- local function zero_or_more ()
+--    local index
+
+--    for _, v in ipairs (ncl) do
+--       for i=1, #children do
+--          if children[i] == v[0].tag then
+--             index = i
+--             break
+--          end
+--       end
+
+--       if children[index] ~= v[0].tag then
+--          print ('wrong child (zero_or_more)')
+--          return nil
+--       end
+--    end
+-- end
+
+-- done
 local function zero_or_one ()
-   local count = 0
-
    for i=1, #children do
+      local count = 0
+
       for _, v in ipairs (ncl) do
          if children[i] == v[0].tag then
             count = count + 1
@@ -128,17 +132,19 @@ local function zero_or_one ()
       end
 
       if count > 1 then
-         print ('wrong child (exactly_one)')
+         print ('wrong child (zero_or_one)')
          return nil
       end
    end
+
+   return 1
 end
 
---
+-- done
 local function exactly_one (ncl, children)
-   local count = 0
-
    for i=1, #children do
+      local count = 0
+
       for _, v in ipairs (ncl) do
          if children[i] == v[0].tag then
             count = count + 1
@@ -150,6 +156,8 @@ local function exactly_one (ncl, children)
          return nil
       end
    end
+
+   return 1
 end
 
 -- Table to define what operation needs to be followed
