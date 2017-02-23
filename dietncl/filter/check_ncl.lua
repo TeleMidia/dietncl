@@ -44,9 +44,9 @@ end
 
 --
 local function sequence (ncl, children) -- children is a list
-   for _, v in ipairs (children) do
-      local index = 1
+   local index = 1
 
+   for _, v in ipairs (children) do
       if v == ncl[index][0].tag then
          index = index + 1
       end
@@ -80,23 +80,76 @@ local function pipe (ncl, children)
 end
 
 --
-local function one_or_more ()
+local function one_or_more (ncl, children)
+   local index
 
+   for _, c in ipairs (children) do
+      for k, v in ipairs (ncl) do
+         if v[0].tag == c then
+            index = k
+            break
+         end
+      end
+
+      if ncl[index][0].tag ~= c then
+         print ('wrong child (one_or_more)')
+         return nil
+   end
 end
 
 --
 local function zero_or_more ()
+   local index
 
+   for _, v in ipairs (ncl) do
+      for i=1, #children do
+         if children[i] == v[0].tag then
+            index = i
+            break
+         end
+      end
+
+      if children[index] ~= v[0].tag then
+         print ('wrong child (zero_or_more)')
+         return nil
+      end
+   end
 end
 
 --
 local function zero_or_one ()
+   local count = 0
 
+   for i=1, #children do
+      for _, v in ipairs (ncl) do
+         if children[i] == v[0].tag then
+            count = count + 1
+         end
+      end
+
+      if count > 1 then
+         print ('wrong child (exactly_one)')
+         return nil
+      end
+   end
 end
 
 --
-local function exactly_one ()
+local function exactly_one (ncl, children)
+   local count = 0
 
+   for i=1, #children do
+      for _, v in ipairs (ncl) do
+         if children[i] == v[0].tag then
+            count = count + 1
+         end
+      end
+
+      if count ~= 1 then
+         print ('wrong child (exactly_one)')
+         return nil
+      end
+   end
 end
 
 -- Table to define what operation needs to be followed
