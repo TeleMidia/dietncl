@@ -34,6 +34,7 @@ local function automata (str, state)
    return automata (str:sub (2), state)
 end
 
+-- this part is meant to test the automaton coded above
 local test = automata ('1011101')
 print ('test 1 -->', test)
 
