@@ -18,7 +18,10 @@ with DietNCL.  If not, see <http://www.gnu.org/licenses/>.  ]]--
 
 local print = print
 local pairs = pairs
+local ipairs = ipairs
 local table = table
+local type = type
+local filter = {}
 
 _ENV = nil
 
@@ -45,30 +48,40 @@ local transition = {
 }
 
 -- filteeeer
-local function filter (ncl)
+function filter.apply (ncl)
    local t = {}
    local medials = {}
 
    for elt in ncl:gmatch ('media') do
-      medials [elt.id] = {uri = elt.src}
+      medials [elt.id] = {[uri] = elt.src}
    end
 
-   t = table.insert (t, medials)
+   table.insert (t, medials)
 
-   local list = {{'start', lambda}}
+   local list = {{'start', 'lambda'}}
    for elt in ncl:gmatch ('port') do
-      local plist = transition ['start']
+      local plist = {}
+
+      for k, v in ipairs (transition['start']) do
+         plist[k] = v
+      end
+
       table.insert (plist, elt.component)
       table.insert (list, plist)
    end
 
    table.insert (t, list)
 
-   for elt in pairs ('link') do
+   for elt in ncl:gmatch ('link') do
       local llist = {}
 
-      for bind in pairs ('bind') do
-         local blist = transition[bind.role]
+      for bind in elt:gmatch ('bind') do
+         local blist = {}
+
+         for k, v in ipairs (transition[bind.role]) do
+            blist[k] = v
+         end
+
          table.insert (blist, bind.component)
          table.insert (llist, blist)
       end
