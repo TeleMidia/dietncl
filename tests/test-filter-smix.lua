@@ -45,16 +45,34 @@ end
 
 local str = [[
 <ncl id='x'>
-  <port id='a' component='m1'/>
-  <port id='b' component='m2'/>
-  <link id='l1' xconnector='##'>
-    <bind role='onBegin' component='m2'/>
-    <bind role='start' component='m3'/>
-  </link>
-  <link id='l2' xconnector='###'>
-    <bind role='onEnd' component='m3'/>
-    <bind role='start' component='m4'/>
-  </link>
+  <head>
+    <connectorBase>
+      <causalConnector id='c1'>
+        <simpleCondition role='AAA' eventType='presentation' transition='starts'/>
+        <simpleAction role='BBB' eventType='presentation' actionType='start'/>
+      </causalConnector>
+      <causalConnector id='c2'>
+        <simpleCondition role='CCC' eventType='presentation' transition='stops'/>
+        <simpleAction role='BBB' eventType='presentation' actionType='start'/>
+      </causalConnector>
+    </connectorBase>
+  </head>
+  <body>
+    <port id='a' component='m1'/>
+    <port id='b' component='m2'/>
+    <media id='m1' src='m1.png'/>
+    <media id='m2' src='m2.png'/>
+    <media id='m3' src='m3.png'/>
+    <media id='m4' src='m4.png'/>
+    <link id='l1' xconnector='c1'>
+      <bind role='AAA' component='m2'/>
+      <bind role='BBB' component='m3'/>
+    </link>
+    <link id='l2' xconnector='c2'>
+      <bind role='CCC' component='m3'/>
+      <bind role='AAA' component='m4'/>
+    </link>
+  </body>
 </ncl>
 ]]
 

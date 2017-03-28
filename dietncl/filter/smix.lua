@@ -20,7 +20,8 @@ local print = print
 local pairs = pairs
 local ipairs = ipairs
 local table = table
-local type = type
+local string = string
+
 local filter = {}
 
 _ENV = nil
@@ -33,7 +34,7 @@ _ENV = nil
 
 -- table that signifies the transitions between presentation event states,
 -- its actions and the corresponding triggered condition.
-local transition = {
+local transitiontable = {
    ['onBegin'] = {'start'},
    ['onPause'] = {'pause'},
    ['onResume'] = {'resume'},
@@ -47,26 +48,37 @@ local transition = {
    ['abort'] = {true, 'abort'}
 }
 
+-- function that receives a bind and a xconnector as parameters and returns
+-- the actionType given by it
+local function get_action (ncl, bind, xconn)
+   local cconn = ncl:match ('causalConnector', 'id', xconn)
+   local transition, actionType
+
+   for elt in cconn:gmatch ('simpleCondition') do
+      transition = elt.transition
+   end
+
+   for elt in cconn:gmatch ('simpleAction') do
+      actionType = elt.actionType
+   end
+
+   return transition, actionType
+end
+
 -- filteeeer
 function filter.apply (ncl)
    local t = {}
-   local medials = {}
 
+   local medials = {}
    for elt in ncl:gmatch ('media') do
-      medials [elt.id] = {[uri] = elt.src}
+      medials [elt.id] = {uri = elt.src}
    end
 
    table.insert (t, medials)
 
    local list = {{'start', 'lambda'}}
    for elt in ncl:gmatch ('port') do
-      local plist = {}
-
-      for k, v in ipairs (transition['start']) do
-         plist[k] = v
-      end
-
-      table.insert (plist, elt.component)
+      local plist = {true, 'start', elt.component}
       table.insert (list, plist)
    end
 
@@ -77,13 +89,14 @@ function filter.apply (ncl)
 
       for bind in elt:gmatch ('bind') do
          local blist = {}
+         local transition, action = get_action (ncl, bind, elt.xconnector)
 
-         for k, v in ipairs (transition[bind.role]) do
-            blist[k] = v
+         if #llist == 0 then
+            llist = {transition:sub (1, -2), bind.component}
+         else
+            local blist = {true, action, bind.component}
+            table.insert (llist, blist)
          end
-
-         table.insert (blist, bind.component)
-         table.insert (llist, blist)
       end
 
       table.insert (t, llist)
