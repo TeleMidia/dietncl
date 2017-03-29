@@ -69,6 +69,7 @@ end
 function filter.apply (ncl)
    local t = {}
 
+   -- media table
    local medials = {}
    for elt in ncl:gmatch ('media') do
       medials [elt.id] = {uri = elt.src}
@@ -76,6 +77,7 @@ function filter.apply (ncl)
 
    table.insert (t, medials)
 
+   -- port table
    local list = {{'start', 'lambda'}}
    for elt in ncl:gmatch ('port') do
       local plist = {true, 'start', elt.component}
@@ -83,25 +85,32 @@ function filter.apply (ncl)
    end
 
    table.insert (t, list)
-
-   for elt in ncl:gmatch ('link') do
+--------------------------
+   for link in ncl:gmatch ('link') do
       local llist = {}
 
-      for bind in elt:gmatch ('bind') do
-         local blist = {}
-         local transition, action = get_action (ncl, bind, elt.xconnector)
+      local conn = ncl:match ('causalConnector', 'id', link.xconnector)
+      if conn == nil then
+         return error
+      end
 
-         if #llist == 0 then
-            llist = {transition:sub (1, -2), bind.component}
-         else
-            local blist = {true, action, bind.component}
-            table.insert (llist, blist)
-         end
+      local cond = conn:match ('simpleCondition')
+      local act = conn:match ('simpleAction')
+
+      -- Add transition table to llist
+      local bind = ncl:match ('bind', 'role', cond.role)
+      local blist = {cond.transition:sub (1, -2), bind.component}
+      table.insert (llist, blist)
+
+      -- Add action table to llist
+      for bind in link:gmatch ('bind', 'role', act.role) do
+         blist = {true, act.actionType, bind.component}
+         table.insert (llist, blist)
       end
 
       table.insert (t, llist)
    end
-
+--------------------------
    return t
 end
 

@@ -48,16 +48,27 @@ local str = [[
   <head>
     <connectorBase>
       <causalConnector id='c1'>
-        <simpleCondition role='AAA' eventType='presentation' transition='starts'/>
-        <simpleAction role='BBB' eventType='presentation' actionType='start'/>
+        <compoundCondition operator='and'>
+          <assessmentStatement comparator='eq'>
+            <attributeAssessment role='y' eventType='attribution' attributeType='nodeProperty'/>
+            <attributeAssessment role='z' eventType='attribution' attributeType='nodeProperty'/>
+          </assessmentStatement>
+          <simpleCondition role='AAA' eventType='presentation' transition='starts'/>
+        </compoundCondition>
+        <simpleAction role='aaa' eventType='presentation' actionType='start'/>
       </causalConnector>
       <causalConnector id='c2'>
-        <simpleCondition role='CCC' eventType='presentation' transition='stops'/>
-        <simpleAction role='BBB' eventType='presentation' actionType='start'/>
+        <simpleCondition role='BBB' eventType='presentation' transition='stops'/>
+        <simpleAction role='aaa' eventType='presentation' actionType='start'/>
+      </causalConnector>
+      <causalConnector id='c3'>
+        <simpleCondition role='DDD' eventType='presentation' transition='pauses'/>
+        <simpleAction role='bbb' eventType='presentation' actionType='stop'/>
       </causalConnector>
     </connectorBase>
   </head>
-  <body>
+  <body id='body'>
+    <property name='taut' value='1'/>
     <port id='a' component='m1'/>
     <port id='b' component='m2'/>
     <media id='m1' src='m1.png'/>
@@ -66,11 +77,17 @@ local str = [[
     <media id='m4' src='m4.png'/>
     <link id='l1' xconnector='c1'>
       <bind role='AAA' component='m2'/>
-      <bind role='BBB' component='m3'/>
+      <bind role='y' component='body' interface='taut'/>
+      <bind role='z' component='body' interface='taut'/>
+      <bind role='aaa' component='m3'/>
     </link>
     <link id='l2' xconnector='c2'>
-      <bind role='CCC' component='m3'/>
-      <bind role='AAA' component='m4'/>
+      <bind role='BBB' component='m3'/>
+      <bind role='aaa' component='m4'/>
+    </link>
+    <link id='l3' xconnector='c3'>
+      <bind role='DDD' component='m3'/>
+      <bind role='bbb' component='m4'/>
     </link>
   </body>
 </ncl>
@@ -93,8 +110,11 @@ local result = {
    {{'start', 'm2'},
       {true, 'start', 'm3'}},
 
-   {{'start', 'm3'},
+   {{'stop', 'm3'},
       {true, 'start', 'm4'}},
+
+   {{'pause', 'm3'},
+      {true, 'stop', 'm4'}},
 
    {{'stop', 'm1'},
       {true, 'stop', 'lambda'}}
