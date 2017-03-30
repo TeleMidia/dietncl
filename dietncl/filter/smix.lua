@@ -65,6 +65,95 @@ local function get_action (ncl, bind, xconn)
    return transition, actionType
 end
 
+-- table to assess the type of test that needs to be made within the function
+-- created from assessmentStatement
+local comparator = {
+   ['eq'] = function (x, y) return x == y end,
+   ['ne'] = function (x, y) return x ~= y end,
+   ['gt'] = function (x, y) return x > y end,
+   ['lt'] = function (x, y) return x < y end,
+   ['gte'] = function (x, y) return x >= y end,
+   ['lte'] = function (x, y) return x <= y end
+}
+
+
+
+-- make the convert statement function to be called only with assessmentStatement
+
+
+
+-- recursive function that returns the function from assessment statement
+function filter.convert_statement (elt, ncl)
+
+   if elt.tag ~= 'assessmentStatement' or 'compoundStatement' then
+
+   end
+
+   if elt.tag == 'assessmentStatement' then
+      local var = {}
+
+      for v in elt:gmatch ('attributeAssessment') do
+         local bind = ncl:match ('bind', 'role', v.role)
+         var [#var + 1] = bind.interface
+      end
+
+      local value = elt:match ('valueAssessment')
+      if value then
+         var [#var + 1] = value.value
+      end
+
+      return function (m)
+         return comparator[elt.comparator] (var[1], var[2])
+      end
+   end
+
+   -- compoundStatement
+   local childfunc = {}
+
+   for child in elt:children () do
+      childfunc [#childfunc + 1] = filter.convert_statement (child, ncl)
+   end
+
+   if elt.operator == 'and' then
+      return function (m)
+         for f in ipairs (childfunc) do
+            if not f (m) then
+               if elt.isNegated == 'true' then
+                  return true
+               else
+                  return false
+               end
+            end
+         end
+
+         if elt.isNegated == 'true' then
+            return false
+         else
+            return true
+         end
+      end
+   else
+      return function (m)
+         for f in ipairs (childfunc) do
+            if f (m) then
+               if elt.isNegated == 'true' then
+                  return false
+               else
+                  return true
+               end
+            end
+
+            if elt.isNegated == 'true' then
+               return true
+            else
+               return false
+            end
+         end
+      end
+   end
+end
+
+
 -- filteeeer
 function filter.apply (ncl)
    local t = {}
@@ -85,7 +174,7 @@ function filter.apply (ncl)
    end
 
    table.insert (t, list)
---------------------------
+
    for link in ncl:gmatch ('link') do
       local llist = {}
 
@@ -104,13 +193,14 @@ function filter.apply (ncl)
 
       -- Add action table to llist
       for bind in link:gmatch ('bind', 'role', act.role) do
-         blist = {true, act.actionType, bind.component}
+         blist = {filter.convert_statement (conn, ncl),
+                  act.actionType, bind.component}
          table.insert (llist, blist)
       end
 
       table.insert (t, llist)
    end
---------------------------
+
    return t
 end
 
