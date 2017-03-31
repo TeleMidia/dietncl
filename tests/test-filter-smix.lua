@@ -58,34 +58,51 @@ local str = [[
         <simpleAction role='aaa' eventType='presentation' actionType='start'/>
       </causalConnector>
       <causalConnector id='c2'>
-        <simpleCondition role='BBB' eventType='presentation' transition='stops'/>
+        <compoundCondition operator='and'>
+          <simpleCondition role='BBB' eventType='presentation' transition='stops'/>
+          <assessmentStatement comparator='eq'>
+            <attributeAssessment role='z' eventType='attribution' attributeType='nodeProperty'/>
+            <valueAssessment value='5'/>
+          </assessmentStatement>
+        </compoundCondition>
         <simpleAction role='aaa' eventType='presentation' actionType='start'/>
       </causalConnector>
       <causalConnector id='c3'>
-        <simpleCondition role='DDD' eventType='presentation' transition='pauses'/>
+        <compoundCondition operator='or'>
+          <assessmentStatement comparator='gt'>
+            <attributeAssessment role='w' eventType='attribution' attributeType='nodeProperty'/>
+            <valueAssessment value='1'/>
+          </assessmentStatement>
+          <simpleCondition role='DDD' eventType='presentation' transition='pauses'/>
+        </compoundCondition>
         <simpleAction role='bbb' eventType='presentation' actionType='stop'/>
       </causalConnector>
     </connectorBase>
   </head>
   <body id='body'>
-    <property name='taut' value='1'/>
     <port id='a' component='m1'/>
     <port id='b' component='m2'/>
     <media id='m1' src='m1.png'/>
-    <media id='m2' src='m2.png'/>
-    <media id='m3' src='m3.png'/>
+    <media id='m2' src='m2.png'>
+      <property name='taut' value='2'/>
+    </media>
+    <media id='m3' src='m3.png'>
+      <property name='taut' value='5'/>
+    </media>
     <media id='m4' src='m4.png'/>
     <link id='l1' xconnector='c1'>
       <bind role='AAA' component='m2'/>
-      <bind role='y' component='body' interface='taut'/>
-      <bind role='z' component='body' interface='taut'/>
+      <bind role='y' component='m2' interface='taut'/>
+      <bind role='z' component='m2' interface='taut'/>
       <bind role='aaa' component='m3'/>
     </link>
     <link id='l2' xconnector='c2'>
       <bind role='BBB' component='m3'/>
       <bind role='aaa' component='m4'/>
+      <bind role='z' component='m3' interface='taut'/>
     </link>
     <link id='l3' xconnector='c3'>
+      <bind role='w' component='m3' interface='taut'/>
       <bind role='DDD' component='m3'/>
       <bind role='bbb' component='m4'/>
     </link>
@@ -124,5 +141,16 @@ local result = {
 print (t)
 printt (t)
 
-print (result)
-printt (result)
+-- print (result)
+-- printt (result)
+
+-- test convert_statement function
+local tmedia = { m1 = {uri='m1.png'},
+                 m2 = {uri='m2.png', ['taut'] = '2'},
+                 m3 = {uri='m3.png', ['taut'] = '5'},
+                 m4 = {uri='m4.png'}
+}
+print (tmedia)
+--print (t[3][2][1] (tmedia))
+--print (t[4][2][1] (tmedia))
+print (t[5][2][1] (tmedia))

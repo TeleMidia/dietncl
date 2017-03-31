@@ -48,6 +48,7 @@ local transitiontable = {
    ['abort'] = {true, 'abort'}
 }
 
+
 -- function that receives a bind and a xconnector as parameters and returns
 -- the actionType given by it
 local function get_action (ncl, bind, xconn)
@@ -65,6 +66,7 @@ local function get_action (ncl, bind, xconn)
    return transition, actionType
 end
 
+
 -- table to assess the type of test that needs to be made within the function
 -- created from assessmentStatement
 local comparator = {
@@ -77,33 +79,37 @@ local comparator = {
 }
 
 
-
--- make the convert statement function to be called only with assessmentStatement
-
-
-
 -- recursive function that returns the function from assessment statement
 function filter.convert_statement (elt, ncl)
 
-   if elt.tag ~= 'assessmentStatement' or 'compoundStatement' then
-
-   end
-
-   if elt.tag == 'assessmentStatement' then
-      local var = {}
+   if elt:tag () == 'assessmentStatement' then
+      local var = nil
+      local bind = {}
 
       for v in elt:gmatch ('attributeAssessment') do
-         local bind = ncl:match ('bind', 'role', v.role)
-         var [#var + 1] = bind.interface
+         bind [#bind + 1] = ncl:match ('bind', 'role', v.role)
       end
 
       local value = elt:match ('valueAssessment')
       if value then
-         var [#var + 1] = value.value
+         var = value.value
+      end
+
+      local f = comparator[elt.comparator]
+      local media = {bind[1].component}
+      local interface = {bind[1].interface}
+
+      if not var then
+         media[2] = bind[2].component
+         interface[2] = bind[2].interface
+      else
+         return function (m)
+            return f (m.m2.taut, var) -- apparently function is not substituting media[1] for the corresponding element, the way it is written now doesnt return an error, but it should be the way it is 5 lines below
+         end
       end
 
       return function (m)
-         return comparator[elt.comparator] (var[1], var[2])
+         return f (m.media[1].interface[1], m.media[2].interface[2])
       end
    end
 
@@ -154,14 +160,20 @@ function filter.convert_statement (elt, ncl)
 end
 
 
--- filteeeer
+-- filter that creates the table representing the conversion of a ncl
+-- program to smix
 function filter.apply (ncl)
    local t = {}
 
    -- media table
    local medials = {}
    for elt in ncl:gmatch ('media') do
-      medials [elt.id] = {uri = elt.src}
+      medials [elt.id] = {['uri'] = elt.src}
+
+      local prop = elt:match ('property')
+      if prop then
+         medials [elt.id] = {[prop.name] = prop.value}
+      end
    end
 
    table.insert (t, medials)
@@ -183,6 +195,11 @@ function filter.apply (ncl)
          return error
       end
 
+      local statement = conn:match ('compoundStatement') -- look closely
+      if statement == nil then
+      statement = conn:match ('assessmentStatement')
+      end
+
       local cond = conn:match ('simpleCondition')
       local act = conn:match ('simpleAction')
 
@@ -193,7 +210,7 @@ function filter.apply (ncl)
 
       -- Add action table to llist
       for bind in link:gmatch ('bind', 'role', act.role) do
-         blist = {filter.convert_statement (conn, ncl),
+         blist = {filter.convert_statement (statement, ncl),
                   act.actionType, bind.component}
          table.insert (llist, blist)
       end
