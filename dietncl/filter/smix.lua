@@ -47,7 +47,7 @@ local transitiontable = {
    ['stop'] = {true, 'stop'},
    ['abort'] = {true, 'abort'}
 }
-
+-- set has two more parameters, the media, its property and its value, that can also be a function
 
 -- function that receives a bind and a xconnector as parameters and returns
 -- the actionType given by it
@@ -78,47 +78,8 @@ local comparator = {
    ['lte'] = function (x, y) return x <= y end
 }
 
-
--- recursive function that returns the function from assessment statement
-function filter.convert_statement (elt, ncl)
-
-   if elt:tag () == 'assessmentStatement' then
-      local var = nil
-      local bind = {}
-
-      for v in elt:gmatch ('attributeAssessment') do
-         bind [#bind + 1] = ncl:match ('bind', 'role', v.role)
-      end
-
-      local value = elt:match ('valueAssessment')
-      if value then
-         var = value.value
-      end
-
-      local f = comparator[elt.comparator]
-      local media = {bind[1].component}
-      local interface = {bind[1].interface}
-
-      if not var then
-         media[2] = bind[2].component
-         interface[2] = bind[2].interface
-      else
-         return function (m)
-            return f (m.m2.taut, var) -- apparently function is not substituting media[1] for the corresponding element, the way it is written now doesnt return an error, but it should be the way it is 5 lines below
-         end
-      end
-
-      return function (m)
-         return f (m.media[1].interface[1], m.media[2].interface[2])
-      end
-   end
-
-   -- compoundStatement
-   local childfunc = {}
-
-   for child in elt:children () do
-      childfunc [#childfunc + 1] = filter.convert_statement (child, ncl)
-   end
+-- function to test compoundStatement operators (and, or)
+local function test_compoundStatement (elt, childfunc)
 
    if elt.operator == 'and' then
       return function (m)
@@ -134,11 +95,11 @@ function filter.convert_statement (elt, ncl)
 
          if elt.isNegated == 'true' then
             return false
-         else
-            return true
          end
+
+         return true
       end
-   else
+   else -- elt.operator == 'or'
       return function (m)
          for f in ipairs (childfunc) do
             if f (m) then
@@ -151,12 +112,58 @@ function filter.convert_statement (elt, ncl)
 
             if elt.isNegated == 'true' then
                return true
-            else
-               return false
             end
+
+            return false
          end
       end
    end
+end
+
+-- this filter needs to also get as a parameter the transition, because for
+-- the set and seek actions, the function returned is different
+
+-- remember to delete the transition parameter, this part is not to be done
+-- in this function, but rather in the filter.apply
+
+-- recursive function that returns the function from assessment statement
+function filter.convert_statement (elt, ncl)
+
+   if elt:tag () == 'assessmentStatement' then
+      local var = nil
+      local bind = {}
+      local f = comparator[elt.comparator]
+
+      for v in elt:gmatch ('attributeAssessment') do
+         bind [#bind + 1] = ncl:match ('bind', 'role', v.role)
+      end
+
+      local media = {bind[1].component}
+      local interface = {bind[1].interface}
+      local value = elt:match ('valueAssessment')
+
+      if value then
+         return function (m)
+            return f (m[media[1]][interface[1]], value.value)
+         end
+      end
+
+      media[2] = bind[2].component
+      interface[2] = bind[2].interface
+
+      return function (m)
+         return f (m[media[1]][interface[1]], m[media[2]][interface[2]])
+      end
+   end
+
+   -- compoundStatement
+   local childfunc = {}
+
+   for child in elt:children () do
+      childfunc [#childfunc + 1] = filter.convert_statement (child, ncl)
+   end
+
+   test_compoundStatement (elt, childfunc)
 end
 
 
@@ -165,20 +172,27 @@ end
 function filter.apply (ncl)
    local t = {}
 
-   -- media table
-   local medials = {}
+   -- initialize media table with lambda, the whole application
+   local medials = {lambda = {state = {},
+                   prop = {abort = {},
+                          resume = {}},
+                   time = {}}}
+
+   -- add medias to the table
    for elt in ncl:gmatch ('media') do
-      medials [elt.id] = {['uri'] = elt.src}
+      medials [elt.id] = {state = {},
+                          prop = {uri = elt.src},
+                          time = {}}
 
       local prop = elt:match ('property')
       if prop then
-         medials [elt.id] = {[prop.name] = prop.value}
+         medials [elt.id] = {prop = {[prop.name] = prop.value}}
       end
    end
 
    table.insert (t, medials)
 
-   -- port table
+   -- initialize port table
    local list = {{'start', 'lambda'}}
    for elt in ncl:gmatch ('port') do
       local plist = {true, 'start', elt.component}
@@ -187,6 +201,7 @@ function filter.apply (ncl)
 
    table.insert (t, list)
 
+   -- initialize link table
    for link in ncl:gmatch ('link') do
       local llist = {}
 
@@ -195,9 +210,9 @@ function filter.apply (ncl)
          return error
       end
 
-      local statement = conn:match ('compoundStatement') -- look closely
+      local statement = conn:match ('compoundStatement')
       if statement == nil then
-      statement = conn:match ('assessmentStatement')
+         statement = conn:match ('assessmentStatement')
       end
 
       local cond = conn:match ('simpleCondition')
@@ -210,8 +225,32 @@ function filter.apply (ncl)
 
       -- Add action table to llist
       for bind in link:gmatch ('bind', 'role', act.role) do
-         blist = {filter.convert_statement (statement, ncl),
-                  act.actionType, bind.component}
+         local f = comparator ['eq']
+
+         if cond.transition == 'resumes' then
+            blist = {{state(x) == 'paused', ...(barra)...},
+               {f (t[1].lambda.resume, 1), 'start', bind.component, 'pinned'},
+               {f (t[1].lambda.resume, 1), 'set', 'lambda', 'prop',
+                'resume', nil, 'pinned'}}
+
+         elseif cond.transition == 'aborts' then
+            blist = {{state(x) ~= 'stopped', 'barra do demonio'},
+               {f (t[1].lambda.abort, 1), 'stop', bind.component, 'pinned'},
+               {f (t[1].lambda.abort, 1), 'set', 'lambda', 'prop', 'abort',
+                nil, 'pinned'}}
+
+         elseif cond.transition == 'set' then
+            table.remove (llist)
+            blist = {{'set', bind.component, 'input'},
+               -- need to define this input and its value correctly
+               {f (t[1][bind.component][prop]['input'], 'value'),
+                act.actionType, bind.component}}
+
+         else
+            blist = {filter.convert_statement (statement, ncl),
+                     act.actionType, bind.component}
+         end
+
          table.insert (llist, blist)
       end
 

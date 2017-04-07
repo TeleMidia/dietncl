@@ -50,8 +50,8 @@ local str = [[
       <causalConnector id='c1'>
         <compoundCondition operator='and'>
           <assessmentStatement comparator='eq'>
-            <attributeAssessment role='y' eventType='attribution' attributeType='nodeProperty'/>
-            <attributeAssessment role='z' eventType='attribution' attributeType='nodeProperty'/>
+            <attributeAssessment role='a' eventType='attribution' attributeType='nodeProperty'/>
+            <attributeAssessment role='b' eventType='attribution' attributeType='nodeProperty'/>
           </assessmentStatement>
           <simpleCondition role='AAA' eventType='presentation' transition='starts'/>
         </compoundCondition>
@@ -61,7 +61,7 @@ local str = [[
         <compoundCondition operator='and'>
           <simpleCondition role='BBB' eventType='presentation' transition='stops'/>
           <assessmentStatement comparator='eq'>
-            <attributeAssessment role='z' eventType='attribution' attributeType='nodeProperty'/>
+            <attributeAssessment role='c' eventType='attribution' attributeType='nodeProperty'/>
             <valueAssessment value='5'/>
           </assessmentStatement>
         </compoundCondition>
@@ -70,18 +70,68 @@ local str = [[
       <causalConnector id='c3'>
         <compoundCondition operator='or'>
           <assessmentStatement comparator='gt'>
-            <attributeAssessment role='w' eventType='attribution' attributeType='nodeProperty'/>
+            <attributeAssessment role='d' eventType='attribution' attributeType='nodeProperty'/>
             <valueAssessment value='1'/>
           </assessmentStatement>
           <simpleCondition role='DDD' eventType='presentation' transition='pauses'/>
         </compoundCondition>
         <simpleAction role='bbb' eventType='presentation' actionType='stop'/>
       </causalConnector>
+      <causalConnector id='c4'>
+        <compoundCondition operator='or'>
+          <assessmentStatement comparator='ne'>
+            <attributeAssessment role='e' eventType='attribution' attributeType='nodeProperty'/>
+            <valueAssessment value='1'/>
+          </assessmentStatement>
+          <simpleCondition role='DDD' eventType='presentation' transition='pauses'/>
+        </compoundCondition>
+        <simpleAction role='bbb' eventType='presentation' actionType='stop'/>
+      </causalConnector>
+      <causalConnector id='c5'>
+        <compoundCondition operator='or'>
+          <assessmentStatement comparator='lt'>
+            <attributeAssessment role='f' eventType='attribution' attributeType='nodeProperty'/>
+            <valueAssessment value='3'/>
+          </assessmentStatement>
+          <simpleCondition role='DDD' eventType='presentation' transition='pauses'/>
+        </compoundCondition>
+        <simpleAction role='bbb' eventType='presentation' actionType='stop'/>
+      </causalConnector>
+      <causalConnector id='c6'>
+        <compoundCondition operator='or'>
+          <assessmentStatement comparator='gte'>
+            <attributeAssessment role='g' eventType='attribution' attributeType='nodeProperty'/>
+            <valueAssessment value='3'/>
+          </assessmentStatement>
+          <simpleCondition role='DDD' eventType='presentation' transition='pauses'/>
+        </compoundCondition>
+        <simpleAction role='bbb' eventType='presentation' actionType='stop'/>
+      </causalConnector>
+      <causalConnector id='c7'>
+        <compoundCondition operator='or'>
+          <assessmentStatement comparator='lte'>
+            <attributeAssessment role='h' eventType='attribution' attributeType='nodeProperty'/>
+            <valueAssessment value='2'/>
+          </assessmentStatement>
+          <simpleCondition role='DDD' eventType='presentation' transition='pauses'/>
+        </compoundCondition>
+        <simpleAction role='bbb' eventType='presentation' actionType='stop'/>
+      </causalConnector>
+      <causalConnector id='c8'>
+        <compoundCondition operator='or'>
+          <assessmentStatement comparator='lte'>
+            <attributeAssessment role='h' eventType='attribution' attributeType='nodeProperty'/>
+            <valueAssessment value='2'/>
+          </assessmentStatement>
+          <simpleCondition role='AAA' eventType='presentation' transition='starts'/>
+        </compoundCondition>
+        <simpleAction role='eee' eventType='presentation' actionType='set'/>
+      </causalConnector>
     </connectorBase>
   </head>
   <body id='body'>
-    <port id='a' component='m1'/>
-    <port id='b' component='m2'/>
+    <port id='p1' component='m1'/>
+    <port id='p2' component='m2'/>
     <media id='m1' src='m1.png'/>
     <media id='m2' src='m2.png'>
       <property name='taut' value='2'/>
@@ -89,24 +139,52 @@ local str = [[
     <media id='m3' src='m3.png'>
       <property name='taut' value='5'/>
     </media>
-    <media id='m4' src='m4.png'/>
+    <media id='m4' src='m4.png'>
+      <property name='whocares' value='7'/>
+    </media>
     <link id='l1' xconnector='c1'>
       <bind role='AAA' component='m2'/>
-      <bind role='y' component='m2' interface='taut'/>
-      <bind role='z' component='m2' interface='taut'/>
+      <bind role='a' component='m2' interface='taut'/>
+      <bind role='b' component='m2' interface='taut'/>
       <bind role='aaa' component='m3'/>
     </link>
     <link id='l2' xconnector='c2'>
       <bind role='BBB' component='m3'/>
       <bind role='aaa' component='m4'/>
-      <bind role='z' component='m3' interface='taut'/>
+      <bind role='c' component='m2' interface='taut'/>
     </link>
     <link id='l3' xconnector='c3'>
-      <bind role='w' component='m3' interface='taut'/>
+      <bind role='d' component='m3' interface='taut'/>
       <bind role='DDD' component='m3'/>
       <bind role='bbb' component='m4'/>
     </link>
-  </body>
+    <link id='l4' xconnector='c4'>
+      <bind role='e' component='m2' interface='taut'/>
+      <bind role='DDD' component='m3'/>
+      <bind role='bbb' component='m4'/>
+    </link>
+    <link id='l5' xconnector='c5'>
+      <bind role='f' component='m3' interface='taut'/>
+      <bind role='DDD' component='m3'/>
+      <bind role='bbb' component='m4'/>
+    </link>
+    <link id='l6' xconnector='c6'>
+      <bind role='g' component='m3' interface='taut'/>
+      <bind role='DDD' component='m3'/>
+      <bind role='bbb' component='m4'/>
+    </link>
+    <link id='l7' xconnector='c7'>
+      <bind role='h' component='m2' interface='taut'/>
+      <bind role='DDD' component='m3'/>
+      <bind role='bbb' component='m4'/>
+    </link>
+    <!-- this part is to test the set property -->
+    <link id='l8' xconnector='c8'>
+      <bind role='i' component='m4' interface='whoknows'/>
+      <bind role='AAA' component='m4'/>
+      <bind role='eee' component='m4'/>
+    </link>
+   </body>
 </ncl>
 ]]
 
@@ -114,28 +192,30 @@ local ncl = dietncl.parsestring (str)
 local t = filter.apply (ncl)
 assert (t)
 
-local result = {
-   { m1 = {uri='m1.png'},
-     m2 = {uri='m2.png'},
-     m3 = {uri='m3.png'}
-   },
+-- local result = {
+--    { m1 = {uri='m1.png'},
+--      m2 = {uri='m2.png'},
+--      m3 = {uri='m3.png'}
+--    },
 
-   {{'start', 'lambda'},
-      {true, 'start', 'm1'},
-      {true, 'start', 'm2'}},
+--    {{'start', 'lambda'},
+--       {true, 'start', 'm1'},
+--       {true, 'start', 'm2'}},
 
-   {{'start', 'm2'},
-      {true, 'start', 'm3'}},
+--    {{'resume', 'm2'},
+--       {state (x) == 'pause', ...},
+--       {lambda.prop.xr == 1, 'start', 'm2', 'pinned'},
+--       {lambda.prop.xr == 1, 'start', 'm3', prop, 'property', 'value', 'pinned'}},
 
-   {{'stop', 'm3'},
-      {true, 'start', 'm4'}},
+--    {{'stop', 'm3'},
+--       {true, 'start', 'm4'}},
 
-   {{'pause', 'm3'},
-      {true, 'stop', 'm4'}},
+--    {{'pause', 'm3'},
+--       {true, 'stop', 'm4'}},
 
-   {{'stop', 'm1'},
-      {true, 'stop', 'lambda'}}
-}
+--    {{'stop', 'm1'},
+--       {true, 'stop', 'lambda'}}
+-- }
 
 --assert (xml.equal (ncl, result))
 print (t)
@@ -151,6 +231,24 @@ local tmedia = { m1 = {uri='m1.png'},
                  m4 = {uri='m4.png'}
 }
 print (tmedia)
---print (t[3][2][1] (tmedia))
---print (t[4][2][1] (tmedia))
+
+-- two attributeAssessment, 2 equal 2 (true)
+print (t[3][2][1] (tmedia))
+
+-- one attributeAssessment and one value, 2 equal 5 (false)
+print (t[4][2][1] (tmedia))
+
+-- one attributeAssessment and one value, 5 greater than 1 (true)
 print (t[5][2][1] (tmedia))
+
+-- one attributeAssessment and one value, 2 non equal 1 (true)
+print (t[6][2][1] (tmedia))
+
+-- one attributeAssessment and one value, 5 less than 3 (false)
+print (t[7][2][1] (tmedia))
+
+-- one attributeAssessment and one value, 5 greater than equal 3 (true)
+print (t[8][2][1] (tmedia))
+
+-- one attributeAssessment and one value, 2 less than equal 2 (true)
+print (t[9][2][1] (tmedia))
