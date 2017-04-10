@@ -220,7 +220,15 @@ function filter.apply (ncl)
 
       -- Add transition table to llist
       local bind = ncl:match ('bind', 'role', cond.role)
-      local blist = {cond.transition:sub (1, -2), bind.component}
+
+      if cond.transition == 'set' then
+         -- this set is not gonna be in cond.transition, look again at this
+         -- line in order to check its position and properly write this
+         local blist = {cond.transition:sub (1, -2), bind.component, input}
+      else
+         local blist = {cond.transition:sub (1, -2), bind.component}
+      end
+
       table.insert (llist, blist)
 
       -- Add action table to llist
@@ -234,7 +242,7 @@ function filter.apply (ncl)
                 'resume', nil, 'pinned'}}
 
          elseif cond.transition == 'aborts' then
-            blist = {{state(x) ~= 'stopped', 'barra do demonio'},
+            blist = {{state(x) ~= 'stopped', ...(barra)...},
                {f (t[1].lambda.abort, 1), 'stop', bind.component, 'pinned'},
                {f (t[1].lambda.abort, 1), 'set', 'lambda', 'prop', 'abort',
                 nil, 'pinned'}}
