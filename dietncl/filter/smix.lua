@@ -215,20 +215,20 @@ function filter.apply (ncl)
          statement = conn:match ('assessmentStatement')
       end
 
+      -- make a loop for the simple condition and simple action in case
+      -- there is more than one of them
       local cond = conn:match ('simpleCondition')
       local act = conn:match ('simpleAction')
 
       -- Add transition table to llist
       local bind = ncl:match ('bind', 'role', cond.role)
-      local m1 = bind.component
 
-      -- where do i find this input and its value
-      if cond.transition == 'set' then
-         -- this set is not gonna be in cond.transition, look again at this
-         -- line in order to check its position and properly write this
-         local blist = {cond.transition:sub (1, -2), m1, input}
+      local blist = {}
+      if cond.eventType == 'attribution' then
+         -- this is the set event, change below line
+         blist = {'set', bind.component}
       else
-         local blist = {cond.transition:sub (1, -2), m1}
+         blist = {cond.transition:sub (1, -2), bind.component}
       end
 
       table.insert (llist, blist)
@@ -236,12 +236,17 @@ function filter.apply (ncl)
       -- Add action table to llist
       for bind in link:gmatch ('bind', 'role', act.role) do
          local f = comparator ['eq']
+         local m1 = bind.component
 
-         --check the last table, what is r_r, a_a?
+         -- check the last table, what is r_r, a_a?
+         -- the line where they are was supposed to be the one that
+         -- triggers the condition onResume / onAbort, meaning that
+         -- its not a flag that needs to be set, and the action is not
+         -- supposed to be pinned
          if act.actionType == 'resume' then
-            blist = {{true 'set', lambda, 'u', -1},
+            blist = {{true, 'set', 'lambda', 'u', -1},
                {function (m) return m[m1][state] == 'paused' end,
-                  'set', lambda, 'u', 1},
+                  'set', 'lambda', 'u', 1},
                {'iter', function (m) return m[lambda].u end,
                 {true, 'set', m1, 'r_f', 1, 'pinned'}},
                {'iter', function (m) return -1 * m[lambda].u end,
@@ -249,12 +254,12 @@ function filter.apply (ncl)
                {function (m) return m[m1].r_f == 1 end,
                   'start', m1, nil, nil, 'pinned'},
                {function (m) return m[m1].r_f == 1 end,
-                  'set', m2, 'r_r', nil}}
+                  'set', m1, 'r_r', nil}}
 
          elseif act.actionType == 'abort' then
-            blist = {{true 'set', lambda, 'u', -1},
+            blist = {{true, 'set', 'lambda', 'u', -1},
                {function (m) return m[m1][state] ~= 'stopped' end,
-                  'set', lambda, 'u', 1},
+                  'set', 'lambda', 'u', 1},
                {'iter', function (m) return m[lambda].u end,
                 {true, 'set', m1, 'a_f', 1, 'pinned'}},
                {'iter', function (m) return -1 * m[lambda].u end,
@@ -262,11 +267,12 @@ function filter.apply (ncl)
                {function (m) return m[m1].r_f == 1 end,
                   'stop', m1, nil, nil, 'pinned'},
                {function (m) return m[m1].r_f == 1 end,
-                  'set', m2, 'a_a', nil}}
+                  'set', m1, 'a_a', nil}}
 
-         elseif act.actionType == 'start' && eventType == 'attribution' then
-            blist = {filter.convert_statement (statement, ncl),
-                     act.actionType, m1, input, value}
+         elseif act.actionType == 'start' and
+         act.eventType == 'attribution' then
+            blist = {filter.convert_statement (statement, ncl), 'set', m1,
+                     bind.interface, act.value}
 
          else
             blist = {filter.convert_statement (statement, ncl),
