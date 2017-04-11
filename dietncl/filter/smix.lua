@@ -220,13 +220,15 @@ function filter.apply (ncl)
 
       -- Add transition table to llist
       local bind = ncl:match ('bind', 'role', cond.role)
+      local m1 = bind.component
 
+      -- where do i find this input and its value
       if cond.transition == 'set' then
          -- this set is not gonna be in cond.transition, look again at this
          -- line in order to check its position and properly write this
-         local blist = {cond.transition:sub (1, -2), bind.component, input}
+         local blist = {cond.transition:sub (1, -2), m1, input}
       else
-         local blist = {cond.transition:sub (1, -2), bind.component}
+         local blist = {cond.transition:sub (1, -2), m1}
       end
 
       table.insert (llist, blist)
@@ -235,28 +237,40 @@ function filter.apply (ncl)
       for bind in link:gmatch ('bind', 'role', act.role) do
          local f = comparator ['eq']
 
-         if cond.transition == 'resumes' then
-            blist = {{state(x) == 'paused', ...(barra)...},
-               {f (t[1].lambda.resume, 1), 'start', bind.component, 'pinned'},
-               {f (t[1].lambda.resume, 1), 'set', 'lambda', 'prop',
-                'resume', nil, 'pinned'}}
+         --check the last table, what is r_r, a_a?
+         if act.actionType == 'resume' then
+            blist = {{true 'set', lambda, 'u', -1},
+               {function (m) return m[m1][state] == 'paused' end,
+                  'set', lambda, 'u', 1},
+               {'iter', function (m) return m[lambda].u end,
+                {true, 'set', m1, 'r_f', 1, 'pinned'}},
+               {'iter', function (m) return -1 * m[lambda].u end,
+                {true, 'set', m1, 'r_f', 0, 'pinned'}},
+               {function (m) return m[m1].r_f == 1 end,
+                  'start', m1, nil, nil, 'pinned'},
+               {function (m) return m[m1].r_f == 1 end,
+                  'set', m2, 'r_r', nil}}
 
-         elseif cond.transition == 'aborts' then
-            blist = {{state(x) ~= 'stopped', ...(barra)...},
-               {f (t[1].lambda.abort, 1), 'stop', bind.component, 'pinned'},
-               {f (t[1].lambda.abort, 1), 'set', 'lambda', 'prop', 'abort',
-                nil, 'pinned'}}
+         elseif act.actionType == 'abort' then
+            blist = {{true 'set', lambda, 'u', -1},
+               {function (m) return m[m1][state] ~= 'stopped' end,
+                  'set', lambda, 'u', 1},
+               {'iter', function (m) return m[lambda].u end,
+                {true, 'set', m1, 'a_f', 1, 'pinned'}},
+               {'iter', function (m) return -1 * m[lambda].u end,
+                {true, 'set', m1, 'a_f', 0, 'pinned'}},
+               {function (m) return m[m1].r_f == 1 end,
+                  'stop', m1, nil, nil, 'pinned'},
+               {function (m) return m[m1].r_f == 1 end,
+                  'set', m2, 'a_a', nil}}
 
-         elseif cond.transition == 'set' then
-            table.remove (llist)
-            blist = {{'set', bind.component, 'input'},
-               -- need to define this input and its value correctly
-               {f (t[1][bind.component][prop]['input'], 'value'),
-                act.actionType, bind.component}}
+         elseif act.actionType == 'start' && eventType == 'attribution' then
+            blist = {filter.convert_statement (statement, ncl),
+                     act.actionType, m1, input, value}
 
          else
             blist = {filter.convert_statement (statement, ncl),
-                     act.actionType, bind.component}
+                     act.actionType, m1}
          end
 
          table.insert (llist, blist)
