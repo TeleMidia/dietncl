@@ -57,7 +57,7 @@ local str = [[
         </compoundCondition>
         <compoundAction>
           <simpleAction role='set' eventType='attribution' actionType='start' value='0.5'/>
-          <simpleAction role='pause' eventType='presentation' transition='pauses'/>
+          <simpleAction role='pause' eventType='presentation' actionType='pauses'/>
         </compoundAction>
       </causalConnector>
       <causalConnector id='c2'>

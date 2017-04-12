@@ -174,9 +174,9 @@ function filter.apply (ncl)
 
    -- initialize media table with lambda, the whole application
    local medials = {lambda = {state = {},
-                   prop = {abort = {},
-                          resume = {}},
-                   time = {}}}
+                              prop = {abort = {},
+                                      resume = {}},
+                              time = {}}}
 
    -- add medias to the table
    for elt in ncl:gmatch ('media') do
@@ -218,14 +218,23 @@ function filter.apply (ncl)
       -- make a loop for the simple condition and simple action in case
       -- there is more than one of them
       local cond = conn:match ('simpleCondition')
-      local act = conn:match ('simpleAction')
+      local act = {}
+      for elt in conn:gmatch ('simpleAction') do
+         act [#act + 1] = elt
+      end
 
       -- Add transition table to llist
+
+      -- the role in simpleCondition is the on..., if the ncl document gets
+      -- long enough, there will be name clashes, how do i fix this?
+      -- maybe if instead of ncl:match i use link:match so it would only
+      -- look for the bind inside the link, where it wouldn't be name clashes
       local bind = ncl:match ('bind', 'role', cond.role)
 
       local blist = {}
       if cond.eventType == 'attribution' then
-         -- this is the set event, change below line
+         -- this is the set event, change the below line
+         -- is there onSet role for simpleCondition?
          blist = {'set', bind.component}
       else
          blist = {cond.transition:sub (1, -2), bind.component}
@@ -234,7 +243,8 @@ function filter.apply (ncl)
       table.insert (llist, blist)
 
       -- Add action table to llist
-      for bind in link:gmatch ('bind', 'role', act.role) do
+      for i = 1, #act do
+         local bind = link:match ('bind', 'role', act[i].role)
          local f = comparator ['eq']
          local m1 = bind.component
 
@@ -243,7 +253,7 @@ function filter.apply (ncl)
          -- triggers the condition onResume / onAbort, meaning that
          -- its not a flag that needs to be set, and the action is not
          -- supposed to be pinned
-         if act.actionType == 'resume' then
+         if act[i].actionType == 'resume' then
             blist = {{true, 'set', 'lambda', 'u', -1},
                {function (m) return m[m1][state] == 'paused' end,
                   'set', 'lambda', 'u', 1},
@@ -256,7 +266,7 @@ function filter.apply (ncl)
                {function (m) return m[m1].r_f == 1 end,
                   'set', m1, 'r_r', nil}}
 
-         elseif act.actionType == 'abort' then
+         elseif act[i].actionType == 'abort' then
             blist = {{true, 'set', 'lambda', 'u', -1},
                {function (m) return m[m1][state] ~= 'stopped' end,
                   'set', 'lambda', 'u', 1},
@@ -269,14 +279,14 @@ function filter.apply (ncl)
                {function (m) return m[m1].r_f == 1 end,
                   'set', m1, 'a_a', nil}}
 
-         elseif act.actionType == 'start' and
-         act.eventType == 'attribution' then
+         elseif act[i].actionType == 'start' and
+         act[i].eventType == 'attribution' then
             blist = {filter.convert_statement (statement, ncl), 'set', m1,
-                     bind.interface, act.value}
+                     bind.interface, act[i].value}
 
          else
             blist = {filter.convert_statement (statement, ncl),
-                     act.actionType, m1}
+                     act[i].actionType, m1}
          end
 
          table.insert (llist, blist)
