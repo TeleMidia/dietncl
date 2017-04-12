@@ -57,7 +57,7 @@ local str = [[
         </compoundCondition>
         <compoundAction>
           <simpleAction role='set' eventType='attribution' actionType='start' value='0.5'/>
-          <simpleAction role='pause' eventType='presentation' actionType='pauses'/>
+          <simpleAction role='pause' eventType='presentation' actionType='pause'/>
         </compoundAction>
       </causalConnector>
       <causalConnector id='c2'>
@@ -116,4 +116,3 @@ assert (t)
 
 print (t)
 printt (t)
-print (t[3][3][1])

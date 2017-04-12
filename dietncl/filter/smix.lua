@@ -32,22 +32,6 @@ _ENV = nil
 -- @module dietncl.filter.smix
 ---
 
--- table that signifies the transitions between presentation event states,
--- its actions and the corresponding triggered condition.
-local transitiontable = {
-   ['onBegin'] = {'start'},
-   ['onPause'] = {'pause'},
-   ['onResume'] = {'resume'},
-   ['onEnd'] = {'stop'},
-   ['onAbort'] = {'abort'},
-
-   ['start'] = {true, 'start'},
-   ['pause'] = {true, 'pause'},
-   ['resume'] = {true, 'resume'},
-   ['stop'] = {true, 'stop'},
-   ['abort'] = {true, 'abort'}
-}
--- set has two more parameters, the media, its property and its value, that can also be a function
 
 -- function that receives a bind and a xconnector as parameters and returns
 -- the actionType given by it
@@ -77,6 +61,7 @@ local comparator = {
    ['gte'] = function (x, y) return x >= y end,
    ['lte'] = function (x, y) return x <= y end
 }
+
 
 -- function to test compoundStatement operators (and, or)
 local function test_compoundStatement (elt, childfunc)
@@ -120,11 +105,6 @@ local function test_compoundStatement (elt, childfunc)
    end
 end
 
--- this filter needs to also get as a parameter the transition, because for
--- the set and seek actions, the function returned is different
-
--- remember to delete the transition parameter, this part is not to be done
--- in this function, but rather in the filter.apply
 
 -- recursive function that returns the function from assessment statement
 function filter.convert_statement (elt, ncl)
@@ -215,8 +195,6 @@ function filter.apply (ncl)
          statement = conn:match ('assessmentStatement')
       end
 
-      -- make a loop for the simple condition and simple action in case
-      -- there is more than one of them
       local cond = conn:match ('simpleCondition')
       local act = {}
       for elt in conn:gmatch ('simpleAction') do
@@ -224,18 +202,15 @@ function filter.apply (ncl)
       end
 
       -- Add transition table to llist
-
-      -- the role in simpleCondition is the on..., if the ncl document gets
-      -- long enough, there will be name clashes, how do i fix this?
-      -- maybe if instead of ncl:match i use link:match so it would only
-      -- look for the bind inside the link, where it wouldn't be name clashes
-      local bind = ncl:match ('bind', 'role', cond.role)
+      --- check if there are role clashes inside of a link
+      local bind = link:match ('bind', 'role', cond.role)
 
       local blist = {}
       if cond.eventType == 'attribution' then
-         -- this is the set event, change the below line
-         -- is there onSet role for simpleCondition?
-         blist = {'set', bind.component}
+         local input = link:match ('bind', 'role', cond.role)
+         --- this is the set event, change the below line
+         --- is there onSet role for simpleCondition?
+         blist = {'set', bind.component, input.interface}
       else
          blist = {cond.transition:sub (1, -2), bind.component}
       end
@@ -248,11 +223,11 @@ function filter.apply (ncl)
          local f = comparator ['eq']
          local m1 = bind.component
 
-         -- check the last table, what is r_r, a_a?
-         -- the line where they are was supposed to be the one that
-         -- triggers the condition onResume / onAbort, meaning that
-         -- its not a flag that needs to be set, and the action is not
-         -- supposed to be pinned
+         --- check the last table, what is r_r, a_a?
+         --- the line where they are was supposed to be the one that
+         --- triggers the condition onResume / onAbort, meaning that
+         --- its not a flag that needs to be set, and the action is not
+         --- supposed to be pinned
          if act[i].actionType == 'resume' then
             blist = {{true, 'set', 'lambda', 'u', -1},
                {function (m) return m[m1][state] == 'paused' end,
