@@ -41,7 +41,8 @@ end
 
 
 
--- No media nor context: do nothing.
+-- NCL program that has the following smix actions:
+-- start, set, pause, resume and abort (no seek or stop)
 
 local str = [[
 <ncl id='x'>

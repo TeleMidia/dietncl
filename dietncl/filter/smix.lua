@@ -33,7 +33,7 @@ _ENV = nil
 ---
 
 
--- function that receives a bind and a xconnector as parameters and returns
+-- Function that receives a bind and a xconnector as parameters and returns
 -- the actionType given by it
 local function get_action (ncl, bind, xconn)
    local cconn = ncl:match ('causalConnector', 'id', xconn)
@@ -51,8 +51,8 @@ local function get_action (ncl, bind, xconn)
 end
 
 
--- table to assess the type of test that needs to be made within the function
--- created from assessmentStatement
+-- Table to assess the type of test that needs to be made within the
+-- function created from assessmentStatement
 local comparator = {
    ['eq'] = function (x, y) return x == y end,
    ['ne'] = function (x, y) return x ~= y end,
@@ -63,7 +63,7 @@ local comparator = {
 }
 
 
--- function to test compoundStatement operators (and, or)
+-- Function to test compoundStatement operators (and, or)
 local function test_compoundStatement (elt, childfunc)
 
    if elt.operator == 'and' then
@@ -106,7 +106,7 @@ local function test_compoundStatement (elt, childfunc)
 end
 
 
--- recursive function that returns the function from assessment statement
+-- Recursive function that returns the assessmentStatement function
 function filter.convert_statement (elt, ncl)
 
    if elt:tag () == 'assessmentStatement' then
@@ -147,7 +147,13 @@ function filter.convert_statement (elt, ncl)
 end
 
 
--- filter that creates the table representing the conversion of a ncl
+--- remember to reset media properties when a stop action is executed,
+--- to be done after clarification on such properties
+
+--- also, the seek transition is yet to be implemented. It appears after
+--- a set to the time property of a given media.
+
+-- Filter that creates the table representing the conversion of a ncl
 -- program to smix
 function filter.apply (ncl)
    local t = {}
@@ -201,8 +207,7 @@ function filter.apply (ncl)
          act [#act + 1] = elt
       end
 
-      -- Add transition table to llist
-      --- check if there are role clashes inside of a link
+      -- add transition table to llist
       local bind = link:match ('bind', 'role', cond.role)
 
       local blist = {}
@@ -217,7 +222,7 @@ function filter.apply (ncl)
 
       table.insert (llist, blist)
 
-      -- Add action table to llist
+      -- add action table to llist
       for i = 1, #act do
          local bind = link:match ('bind', 'role', act[i].role)
          local f = comparator ['eq']
