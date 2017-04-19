@@ -172,7 +172,7 @@ function filter.apply (ncl)
 
       local prop = elt:match ('property')
       if prop then
-         medials [elt.id] = {prop = {[prop.name] = prop.value}}
+         medials [elt.id].prop[prop.name] = prop.value
       end
    end
 
