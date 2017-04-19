@@ -27,6 +27,10 @@ local syntax = require ('NCLtable')
 _ENV = nil
 
 ---
+-- Re do this filter by making it a pile automaton
+---
+
+---
 -- Check NCL document to test if it complies with the NCL handbook.
 --
 -- @module dietncl.filter.check_ncl
@@ -52,7 +56,7 @@ local function sequence (ncl, children) -- children is a list
       end
 
       if ncl[index] == nil then
-         return 1 -- no problems
+         return 1 -- no problem
       end
    end
 
@@ -101,7 +105,6 @@ local function one_or_more (ncl, children)
    return 1
 end
 
--- -- is this function really needed?
 -- local function zero_or_more ()
 --    local index
 
