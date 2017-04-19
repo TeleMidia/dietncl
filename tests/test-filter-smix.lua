@@ -21,24 +21,16 @@ local print = print
 local type = type
 local table = table
 
+local penlight = require ('pl.pretty')
 local dietncl = require ('dietncl')
 local xml = require ('dietncl.xmlsugar')
 local filter = require ('dietncl.filter.smix')
 
 _ENV = nil
 
-local function printt (ncl)
-   for k, elt in pairs (ncl) do
-      local str = '['..k..']'
-      if type (elt) == 'table' then
-         print ('t['..k..']')
-         printt (elt)
-      else
-         print (elt)
-      end
-   end
-end
-
+-- The penlight is a library used for table printing, just run the below
+-- code before this file so it doesnt return errors:
+-- # luarocks install penlight
 
 
 -- NCL program that has the following smix actions:
@@ -116,4 +108,4 @@ local t = filter.apply (ncl)
 assert (t)
 
 print (t)
-printt (t)
+penlight.dump (t)
