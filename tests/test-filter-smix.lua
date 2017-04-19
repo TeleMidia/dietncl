@@ -109,3 +109,6 @@ assert (t)
 
 print (t)
 penlight.dump (t)
+
+--- add a table that represents the above NCL program so that it is possible
+--- to check if the output is correct or not, just by comparing the two

@@ -153,6 +153,8 @@ end
 --- also, the seek transition is yet to be implemented. It appears after
 --- a set to the time property of a given media.
 
+--- get an example of the selection property so i can implement it correctly
+
 -- Filter that creates the table representing the conversion of a ncl
 -- program to smix
 function filter.apply (ncl)
@@ -213,9 +215,9 @@ function filter.apply (ncl)
       local blist = {}
       if cond.eventType == 'attribution' then
          local input = link:match ('bind', 'role', cond.role)
-         --- this is the set event, change the below line
-         --- is there onSet role for simpleCondition?
          blist = {'set', bind.component, input.interface}
+      elseif cond.eventType == 'selection' then
+         blist = {'select', 'what is gonna be selected'}
       else
          blist = {cond.transition:sub (1, -2), bind.component}
       end
@@ -234,6 +236,8 @@ function filter.apply (ncl)
          --- its not a flag that needs to be set, and the action is not
          --- supposed to be pinned
          if act[i].actionType == 'resume' then
+            t[1][m1].state = 'occurring'
+
             blist = {{true, 'set', 'lambda', 'u', -1},
                {function (m) return m[m1][state] == 'paused' end,
                   'set', 'lambda', 'u', 1},
@@ -247,6 +251,9 @@ function filter.apply (ncl)
                   'set', m1, 'r_r', nil}}
 
          elseif act[i].actionType == 'abort' then
+            t[1][m1].time = nil
+            t[1][m1].state = 'stopped'
+
             blist = {{true, 'set', 'lambda', 'u', -1},
                {function (m) return m[m1][state] ~= 'stopped' end,
                   'set', 'lambda', 'u', 1},
@@ -259,10 +266,22 @@ function filter.apply (ncl)
                {function (m) return m[m1].r_f == 1 end,
                   'set', m1, 'a_a', nil}}
 
-         elseif act[i].actionType == 'start' and
-         act[i].eventType == 'attribution' then
+         elseif act[i].actionType == 'stop' then
+            --- do i need to reset the property table as well?
+            --- repeat this process for start and pause
+            t[1][m1].time = nil
+            t[1][m1].state = 'stopped'
+
+            blist = {filter.convert_statement (statement, ncl),
+                     act[i].actionType, m1}
+
+         elseif act[i].eventType == 'attribution' then
             blist = {filter.convert_statement (statement, ncl), 'set', m1,
                      bind.interface, act[i].value}
+
+         elseif act[i].eventType == 'selection' then
+            blist = {filter.convert_statement (statement, ncl), 'select',
+                     'what is gonna be selected'}
 
          else
             blist = {filter.convert_statement (statement, ncl),
