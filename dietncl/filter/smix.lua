@@ -269,7 +269,7 @@ function filter.apply (ncl)
          elseif act[i].actionType == 'stop' then
             --- do i need to reset the property table as well?
             --- repeat this process for start and pause
-            t[1][m1].time = nil
+            t[1][m1].time = '0'
             t[1][m1].state = 'stopped'
 
             blist = {filter.convert_statement (statement, ncl),
