@@ -22,6 +22,7 @@ local ipairs = ipairs
 
 local xml = require ('dietncl.xmlsugar')
 local aux = require ('dietncl.nclaux')
+
 _ENV = nil
 
 ---
@@ -46,10 +47,10 @@ local function insert_tautological_statement (ncl, conn, parent)
 
     stat = xml.new ('assessmentStatement')
     stat.comparator = 'eq'
-    attr[1] = xml.new ('attributeStatement')
+    attr[1] = xml.new ('attributeAssessment')
     attr[1].role = aux.gen_id (ncl)
     attr[1].eventType = 'attribution'
-    attr[2] = xml.new ('attributeStatement')
+    attr[2] = xml.new ('attributeAssessment')
     attr[2].role = aux.gen_id(ncl)
     attr[2].eventType = 'attribution'
     stat:insert (attr[1])
@@ -88,7 +89,7 @@ end
 
 local function make_ternary_tree (ncl, conn, parent)
    local child
-   local exclude = {'compoundStatement', 'assessmentStatement', 'simpleCondition', 'simpleAction', 'attributeStatement',
+   local exclude = {'compoundStatement', 'assessmentStatement', 'simpleCondition', 'simpleAction', 'attributeAssessment',
                     compoundCondition = 'simpleCondition',
                     compoundAction = 'simpleAction'}
 

@@ -17,9 +17,12 @@ You should have received a copy of the GNU General Public License along
 with DietNCL.  If not, see <http://www.gnu.org/licenses/>.  ]]--
 
 local filter = {}
+
 local xml = require ('dietncl.xmlsugar')
 local aux = require ('dietncl.nclaux')
+
 local ipairs = ipairs
+
 _ENV = nil
 
 ---

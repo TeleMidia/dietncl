@@ -23,6 +23,7 @@ local pairs = pairs
 
 local xml = require ('dietncl.xmlsugar')
 local aux = require ('dietncl.nclaux')
+
 _ENV = nil
 
 ---
@@ -58,11 +59,6 @@ local alias_map = {
    start               = {'presentation'},
    stop                = {'presentation'},
 }
-do
-   for alias,t in pairs (alias_map) do
-      t[2] = alias
-   end
-end
 
 ---
 -- The PRENORM1-5 filters simplify links and connectors from a given NCL
@@ -82,7 +78,7 @@ function filter.apply (ncl)
             if x.role:match ('^on.*') then
                x.transition = alias_map[x.role][2]
             else
-               x.actionType = alias_map[x.role][2]
+               x.actionType = x.role
             end
          end
       end
