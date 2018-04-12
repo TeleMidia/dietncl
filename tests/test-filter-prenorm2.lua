@@ -30,8 +30,8 @@ local ncl, errmsg = dietncl.parsestring ([[
  <head>
   <connectorBase>
    <causalConnector id='c'>
-    <connectorParam name='p1' type='x'/>
-    <connectorParam name='p2' type='y'/>
+    <connectorParam name='p1'/>
+    <connectorParam name='p2'/>
     <simpleCondition role='onBegin' delay='$p1'/>
     <simpleAction role='start' delay='$p2'/>
    </causalConnector>
@@ -41,8 +41,8 @@ local ncl, errmsg = dietncl.parsestring ([[
   <media id='m'/>
   <link xconnector='c'>
    <linkParam name='p1' value='5s'/>
-   <bind role='onBegin'/>
-   <bind role='start'>
+   <bind role='onBegin' component='m'/>
+   <bind role='start' component='m'>
     <bindParam name='p2' value='10s'/>
    </bind>
   </link>
@@ -63,8 +63,8 @@ assert (ncl:equal (dietncl.parsestring ([[
  <body>
   <media id='m'/>
   <link xconnector='c'>
-   <bind role='onBegin'/>
-   <bind role='start'/>
+   <bind role='onBegin' component='m'/>
+   <bind role='start' component='m'/>
   </link>
  </body>
 </ncl>]])))
@@ -201,4 +201,3 @@ assert (ncl:equal (dietncl.parsestring ([[
   </link>
  </body>
 </ncl>]])))
-

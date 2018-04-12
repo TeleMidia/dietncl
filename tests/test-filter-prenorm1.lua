@@ -76,10 +76,10 @@ local ncl = dietncl.parsestring ([[
    </causalConnector>
    <causalConnector id='c2'>
     <compoundCondition operator='or'>
-     <compoundCondition role='onEnd'/>
-     <compoundCondition role='onSelection'/>
+     <simpleCondition role='onEnd'/>
+     <simpleCondition role='onSelection'/>
     </compoundCondition>
-    <simpleCondition role='pause'/>
+    <simpleAction role='pause'/>
    </causalConnector>
    <causalConnector id='c3'>
     <simpleCondition role='onAbort'/>

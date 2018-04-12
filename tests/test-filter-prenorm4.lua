@@ -22,13 +22,14 @@ local filter = require ('dietncl.filter.prenorm4')
 
 _ENV = nil
 
+
 local str = [[
 <ncl>
  <head>
   <connectorBase>
    <causalConnector id='c'>
-    <simpleCondition role='onBegin' transition='onBegin' eventType='presentation'/>
-    <simpleAction role='start' actionType='start' eventType='presentation'/>
+    <simpleCondition role='onBegin'/>
+    <simpleAction role='start'/>
    </causalConnector>
   </connectorBase>
  </head>
@@ -43,7 +44,24 @@ local str = [[
 
 local ncl = dietncl.parsestring (str)
 assert (filter.apply (ncl))
-assert (ncl:equal (dietncl.parsestring (str)))
+assert (ncl:equal (dietncl.parsestring ([[
+<ncl>
+ <head>
+  <connectorBase>
+   <causalConnector id='c'>
+    <simpleCondition role='onBegin' eventType='presentation' transition='starts'/>
+    <simpleAction role='start' eventType='presentation' actionType='start'/>
+   </causalConnector>
+  </connectorBase>
+ </head>
+ <body>
+  <media id='m'/>
+  <link xconnector='c'>
+   <bind role='onBegin' component='m'/>
+   <bind role='start' component='m'/>
+  </link>
+ </body>
+</ncl>]])))
 
 local ncl = dietncl.parsestring ([[
 <ncl>
@@ -81,14 +99,14 @@ assert (ncl:equal (dietncl.parsestring ([[
   <connectorBase>
    <causalConnector id='c'>
     <compoundCondition operator='and'>
-     <simpleCondition eventType='presentation' transition='onBegin'
+     <simpleCondition eventType='presentation' transition='starts'
                       role='onBegin'/>
      <simpleCondition role='___0' eventType='presentation'
-                      transition='onBegin'/>
+                      transition='starts'/>
      <simpleCondition role='___2' eventType='presentation'
-                      transition='onBegin'/>
+                      transition='starts'/>
      <simpleCondition role='___4' eventType='presentation'
-                      transition='onBegin'/>
+                      transition='starts'/>
     </compoundCondition>
     <compoundAction operator='par'>
      <simpleAction eventType='presentation' role='start'
