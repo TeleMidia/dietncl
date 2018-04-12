@@ -215,7 +215,7 @@ function filter.apply (ncl)
                                             goto _next
                                         end
 
-                                        for simple in new_connector:gmatch ('attributeStatement', 'role', bind.role) do
+                                        for simple in new_connector:gmatch ('attributeAssessment', 'role', bind.role) do
                                             goto _next
                                         end
 

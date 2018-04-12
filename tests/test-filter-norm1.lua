@@ -33,16 +33,16 @@ local str = assert (dietncl.parsestring ([[
           <simpleCondition role="onBegin" />
           <compoundStatement operator="and">
             <assessmentStatement comparator="eq">
-              <attributeStatement role="__7" eventType="attribution" />
-              <attributeStatement role="__8" eventType="attribution" />
+              <attributeAssessment role="__7" eventType="attribution" />
+              <attributeAssessment role="__8" eventType="attribution" />
             </assessmentStatement>
             <assessmentStatement comparator="eq">
-              <attributeStatement role="__5" eventType="attribution" />
-              <attributeStatement role="__6" eventType="attribution" />
+              <attributeAssessment role="__5" eventType="attribution" />
+              <attributeAssessment role="__6" eventType="attribution" />
             </assessmentStatement>
             <assessmentStatement comparator="eq">
-              <attributeStatement role="__0" eventType="attribution" />
-              <attributeStatement role="__1" eventType="attribution" />
+              <attributeAssessment role="__0" eventType="attribution" />
+              <attributeAssessment role="__1" eventType="attribution" />
             </assessmentStatement>
           </compoundStatement>
         </compoundCondition>
@@ -56,16 +56,16 @@ local str = assert (dietncl.parsestring ([[
           <simpleCondition role="onEnd" />
           <compoundStatement operator="and">
             <assessmentStatement comparator="eq">
-              <attributeStatement role="__7" eventType="attribution" />
-              <attributeStatement role="__8" eventType="attribution" />
+              <attributeAssessment role="__7" eventType="attribution" />
+              <attributeAssessment role="__8" eventType="attribution" />
             </assessmentStatement>
             <assessmentStatement comparator="eq">
-              <attributeStatement role="__5" eventType="attribution" />
-              <attributeStatement role="__6" eventType="attribution" />
+              <attributeAssessment role="__5" eventType="attribution" />
+              <attributeAssessment role="__6" eventType="attribution" />
             </assessmentStatement>
             <assessmentStatement comparator="eq">
-              <attributeStatement role="__3" eventType="attribution" />
-              <attributeStatement role="__4" eventType="attribution" />
+              <attributeAssessment role="__3" eventType="attribution" />
+              <attributeAssessment role="__4" eventType="attribution" />
             </assessmentStatement>
           </compoundStatement>
         </compoundCondition>
@@ -128,20 +128,20 @@ local ncl = dietncl.parsestring ([[
           <compoundCondition operator="and">
             <simpleCondition role="onBegin" />
             <assessmentStatement comparator="eq">
-              <attributeStatement role="__0" eventType="attribution" />
-              <attributeStatement role="__1" eventType="attribution" />
+              <attributeAssessment role="__0" eventType="attribution" />
+              <attributeAssessment role="__1" eventType="attribution" />
             </assessmentStatement>
           </compoundCondition>
           <compoundCondition operator="and">
             <simpleCondition role="onEnd" />
             <assessmentStatement comparator="eq">
-              <attributeStatement role="__3" eventType="attribution" />
-              <attributeStatement role="__4" eventType="attribution" />
+              <attributeAssessment role="__3" eventType="attribution" />
+              <attributeAssessment role="__4" eventType="attribution" />
             </assessmentStatement>
           </compoundCondition>
           <assessmentStatement comparator="eq">
-            <attributeStatement role="__5" eventType="attribution" />
-            <attributeStatement role="__6" eventType="attribution" />
+            <attributeAssessment role="__5" eventType="attribution" />
+            <attributeAssessment role="__6" eventType="attribution" />
           </assessmentStatement>
         </compoundCondition>
         <compoundAction operator="and">
@@ -149,8 +149,8 @@ local ncl = dietncl.parsestring ([[
           <simpleAction role="pause" />
         </compoundAction>
         <assessmentStatement comparator="eq">
-          <attributeStatement role="__7" eventType="attribution" />
-          <attributeStatement role="__8" eventType="attribution" />
+          <attributeAssessment role="__7" eventType="attribution" />
+          <attributeAssessment role="__8" eventType="attribution" />
         </assessmentStatement>
       </causalConnector>
     </connectorBase>
@@ -184,16 +184,16 @@ local str = dietncl.parsestring ([[
           <simpleCondition role="onBegin" />
           <compoundStatement operator="and">
             <assessmentStatement comparator="eq">
-              <attributeStatement role="__0" eventType="attribution" />
-              <attributeStatement role="__1" eventType="attribution" />
+              <attributeAssessment role="__0" eventType="attribution" />
+              <attributeAssessment role="__1" eventType="attribution" />
             </assessmentStatement>
             <assessmentStatement comparator="eq">
-              <attributeStatement role="__7" eventType="attribution" />
-              <attributeStatement role="__8" eventType="attribution" />
+              <attributeAssessment role="__7" eventType="attribution" />
+              <attributeAssessment role="__8" eventType="attribution" />
             </assessmentStatement>
             <assessmentStatement comparator="eq">
-              <attributeStatement role="__5" eventType="attribution" />
-              <attributeStatement role="__6" eventType="attribution" />
+              <attributeAssessment role="__5" eventType="attribution" />
+              <attributeAssessment role="__6" eventType="attribution" />
             </assessmentStatement>
           </compoundStatement>
         </compoundCondition>
@@ -207,16 +207,16 @@ local str = dietncl.parsestring ([[
           <simpleCondition role="onEnd" />
           <compoundStatement operator="and">
             <assessmentStatement comparator="eq">
-              <attributeStatement role="__3" eventType="attribution" />
-              <attributeStatement role="__4" eventType="attribution" />
+              <attributeAssessment role="__3" eventType="attribution" />
+              <attributeAssessment role="__4" eventType="attribution" />
             </assessmentStatement>
             <assessmentStatement comparator="eq">
-              <attributeStatement role="__7" eventType="attribution" />
-              <attributeStatement role="__8" eventType="attribution" />
+              <attributeAssessment role="__7" eventType="attribution" />
+              <attributeAssessment role="__8" eventType="attribution" />
             </assessmentStatement>
             <assessmentStatement comparator="eq">
-              <attributeStatement role="__5" eventType="attribution" />
-              <attributeStatement role="__6" eventType="attribution" />
+              <attributeAssessment role="__5" eventType="attribution" />
+              <attributeAssessment role="__6" eventType="attribution" />
             </assessmentStatement>
           </compoundStatement>
         </compoundCondition>
@@ -269,20 +269,20 @@ local ncl = dietncl.parsestring([[
           <compoundCondition operator="and">
             <simpleCondition role="onBegin" />
             <assessmentStatement comparator="eq">
-              <attributeStatement role="__0" eventType="attribution" />
-              <attributeStatement role="__1" eventType="attribution" />
+              <attributeAssessment role="__0" eventType="attribution" />
+              <attributeAssessment role="__1" eventType="attribution" />
             </assessmentStatement>
           </compoundCondition>
           <compoundCondition operator="and">
             <simpleCondition role="onEnd" />
             <assessmentStatement comparator="eq">
-              <attributeStatement role="__3" eventType="attribution" />
-              <attributeStatement role="__4" eventType="attribution" />
+              <attributeAssessment role="__3" eventType="attribution" />
+              <attributeAssessment role="__4" eventType="attribution" />
             </assessmentStatement>
           </compoundCondition>
           <assessmentStatement comparator="eq">
-            <attributeStatement role="__5" eventType="attribution" />
-            <attributeStatement role="__6" eventType="attribution" />
+            <attributeAssessment role="__5" eventType="attribution" />
+            <attributeAssessment role="__6" eventType="attribution" />
           </assessmentStatement>
         </compoundCondition>
         <compoundAction operator="and">
@@ -295,20 +295,20 @@ local ncl = dietncl.parsestring([[
           <compoundCondition operator="and">
             <simpleCondition role="onPause" />
             <assessmentStatement comparator="eq">
-              <attributeStatement role="__7" eventType="attribution" />
-              <attributeStatement role="__8" eventType="attribution" />
+              <attributeAssessment role="__7" eventType="attribution" />
+              <attributeAssessment role="__8" eventType="attribution" />
             </assessmentStatement>
           </compoundCondition>
           <compoundCondition operator="and">
             <simpleCondition role="onAbort" />
             <assessmentStatement comparator="eq">
-              <attributeStatement role="__9" eventType="attribution" />
-              <attributeStatement role="__10" eventType="attribution" />
+              <attributeAssessment role="__9" eventType="attribution" />
+              <attributeAssessment role="__10" eventType="attribution" />
             </assessmentStatement>
           </compoundCondition>
           <assessmentStatement comparator="eq">
-            <attributeStatement role="__11" eventType="attribution" />
-            <attributeStatement role="__12" eventType="attribution" />
+            <attributeAssessment role="__11" eventType="attribution" />
+            <attributeAssessment role="__12" eventType="attribution" />
           </assessmentStatement>
         </compoundCondition>
         <compoundAction operator="and">
@@ -357,12 +357,12 @@ local str = dietncl.parsestring ([[
           <simpleCondition role="onBegin" />
           <compoundStatement operator="and">
             <assessmentStatement comparator="eq">
-              <attributeStatement role="__0" eventType="attribution" />
-              <attributeStatement role="__1" eventType="attribution" />
+              <attributeAssessment role="__0" eventType="attribution" />
+              <attributeAssessment role="__1" eventType="attribution" />
             </assessmentStatement>
             <assessmentStatement comparator="eq">
-              <attributeStatement role="__5" eventType="attribution" />
-              <attributeStatement role="__6" eventType="attribution" />
+              <attributeAssessment role="__5" eventType="attribution" />
+              <attributeAssessment role="__6" eventType="attribution" />
             </assessmentStatement>
           </compoundStatement>
         </compoundCondition>
@@ -376,12 +376,12 @@ local str = dietncl.parsestring ([[
           <simpleCondition role="onEnd" />
           <compoundStatement operator="and">
             <assessmentStatement comparator="eq">
-              <attributeStatement role="__3" eventType="attribution" />
-              <attributeStatement role="__4" eventType="attribution" />
+              <attributeAssessment role="__3" eventType="attribution" />
+              <attributeAssessment role="__4" eventType="attribution" />
             </assessmentStatement>
             <assessmentStatement comparator="eq">
-              <attributeStatement role="__5" eventType="attribution" />
-              <attributeStatement role="__6" eventType="attribution" />
+              <attributeAssessment role="__5" eventType="attribution" />
+              <attributeAssessment role="__6" eventType="attribution" />
             </assessmentStatement>
           </compoundStatement>
         </compoundCondition>
@@ -395,12 +395,12 @@ local str = dietncl.parsestring ([[
           <simpleCondition role="onPause" />
           <compoundStatement operator="and">
             <assessmentStatement comparator="eq">
-              <attributeStatement role="__7" eventType="attribution" />
-              <attributeStatement role="__8" eventType="attribution" />
+              <attributeAssessment role="__7" eventType="attribution" />
+              <attributeAssessment role="__8" eventType="attribution" />
             </assessmentStatement>
             <assessmentStatement comparator="eq">
-              <attributeStatement role="__11" eventType="attribution" />
-              <attributeStatement role="__12" eventType="attribution" />
+              <attributeAssessment role="__11" eventType="attribution" />
+              <attributeAssessment role="__12" eventType="attribution" />
             </assessmentStatement>
           </compoundStatement>
         </compoundCondition>
@@ -414,12 +414,12 @@ local str = dietncl.parsestring ([[
           <simpleCondition role="onAbort" />
           <compoundStatement operator="and">
             <assessmentStatement comparator="eq">
-              <attributeStatement role="__9" eventType="attribution" />
-              <attributeStatement role="__10" eventType="attribution" />
+              <attributeAssessment role="__9" eventType="attribution" />
+              <attributeAssessment role="__10" eventType="attribution" />
             </assessmentStatement>
             <assessmentStatement comparator="eq">
-              <attributeStatement role="__11" eventType="attribution" />
-              <attributeStatement role="__12" eventType="attribution" />
+              <attributeAssessment role="__11" eventType="attribution" />
+              <attributeAssessment role="__12" eventType="attribution" />
             </assessmentStatement>
           </compoundStatement>
         </compoundCondition>
@@ -487,32 +487,32 @@ local ncl = dietncl.parsestring([[
             <compoundCondition operator="and">
               <simpleCondition role="onBegin" />
               <assessmentStatement comparator="eq">
-                <attributeStatement role="__0" eventType="attribution" />
-                <attributeStatement role="__1" eventType="attribution" />
+                <attributeAssessment role="__0" eventType="attribution" />
+                <attributeAssessment role="__1" eventType="attribution" />
               </assessmentStatement>
             </compoundCondition>
             <compoundCondition operator="and">
               <simpleCondition role="onResume" />
               <assessmentStatement comparator="eq">
-                <attributeStatement role="__13" eventType="attribution" />
-                <attributeStatement role="__14" eventType="attribution" />
+                <attributeAssessment role="__13" eventType="attribution" />
+                <attributeAssessment role="__14" eventType="attribution" />
               </assessmentStatement>
             </compoundCondition>
             <assessmentStatement comparator="eq">
-              <attributeStatement role="__15" eventType="attribution" />
-              <attributeStatement role="__16" eventType="attribution" />
+              <attributeAssessment role="__15" eventType="attribution" />
+              <attributeAssessment role="__16" eventType="attribution" />
             </assessmentStatement>
           </compoundCondition>
           <compoundCondition operator="and">
             <simpleCondition role="onEnd" />
             <assessmentStatement comparator="eq">
-              <attributeStatement role="__3" eventType="attribution" />
-              <attributeStatement role="__4" eventType="attribution" />
+              <attributeAssessment role="__3" eventType="attribution" />
+              <attributeAssessment role="__4" eventType="attribution" />
             </assessmentStatement>
           </compoundCondition>
           <assessmentStatement comparator="eq">
-            <attributeStatement role="__5" eventType="attribution" />
-            <attributeStatement role="__6" eventType="attribution" />
+            <attributeAssessment role="__5" eventType="attribution" />
+            <attributeAssessment role="__6" eventType="attribution" />
           </assessmentStatement>
         </compoundCondition>
         <compoundAction operator="and">
@@ -525,20 +525,20 @@ local ncl = dietncl.parsestring([[
           <compoundCondition operator="and">
             <simpleCondition role="onPause" />
             <assessmentStatement comparator="eq">
-              <attributeStatement role="__7" eventType="attribution" />
-              <attributeStatement role="__8" eventType="attribution" />
+              <attributeAssessment role="__7" eventType="attribution" />
+              <attributeAssessment role="__8" eventType="attribution" />
             </assessmentStatement>
           </compoundCondition>
           <compoundCondition operator="and">
             <simpleCondition role="onAbort" />
             <assessmentStatement comparator="eq">
-              <attributeStatement role="__9" eventType="attribution" />
-              <attributeStatement role="__10" eventType="attribution" />
+              <attributeAssessment role="__9" eventType="attribution" />
+              <attributeAssessment role="__10" eventType="attribution" />
             </assessmentStatement>
           </compoundCondition>
           <assessmentStatement comparator="eq">
-            <attributeStatement role="__11" eventType="attribution" />
-            <attributeStatement role="__12" eventType="attribution" />
+            <attributeAssessment role="__11" eventType="attribution" />
+            <attributeAssessment role="__12" eventType="attribution" />
           </assessmentStatement>
         </compoundCondition>
         <compoundAction operator="and">
@@ -597,12 +597,12 @@ local str = dietncl.parsestring( [[
           <simpleCondition role="onEnd" />
           <compoundStatement operator="and">
             <assessmentStatement comparator="eq">
-              <attributeStatement role="__3" eventType="attribution" />
-              <attributeStatement role="__4" eventType="attribution" />
+              <attributeAssessment role="__3" eventType="attribution" />
+              <attributeAssessment role="__4" eventType="attribution" />
             </assessmentStatement>
             <assessmentStatement comparator="eq">
-              <attributeStatement role="__5" eventType="attribution" />
-              <attributeStatement role="__6" eventType="attribution" />
+              <attributeAssessment role="__5" eventType="attribution" />
+              <attributeAssessment role="__6" eventType="attribution" />
             </assessmentStatement>
           </compoundStatement>
         </compoundCondition>
@@ -616,12 +616,12 @@ local str = dietncl.parsestring( [[
           <simpleCondition role="onPause" />
           <compoundStatement operator="and">
             <assessmentStatement comparator="eq">
-              <attributeStatement role="__7" eventType="attribution" />
-              <attributeStatement role="__8" eventType="attribution" />
+              <attributeAssessment role="__7" eventType="attribution" />
+              <attributeAssessment role="__8" eventType="attribution" />
             </assessmentStatement>
             <assessmentStatement comparator="eq">
-              <attributeStatement role="__11" eventType="attribution" />
-              <attributeStatement role="__12" eventType="attribution" />
+              <attributeAssessment role="__11" eventType="attribution" />
+              <attributeAssessment role="__12" eventType="attribution" />
             </assessmentStatement>
           </compoundStatement>
         </compoundCondition>
@@ -635,12 +635,12 @@ local str = dietncl.parsestring( [[
           <simpleCondition role="onAbort" />
           <compoundStatement operator="and">
             <assessmentStatement comparator="eq">
-              <attributeStatement role="__9" eventType="attribution" />
-              <attributeStatement role="__10" eventType="attribution" />
+              <attributeAssessment role="__9" eventType="attribution" />
+              <attributeAssessment role="__10" eventType="attribution" />
             </assessmentStatement>
             <assessmentStatement comparator="eq">
-              <attributeStatement role="__11" eventType="attribution" />
-              <attributeStatement role="__12" eventType="attribution" />
+              <attributeAssessment role="__11" eventType="attribution" />
+              <attributeAssessment role="__12" eventType="attribution" />
             </assessmentStatement>
           </compoundStatement>
         </compoundCondition>
@@ -654,16 +654,16 @@ local str = dietncl.parsestring( [[
           <simpleCondition role="onBegin" />
           <compoundStatement operator="and">
             <assessmentStatement comparator="eq">
-              <attributeStatement role="__5" eventType="attribution" />
-              <attributeStatement role="__6" eventType="attribution" />
+              <attributeAssessment role="__5" eventType="attribution" />
+              <attributeAssessment role="__6" eventType="attribution" />
             </assessmentStatement>
             <assessmentStatement comparator="eq">
-              <attributeStatement role="__15" eventType="attribution" />
-              <attributeStatement role="__16" eventType="attribution" />
+              <attributeAssessment role="__15" eventType="attribution" />
+              <attributeAssessment role="__16" eventType="attribution" />
             </assessmentStatement>
             <assessmentStatement comparator="eq">
-              <attributeStatement role="__0" eventType="attribution" />
-              <attributeStatement role="__1" eventType="attribution" />
+              <attributeAssessment role="__0" eventType="attribution" />
+              <attributeAssessment role="__1" eventType="attribution" />
             </assessmentStatement>
           </compoundStatement>
         </compoundCondition>
@@ -677,16 +677,16 @@ local str = dietncl.parsestring( [[
           <simpleCondition role="onResume" />
           <compoundStatement operator="and">
             <assessmentStatement comparator="eq">
-              <attributeStatement role="__5" eventType="attribution" />
-              <attributeStatement role="__6" eventType="attribution" />
+              <attributeAssessment role="__5" eventType="attribution" />
+              <attributeAssessment role="__6" eventType="attribution" />
             </assessmentStatement>
             <assessmentStatement comparator="eq">
-              <attributeStatement role="__15" eventType="attribution" />
-              <attributeStatement role="__16" eventType="attribution" />
+              <attributeAssessment role="__15" eventType="attribution" />
+              <attributeAssessment role="__16" eventType="attribution" />
             </assessmentStatement>
             <assessmentStatement comparator="eq">
-              <attributeStatement role="__13" eventType="attribution" />
-              <attributeStatement role="__14" eventType="attribution" />
+              <attributeAssessment role="__13" eventType="attribution" />
+              <attributeAssessment role="__14" eventType="attribution" />
             </assessmentStatement>
           </compoundStatement>
         </compoundCondition>
@@ -767,20 +767,20 @@ assert (ncl:equal (str))
 --                                         <compoundCondition operator="and">
 --                                                 <simpleCondition role="onBegin" />
 --                                                 <assessmentStatement comparator="eq">
---                                                         <attributeStatement role="__0" eventType="attribution" />
---                                                         <attributeStatement role="__1" eventType="attribution" />
+--                                                         <attributeAssessment role="__0" eventType="attribution" />
+--                                                         <attributeAssessment role="__1" eventType="attribution" />
 --                                                 </assessmentStatement>
 --                                         </compoundCondition>
 --                                         <compoundCondition operator="and">
 --                                                 <simpleCondition role="onEnd" />
 --                                                 <assessmentStatement comparator="eq">
---                                                         <attributeStatement role="__3" eventType="attribution" />
---                                                         <attributeStatement role="__4" eventType="attribution" />
+--                                                         <attributeAssessment role="__3" eventType="attribution" />
+--                                                         <attributeAssessment role="__4" eventType="attribution" />
 --                                                 </assessmentStatement>
 --                                         </compoundCondition>
 --                                         <assessmentStatement comparator="eq">
---                                                 <attributeStatement role="__5" eventType="attribution" />
---                                                 <attributeStatement role="__6" eventType="attribution" />
+--                                                 <attributeAssessment role="__5" eventType="attribution" />
+--                                                 <attributeAssessment role="__6" eventType="attribution" />
 --                                         </assessmentStatement>
 --                                 </compoundCondition>
 --                                 <compoundAction operator="and">
@@ -788,8 +788,8 @@ assert (ncl:equal (str))
 --                                     <simpleAction role="pause" />
 --                                 </compoundAction>
 --                                 <assessmentStatement comparator="eq">
---                                     <attributeStatement role="__7" eventType="attribution" />
---                                     <attributeStatement role="__8" eventType="attribution" />
+--                                     <attributeAssessment role="__7" eventType="attribution" />
+--                                     <attributeAssessment role="__8" eventType="attribution" />
 --                                 </assessmentStatement>
 --                         </causalConnector>
 --                 </connectorBase>
@@ -823,16 +823,16 @@ assert (ncl:equal (str))
 --                                         <simpleCondition role="onBegin" />
 --                                         <compoundStatement operator="and">
 --                                                 <assessmentStatement comparator="eq">
---                                                         <attributeStatement role="__0" eventType="attribution" />
---                                                         <attributeStatement role="__1" eventType="attribution" />
+--                                                         <attributeAssessment role="__0" eventType="attribution" />
+--                                                         <attributeAssessment role="__1" eventType="attribution" />
 --                                                 </assessmentStatement>
 --                                                 <assessmentStatement comparator="eq">
---                                                         <attributeStatement role="__7" eventType="attribution" />
---                                                         <attributeStatement role="__8" eventType="attribution" />
+--                                                         <attributeAssessment role="__7" eventType="attribution" />
+--                                                         <attributeAssessment role="__8" eventType="attribution" />
 --                                                 </assessmentStatement>
 --                                                 <assessmentStatement comparator="eq">
---                                                         <attributeStatement role="__5" eventType="attribution" />
---                                                         <attributeStatement role="__6" eventType="attribution" />
+--                                                         <attributeAssessment role="__5" eventType="attribution" />
+--                                                         <attributeAssessment role="__6" eventType="attribution" />
 --                                                 </assessmentStatement>
 --                                         </compoundStatement>
 --                                 </compoundCondition>
@@ -846,16 +846,16 @@ assert (ncl:equal (str))
 --                                         <simpleCondition role="onEnd" />
 --                                         <compoundStatement operator="and">
 --                                                 <assessmentStatement comparator="eq">
---                                                         <attributeStatement role="__3" eventType="attribution" />
---                                                         <attributeStatement role="__4" eventType="attribution" />
+--                                                         <attributeAssessment role="__3" eventType="attribution" />
+--                                                         <attributeAssessment role="__4" eventType="attribution" />
 --                                                 </assessmentStatement>
 --                                                 <assessmentStatement comparator="eq">
---                                                         <attributeStatement role="__7" eventType="attribution" />
---                                                         <attributeStatement role="__8" eventType="attribution" />
+--                                                         <attributeAssessment role="__7" eventType="attribution" />
+--                                                         <attributeAssessment role="__8" eventType="attribution" />
 --                                                 </assessmentStatement>
 --                                                 <assessmentStatement comparator="eq">
---                                                         <attributeStatement role="__5" eventType="attribution" />
---                                                         <attributeStatement role="__6" eventType="attribution" />
+--                                                         <attributeAssessment role="__5" eventType="attribution" />
+--                                                         <attributeAssessment role="__6" eventType="attribution" />
 --                                                 </assessmentStatement>
 --                                         </compoundStatement>
 --                                 </compoundCondition>
@@ -902,16 +902,16 @@ assert (ncl:equal (str))
 --                                         <simpleCondition role="onBegin" />
 --                                         <compoundStatement operator="and">
 --                                                 <assessmentStatement comparator="eq">
---                                                         <attributeStatement role="__0" eventType="attribution" />
---                                                         <attributeStatement role="__1" eventType="attribution" />
+--                                                         <attributeAssessment role="__0" eventType="attribution" />
+--                                                         <attributeAssessment role="__1" eventType="attribution" />
 --                                                 </assessmentStatement>
 --                                                 <assessmentStatement comparator="eq">
---                                                         <attributeStatement role="__7" eventType="attribution" />
---                                                         <attributeStatement role="__8" eventType="attribution" />
+--                                                         <attributeAssessment role="__7" eventType="attribution" />
+--                                                         <attributeAssessment role="__8" eventType="attribution" />
 --                                                 </assessmentStatement>
 --                                                 <assessmentStatement comparator="eq">
---                                                         <attributeStatement role="__5" eventType="attribution" />
---                                                         <attributeStatement role="__6" eventType="attribution" />
+--                                                         <attributeAssessment role="__5" eventType="attribution" />
+--                                                         <attributeAssessment role="__6" eventType="attribution" />
 --                                                 </assessmentStatement>
 --                                         </compoundStatement>
 --                                 </compoundCondition>
@@ -925,16 +925,16 @@ assert (ncl:equal (str))
 --                                         <simpleCondition role="onEnd" />
 --                                         <compoundStatement operator="and">
 --                                                 <assessmentStatement comparator="eq">
---                                                         <attributeStatement role="__3" eventType="attribution" />
---                                                         <attributeStatement role="__4" eventType="attribution" />
+--                                                         <attributeAssessment role="__3" eventType="attribution" />
+--                                                         <attributeAssessment role="__4" eventType="attribution" />
 --                                                 </assessmentStatement>
 --                                                 <assessmentStatement comparator="eq">
---                                                         <attributeStatement role="__7" eventType="attribution" />
---                                                         <attributeStatement role="__8" eventType="attribution" />
+--                                                         <attributeAssessment role="__7" eventType="attribution" />
+--                                                         <attributeAssessment role="__8" eventType="attribution" />
 --                                                 </assessmentStatement>
 --                                                 <assessmentStatement comparator="eq">
---                                                         <attributeStatement role="__5" eventType="attribution" />
---                                                         <attributeStatement role="__6" eventType="attribution" />
+--                                                         <attributeAssessment role="__5" eventType="attribution" />
+--                                                         <attributeAssessment role="__6" eventType="attribution" />
 --                                                 </assessmentStatement>
 --                                         </compoundStatement>
 --                                 </compoundCondition>
@@ -985,33 +985,33 @@ assert (ncl:equal (str))
 --                                         <compoundCondition operator="and">
 --                                                 <simpleCondition role="onBegin" />
 --                                                 <assessmentStatement comparator="eq">
---                                                         <attributeStatement role="__0" eventType="attribution" />
---                                                         <attributeStatement role="__1" eventType="attribution" />
+--                                                         <attributeAssessment role="__0" eventType="attribution" />
+--                                                         <attributeAssessment role="__1" eventType="attribution" />
 --                                                 </assessmentStatement>
 --                                         </compoundCondition>
 --                                         <compoundCondition operator="and">
 --                                                     <compoundCondition operator="and">
 --                                                         <simpleCondition role="onResume" />
 --                                                         <assessmentStatement comparator="eq">
---                                                             <attributeStatement role="__3" eventType="attribution" />
---                                                             <attributeStatement role="__4" eventType="attribution" />
+--                                                             <attributeAssessment role="__3" eventType="attribution" />
+--                                                             <attributeAssessment role="__4" eventType="attribution" />
 --                                                         </assessmentStatement>
 --                                                     </compoundCondition>
 --                                                     <compoundCondition operator="and">
 --                                                         <simpleCondition role="onEnd" />
 --                                                         <assessmentStatement comparator="eq">
---                                                             <attributeStatement role="__12" eventType="attribution" />
---                                                             <attributeStatement role="__11" eventType="attribution" />
+--                                                             <attributeAssessment role="__12" eventType="attribution" />
+--                                                             <attributeAssessment role="__11" eventType="attribution" />
 --                                                         </assessmentStatement>
 --                                                     </compoundCondition>
 --                                                     <assessmentStatement comparator="eq">
---                                                         <attributeStatement role="__9" eventType="attribution" />
---                                                         <attributeStatement role="__10" eventType="attribution" />
+--                                                         <attributeAssessment role="__9" eventType="attribution" />
+--                                                         <attributeAssessment role="__10" eventType="attribution" />
 --                                                     </assessmentStatement>
 --                                         </compoundCondition>
 --                                         <assessmentStatement comparator="eq">
---                                                 <attributeStatement role="__5" eventType="attribution" />
---                                                 <attributeStatement role="__6" eventType="attribution" />
+--                                                 <attributeAssessment role="__5" eventType="attribution" />
+--                                                 <attributeAssessment role="__6" eventType="attribution" />
 --                                         </assessmentStatement>
 --                                 </compoundCondition>
 --                                 <compoundAction operator="and">
@@ -1019,8 +1019,8 @@ assert (ncl:equal (str))
 --                                     <simpleAction role="pause" />
 --                                 </compoundAction>
 --                                 <assessmentStatement comparator="eq">
---                                     <attributeStatement role="__7" eventType="attribution" />
---                                     <attributeStatement role="__8" eventType="attribution" />
+--                                     <attributeAssessment role="__7" eventType="attribution" />
+--                                     <attributeAssessment role="__8" eventType="attribution" />
 --                                 </assessmentStatement>
 --                         </causalConnector>
 --                 </connectorBase>
@@ -1059,16 +1059,16 @@ assert (ncl:equal (str))
 --                                         <simpleCondition role="onBegin" />
 --                                         <compoundStatement operator="and">
 --                                                 <assessmentStatement comparator="eq">
---                                                         <attributeStatement role="__0" eventType="attribution" />
---                                                         <attributeStatement role="__1" eventType="attribution" />
+--                                                         <attributeAssessment role="__0" eventType="attribution" />
+--                                                         <attributeAssessment role="__1" eventType="attribution" />
 --                                                 </assessmentStatement>
 --                                                 <assessmentStatement comparator="eq">
---                                                         <attributeStatement role="__7" eventType="attribution" />
---                                                         <attributeStatement role="__8" eventType="attribution" />
+--                                                         <attributeAssessment role="__7" eventType="attribution" />
+--                                                         <attributeAssessment role="__8" eventType="attribution" />
 --                                                 </assessmentStatement>
 --                                                 <assessmentStatement comparator="eq">
---                                                         <attributeStatement role="__5" eventType="attribution" />
---                                                         <attributeStatement role="__6" eventType="attribution" />
+--                                                         <attributeAssessment role="__5" eventType="attribution" />
+--                                                         <attributeAssessment role="__6" eventType="attribution" />
 --                                                 </assessmentStatement>
 --                                         </compoundStatement>
 --                                 </compoundCondition>
@@ -1082,20 +1082,20 @@ assert (ncl:equal (str))
 --                                         <simpleCondition role="onResume" />
 --                                         <compoundStatement operator="and">
 --                                                 <assessmentStatement comparator="eq">
---                                                         <attributeStatement role="__5" eventType="attribution" />
---                                                         <attributeStatement role="__6" eventType="attribution" />
+--                                                         <attributeAssessment role="__5" eventType="attribution" />
+--                                                         <attributeAssessment role="__6" eventType="attribution" />
 --                                                 </assessmentStatement>
 --                                                 <assessmentStatement comparator="eq">
---                                                         <attributeStatement role="__9" eventType="attribution" />
---                                                         <attributeStatement role="__10" eventType="attribution" />
+--                                                         <attributeAssessment role="__9" eventType="attribution" />
+--                                                         <attributeAssessment role="__10" eventType="attribution" />
 --                                                 </assessmentStatement>
 --                                                 <assessmentStatement comparator="eq">
---                                                         <attributeStatement role="__3" eventType="attribution" />
---                                                         <attributeStatement role="__4" eventType="attribution" />
+--                                                         <attributeAssessment role="__3" eventType="attribution" />
+--                                                         <attributeAssessment role="__4" eventType="attribution" />
 --                                                 </assessmentStatement>
 --                                                 <assessmentStatement comparator="eq">
---                                                         <attributeStatement role="__7" eventType="attribution" />
---                                                         <attributeStatement role="__8" eventType="attribution" />
+--                                                         <attributeAssessment role="__7" eventType="attribution" />
+--                                                         <attributeAssessment role="__8" eventType="attribution" />
 --                                                 </assessmentStatement>
 --                                         </compoundStatement>
 --                                 </compoundCondition>
@@ -1110,20 +1110,20 @@ assert (ncl:equal (str))
 --                                         <simpleCondition role="onEnd" />
 --                                         <compoundStatement operator="and">
 --                                                 <assessmentStatement comparator="eq">
---                                                         <attributeStatement role="__5" eventType="attribution" />
---                                                         <attributeStatement role="__6" eventType="attribution" />
+--                                                         <attributeAssessment role="__5" eventType="attribution" />
+--                                                         <attributeAssessment role="__6" eventType="attribution" />
 --                                                 </assessmentStatement>
 --                                                 <assessmentStatement comparator="eq">
---                                                         <attributeStatement role="__9" eventType="attribution" />
---                                                         <attributeStatement role="__10" eventType="attribution" />
+--                                                         <attributeAssessment role="__9" eventType="attribution" />
+--                                                         <attributeAssessment role="__10" eventType="attribution" />
 --                                                 </assessmentStatement>
 --                                                 <assessmentStatement comparator="eq">
---                                                         <attributeStatement role="__12" eventType="attribution" />
---                                                         <attributeStatement role="__11" eventType="attribution" />
+--                                                         <attributeAssessment role="__12" eventType="attribution" />
+--                                                         <attributeAssessment role="__11" eventType="attribution" />
 --                                                 </assessmentStatement>
 --                                                 <assessmentStatement comparator="eq">
---                                                         <attributeStatement role="__7" eventType="attribution" />
---                                                         <attributeStatement role="__8" eventType="attribution" />
+--                                                         <attributeAssessment role="__7" eventType="attribution" />
+--                                                         <attributeAssessment role="__8" eventType="attribution" />
 --                                                 </assessmentStatement>
 --                                         </compoundStatement>
 --                                 </compoundCondition>
