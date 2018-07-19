@@ -20,6 +20,8 @@ local dietncl = require ('dietncl')
 local filter = require ('dietncl.filter.prenorm2')
 local aux = require ('dietncl.nclaux')
 
+local print = print
+
 _ENV = nil
 
 
@@ -200,4 +202,75 @@ assert (ncl:equal (dietncl.parsestring ([[
    <bind role='start' component='x'/>
   </link>
  </body>
+</ncl>]])))
+
+
+-- Remove bindParam associated with assessmentStatement
+-- TODO
+
+local ncl, errmsg = dietncl.parsestring ([[
+<ncl>
+<head>
+  <connectorBase>
+  <causalConnector id='onBeginPropertyTestStart'>
+    <connectorParam name='val'/>
+    <compoundCondition operator='and'>
+      <simpleCondition role='onBegin'/>
+      <assessmentStatement comparator='eq'>
+        <attributeAssessment role='propertyTest'/>
+        <valueAssessment value='$val'/>
+      </assessmentStatement>
+    </compoundCondition>
+    <simpleAction role='start' max='unbounded' qualifier='seq'/>
+  </causalConnector>
+  </connectorBase>
+</head>
+<body id='body'>
+  <port id='p1' component='m1' />
+  <media id='m1' />
+  <media id='m2' />
+  <media id='noSettings' type='application/x-ginga-settings'>
+    <property name='turn' value='x'/>
+  </media>
+  <link xconnector='onBeginPropertyTestStart' >
+    <bind component='m1' role='onBegin'/>
+    <bind component='noSettings' interface='turn' role='propertyTest'>
+      <bindParam name='val' value='x'/>
+    </bind>
+    <bind component='m2' role='start'/>
+  </link>
+</body>
+</ncl>]])
+assert (ncl, errmsg)
+assert (filter.apply (ncl))
+print(ncl:str())
+assert (ncl:equal (dietncl.parsestring ([[
+<ncl>
+  <head>
+    <connectorBase>
+      <causalConnector id="onBeginPropertyTestStart">
+        <compoundCondition operator="and">
+          <simpleCondition role="onBegin"/>
+          <assessmentStatement comparator="eq">
+            <attributeAssessment role="propertyTest"/>
+            <valueAssessment value="x"/>
+          </assessmentStatement>
+        </compoundCondition>
+        <simpleAction max="unbounded" qualifier="seq" role="start"/>
+      </causalConnector>
+    </connectorBase>
+  </head>
+  <body id="body">
+    <port id="p1" component="m1"/>
+    <media id="m1"/>
+    <media id="m2"/>
+    <media id="noSettings" type="application/x-ginga-settings">
+      <property value="x" name="turn"/>
+    </media>
+    <link xconnector="onBeginPropertyTestStart">
+      <bind component="m1" role="onBegin"/>
+      <bind component="noSettings" interface="turn" role="propertyTest"/>
+      <bind component="m2" role="start"/>
+    </link>
+  </body>
 </ncl>]])))

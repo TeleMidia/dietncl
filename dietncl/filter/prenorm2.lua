@@ -34,7 +34,7 @@ _ENV = nil
 -- The PRENORM1-5 filters simplify links and connectors from a given NCL
 -- document.  This filter, PRENORM2, implements the second pre-normalization
 -- step: It guarantees that all connectors and links contain no link, bind,
--- or connector parameters, i.e., no <linkParam>, <bindParm>, or
+-- or connector parameters, i.e., no <linkParam>, <bindParam>, or
 -- <connectorParam> elements (except if "pega-dali" is used).
 -- @param ncl NCL document (root element).
 -- @return the modified NCL document (root element).

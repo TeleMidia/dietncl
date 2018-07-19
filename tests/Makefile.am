@@ -67,6 +67,7 @@ scripts+= test-filter-prenorm5.lua
 scripts+= test-filter-region.lua
 scripts+= test-filter-remove_component.lua
 scripts+= test-filter-transition.lua
+scripts+= test-filter-lua-table.lua
 scripts+= test-init-parse.lua
 scripts+= test-init-parsestring.lua
 scripts+= test-nclaux-gen-id.lua
