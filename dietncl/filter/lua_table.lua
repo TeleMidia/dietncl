@@ -16,18 +16,6 @@ for more details.
 You should have received a copy of the GNU General Public License along
 with DietNCL.  If not, see <http://www.gnu.org/licenses/>.  ]]--
 
---------------------------------------------------
--- TODO:
-
--- check metadata usage and simplify it
--- use only ['parent'] and ['ncl']
-
--- make functions receive only ltab as parameter
--- parse through the ncl via metadata
-
--- use auxiliary functions in every parse_func
---------------------------------------------------
-
 local filter = {}
 
 local print = print
@@ -208,16 +196,21 @@ end
 
 -- area
 local function parse_area(area, ltab)
+   local area_tab = {}
+
    if area['label'] ~= nil then
       -- {id, label}
-      ltab[1] = area['id']
-      ltab[2] = area['label']
+      area_tab[1] = area['id']
+      area_tab[2] = area['label']
    else
       -- {id, time-spec, time-spec}
-      ltab[1] = area['id']
-      ltab[2] = area['begin']
-      ltab[3] = area['end']
+      area_tab[1] = area['id']
+      area_tab[2] = area['begin']
+      area_tab[3] = area['end']
    end
+
+   -- append to area list
+   table.insert(ltab, area_tab)
 end
 
 
