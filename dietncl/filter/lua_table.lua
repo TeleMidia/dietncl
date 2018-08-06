@@ -72,7 +72,7 @@ local operand_table = {
 --------------------------------------------------
 -- Transition table converter
 local transition_table = {
-   -- simpleCondition transitions
+   -- simpleCondition roles
    ['onBegin'] = 'start',
    ['onEnd'] = 'stop',
    ['onAbort'] = 'abort',
@@ -90,7 +90,14 @@ local transition_table = {
    ['onPauseAttribution'] = 'pause',
    ['onResumeAttribution'] = 'resume',
 
-   -- simpleAction transitions
+   -- simpleCondition transitions
+   ['starts'] = 'start',
+   ['stops'] = 'stop',
+   ['aborts'] = 'abort',
+   ['pauses'] = 'pause',
+   ['resumes'] = 'resume',
+
+   -- simpleAction roles
    ['start'] = 'start',
    ['stop'] = 'stop',
    ['abort'] = 'abort',
@@ -263,6 +270,7 @@ local function parse_nested_predicate(predicate, link, ltab)
       ltab = {predicate['operator'], {}, {}}
    end
 
+   -- parse each nested predicate
    local i = 2
    for child in predicate:children() do
       local pred = condition:find('compoundStatement')
@@ -281,7 +289,14 @@ end
 -- simple condition/action
 local function parse_action(action, link, ltab)
    -- insert transition
-   table.insert(ltab, transition_table[action['role']])
+   local transition = action['actionType']
+      or transition_table[action['transition']]
+
+   if transition == nil then
+      transition = transition_table[action['role']]
+   end
+
+   table.insert(ltab, transition)
 
    local context = find(ltab, 'context')
    local bind = link:find('bind', 'role', action['role'])
