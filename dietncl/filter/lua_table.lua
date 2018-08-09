@@ -296,8 +296,7 @@ local function parse_nested_predicate(predicate, link, ltab)
 end
 
 
--- simple condition/action
--- (condition)
+-- action
 local function parse_action(action, link, ltab)
    -- insert transition
    local transition = action['actionType']
@@ -349,8 +348,7 @@ local function parse_simple_condition(condition, predicate, link, ltab)
 end
 
 
--- condition
--- (condition_list)
+-- compound condition
 local function parse_compound_condition(condition, link, ltab)
    -- no compoundCondition
    if condition:tag() == 'simpleCondition' then
@@ -373,26 +371,38 @@ local function parse_compound_condition(condition, link, ltab)
 end
 
 
--- action
-local function parse_compound_action(action, link, ltab)
-   -- {transition, evt-id, [params]}
+-- simple action
+local function parse_simple_action(action, link, ltab)
+   -- {transition, evt-id, [value]}
    local act = {}
    new(act, ltab, action)
+   parse_action(action, link, act)
 
-   -- get transition and evt-id
-   local simple_act = action
-   if simple_act:tag() ~= 'simpleAction' then
-      simple_act = simple_act:find('simpleAction')
-   end
-   parse_action(simple_act, link, act)
-
-   -- append to condition list
+   -- append to action list
    table.insert(ltab, act)
 end
 
 
+-- compound action
+local function parse_compound_action(action, link, ltab)
+   -- no compoundAction
+   if action:tag() == 'simpleAction' then
+      parse_simple_action(action, link, ltab)
+   end
+
+   -- children
+   for child in action:children() do
+      if child:tag() == 'simpleAction' then
+         parse_simple_action(child, link, ltab)
+      else
+         -- recursion
+         parse_compound_action(child, link, ltab)
+      end
+   end
+end
+
+
 -- link
--- (link, link_list)
 local function parse_link(link, ltab)
    -- {{conditions}, {actions}}
    local condition_list = {}

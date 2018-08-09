@@ -323,9 +323,7 @@ assert (deepcompare(ltab, result))
 
 --------------------------------------------------
 
--- Link with multiple conditions
--- TODO:
--- and multiple actions
+-- Link with multiple conditions/actions
 
 local str = [[
 <ncl>
@@ -339,11 +337,13 @@ local str = [[
             <simpleCondition role='onEnd-m3' transition='stops' eventType='presentation'/>
           </compoundCondition>
         </compoundCondition>
-        <simpleAction role='start'/>
-      </causalConnector>
-      <causalConnector id='c2'>
-        <simpleCondition role='onEnd'/>
-        <simpleAction role='start'/>
+        <compoundAction>
+          <simpleAction role='start-m4' actionType='start' eventType='presentation'/>
+          <compoundAction>
+            <simpleAction role='start-m5' actionType='start' eventType='presentation'/>
+            <simpleAction role='start-m6' actionType='start' eventType='presentation'/>
+          </compoundAction>
+        </compoundAction>
       </causalConnector>
     </connectorBase>
   </head>
@@ -355,11 +355,15 @@ local str = [[
     <media id='m2' src='media/video2.ogv'/>
     <media id='m3' src='media/video3.ogv'/>
     <media id='m4' src='media/video4.ogv'/>
+    <media id='m5' src='media/video5.ogv'/>
+    <media id='m6' src='media/video6.ogv'/>
     <link xconnector='c1'>
       <bind role='onEnd-m1' component='m1'/>
       <bind role='onEnd-m2' component='m2'/>
       <bind role='onEnd-m3' component='m3'/>
-      <bind role='start' component='m4'/>
+      <bind role='start-m4' component='m4'/>
+      <bind role='start-m5' component='m5'/>
+      <bind role='start-m6' component='m6'/>
     </link>
   </body>
 </ncl>
@@ -380,14 +384,24 @@ local result = {'context', 'b',
                    {'media', 'm3',
                     {src='media/video3.ogv'}, {}},
                    {'media', 'm4',
-                    {src='media/video4.ogv'}, {}}
+                    {src='media/video4.ogv'}, {}},
+                   {'media', 'm5',
+                    {src='media/video5.ogv'}, {}},
+                   {'media', 'm6',
+                    {src='media/video6.ogv'}, {}}
                 },
                 {
                    {
-                      {{'stop', 'm1@lambda', {true}},
+                      {
+                         {'stop', 'm1@lambda', {true}},
                          {'stop', 'm2@lambda', {true}},
-                         {'stop', 'm3@lambda', {true}}},
-                      {{'start', 'm4@lambda'}}
+                         {'stop', 'm3@lambda', {true}}
+                      },
+                      {
+                         {'start', 'm4@lambda'},
+                         {'start', 'm5@lambda'},
+                         {'start', 'm6@lambda'},
+                      }
                    }
                 }
 }
