@@ -262,23 +262,33 @@ end
 
 -- nested predicate
 local function parse_nested_predicate(predicate, link, ltab)
-   -- {'not', pred}
-   -- {('and'|'or'), pred, pred}
+   -- not empty predicate
+   table.remove(ltab)
+
+   -- build predicate
    if predicate['isNegated'] then
-      ltab = {'not', {}}
+      -- {'not', pred}
+      table.insert(ltab, 'not')
+      table.insert(ltab, {})
+      new(ltab[2], ltab)
    else
-      ltab = {predicate['operator'], {}, {}}
+      -- {('and'|'or'), pred, pred}
+      table.insert(ltab, predicate['operator'])
+      table.insert(ltab, {})
+      table.insert(ltab, {})
+      new(ltab[2], ltab)
+      new(ltab[3], ltab)
    end
 
    -- parse each nested predicate
    local i = 2
    for child in predicate:children() do
-      local pred = condition:find('compoundStatement')
-      if pred == nil then
-         pred = condition:find('assessmentStatement')
-         parse_predicate(pred, link, ltab[i])
+      if child:tag() == 'assessmentStatement' then
+         -- simple predicate
+         parse_predicate(child, link, ltab[i])
       else
-         parse_nested_predicate(pred, link, ltab[i])
+         -- compound predicate
+         parse_nested_predicate(child, link, ltab[i])
       end
 
       i = 3
@@ -287,6 +297,7 @@ end
 
 
 -- simple condition/action
+-- (condition)
 local function parse_action(action, link, ltab)
    -- insert transition
    local transition = action['actionType']
@@ -303,48 +314,62 @@ local function parse_action(action, link, ltab)
 
    -- get event from bind
    local event = get_event(bind, context['ncl'], context)
-
-   -- append to condition/action table
    table.insert(ltab, event)
+
+   -- 'set' value
+   if action['eventType'] == 'attribution'
+   or action['role'] == 'set' then
+      table.insert(ltab, action['value'])
+   end
 end
 
 
--- condition
-local function parse_compound_condition(condition, link, ltab)
-   -- {transition, evt-id, [predicate]}
+-- simple condition
+local function parse_simple_condition(condition, predicate, link, ltab)
+   -- {transition, evt-id, predicate}
    local cond = {}
    new(cond, ltab, condition)
+   parse_action(condition, link, cond)
 
-   -- get transition and evt-id
-   local simple_cond = condition
-   if simple_cond:tag() ~= 'simpleCondition' then
-      simple_cond = simple_cond:find('simpleCondition')
-   end
-   parse_action(simple_cond, link, cond)
-
-   -- create predicate table
-   cond[3] = {}
+   -- create predicate
+   cond[3] = {true}
    new(cond[3], cond)
 
-   -- get predicate
-   local pred = condition:find('compoundStatement')
-   if pred == nil then
-      pred = condition:find('assessmentStatement')
-
-      if pred == nil then
-         -- if no predicate
-         table.insert(cond[3], true)
+   if predicate ~= nil then
+      if predicate:tag() == 'compoundStatement' then
+         parse_nested_predicate(predicate, link, cond[3])
       else
-         -- simple predicate
-         parse_predicate(pred, link, cond[3])
+         -- assessmentStatement
+         parse_predicate(predicate, link, cond[3])
       end
-   else
-      -- compound predicate
-      parse_nested_predicate(pred, link, cond[3])
    end
 
    -- append to condition list
    table.insert(ltab, cond)
+end
+
+
+-- condition
+-- (condition_list)
+local function parse_compound_condition(condition, link, ltab)
+   -- no compoundCondition
+   if condition:tag() == 'simpleCondition' then
+      parse_simple_condition(condition, nil, link, ltab)
+   end
+
+   -- find predicate
+   local pred = condition:find('compoundStatement')
+      or condition:find('assessmentStatement')
+
+   -- children
+   for child in condition:children() do
+      if child:tag() == 'simpleCondition' then
+         parse_simple_condition(child, pred, link, ltab)
+      elseif child:tag() == 'compoundCondition' then
+         -- recursion
+         parse_compound_condition(child, link, ltab)
+      end
+   end
 end
 
 
@@ -361,15 +386,13 @@ local function parse_compound_action(action, link, ltab)
    end
    parse_action(simple_act, link, act)
 
-   -- [params]??
-   -- só existe se for um 'set'?
-
    -- append to condition list
    table.insert(ltab, act)
 end
 
 
 -- link
+-- (link, link_list)
 local function parse_link(link, ltab)
    -- {{conditions}, {actions}}
    local condition_list = {}

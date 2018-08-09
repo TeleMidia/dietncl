@@ -197,70 +197,79 @@ local result = {'context', 'b',   -- body
 assert (deepcompare(ltab, result))
 
 
--- --------------------------------------------------
--- 
--- -- Nested compoundStatement with a "set" transition
+--------------------------------------------------
+
+-- Nested compoundStatement with a "set" transition
 
--- local str = [[
--- <ncl>
---   <head>
---     <connectorBase>
---       <causalConnector id='c1'>
---         <compoundCondition operator='and'>
---           <simpleCondition role='onEnd'/>
---           <compoundStatement operator='and'>
---             <assessmentStatement comparator='eq'>
---               <attributeAssessment role='left' eventType='attribution'/>
---               <attributeAssessment role='right' eventType='attribution'/>
---             </assessmentStatement>
---             <compoundStatement operator='and'>
---               <assessmentStatement comparator='eq'>
---                 <attributeAssessment role='left' eventType='attribution'/>
---                 <attributeAssessment role='right' eventType='attribution'/>
---               </assessmentStatement>
---               <assessmentStatement comparator='eq'>
---                 <attributeAssessment role='left' eventType='attribution'/>
---                 <attributeAssessment role='right' eventType='attribution'/>
---               </assessmentStatement>
---             </compoundStatement>
---           </compoundStatement>
---         </compoundCondition>
---         <!-- How to do this without a connectorParam?? -->
---         <!-- Not allowed by prenorm2 -->
---         <connectorParam name='var'/>
---         <simpleAction role='set'/>
---         <!--  -->
---       </causalConnector>
---     </connectorBase>
---   </head>
---   <body id='b'>
---     <port id='start-m1' component='m1'/>
---     <property name='p1' value='1'/>
---     <media id='m1' src='media/video1.ogv'/>
---     <media id='m2' src='media/video2.ogv'/>
---     <link xconnector='c1'>
---       <bind role='onEnd' component='m1'/>
---       <!-- bindParam not allowed -->
---       <bind role='set' component='b' interface='p1'>
---         <bindParam name='var' value='2'/>
---       </bind>
---       <!--  -->
---       <!-- Which of these ways do I use to reference p1?? -->
---       <bind role='left' component='b' interface='p1'/>
---       <bind role='right' component='p1'/>
---       <!--  -->
---     </link>
---   </body>
--- </ncl>
--- ]]
+local str = [[
+<ncl>
+  <head>
+    <connectorBase>
+      <causalConnector id='c1'>
+        <compoundCondition operator='and'>
+          <simpleCondition role='onEnd'/>
+          <compoundStatement operator='and'>
+            <assessmentStatement comparator='eq'>
+              <attributeAssessment role='left' eventType='attribution'/>
+              <attributeAssessment role='right' eventType='attribution'/>
+            </assessmentStatement>
+            <compoundStatement operator='and'>
+              <assessmentStatement comparator='eq'>
+                <attributeAssessment role='left' eventType='attribution'/>
+                <attributeAssessment role='right' eventType='attribution'/>
+              </assessmentStatement>
+              <assessmentStatement comparator='eq'>
+                <attributeAssessment role='left' eventType='attribution'/>
+                <attributeAssessment role='right' eventType='attribution'/>
+              </assessmentStatement>
+            </compoundStatement>
+          </compoundStatement>
+        </compoundCondition>
+        <simpleAction role='set' value='2'/>
+      </causalConnector>
+    </connectorBase>
+  </head>
+  <body id='b'>
+    <port id='start-m1' component='m1'/>
+    <property name='p1' value='1'/>
+    <media id='m1' src='media/video1.ogv'/>
+    <media id='m2' src='media/video2.ogv'/>
+    <link xconnector='c1'>
+      <bind role='onEnd' component='m1'/>
+      <bind role='set' component='b' interface='p1'/>
+      <bind role='left' component='b' interface='p1'/>
+      <bind role='right' component='b' interface='p1'/>
+    </link>
+  </body>
+</ncl>
+]]
 
--- local ncl = dietncl.parsestring (str)
--- local ltab = filter.apply (ncl)
--- assert(ltab)
+local ncl = dietncl.parsestring (str)
+local ltab = filter.apply (ncl)
+assert(ltab)
 
--- local result = {}
+local result = {'context', 'b',
+                {p1='1'},
+                {'m1@lambda'},
+                {
+                   {'media', 'm1',
+                    {src='media/video1.ogv'}, {}},
+                   {'media', 'm2',
+                    {src='media/video2.ogv'}, {}}
+                },
+                {
+                   {
+                      {{'stop', 'm1@lambda',
+                        {'and', {'b.p1' , '==', 'b.p1'},
+                         {'and', {'b.p1' , '==', 'b.p1'},
+                          {'b.p1' , '==', 'b.p1'}}}
+                      }},
+                      {{'start', 'b.p1', '2'}}
+                   }
+                }
+}
 
--- assert (deepcompare(ltab, result))
+assert (deepcompare(ltab, result))
 
 
 --------------------------------------------------
@@ -312,55 +321,75 @@ local result = {'context', 'b', {},
 assert (deepcompare(ltab, result))
 
 
--- --------------------------------------------------
--- 
--- -- Link with multiple conditions
+--------------------------------------------------
+
+-- Link with multiple conditions
+-- TODO:
+-- and multiple actions
 
--- local str = [[
--- <ncl>
---   <head>
---     <connectorBase>
---       <causalConnector id='c1'>
---         <compoundCondition operator='and'>
---           <simpleCondition role='onEnd'/>
---           <compoundCondition operator='and'>
---             <simpleCondition role='onEnd'/>
---             <simpleCondition role='onEnd'/>
---           </compoundCondition>
---         </compoundCondition>
---         <simpleAction role='start'/>
---       </causalConnector>
---       <causalConnector id='c2'>
---         <simpleCondition role='onEnd'/>
---         <simpleAction role='start'/>
---       </causalConnector>
---     </connectorBase>
---   </head>
---   <body id='b'>
---     <port id='start-m1' component='m1'/>
---     <port id='start-m2' component='m2'/>
---     <port id='start-m3' component='m3'/>
---     <media id='m1' src='media/video1.ogv'/>
---     <media id='m2' src='media/video2.ogv'/>
---     <media id='m3' src='media/video3.ogv'/>
---     <media id='m4' src='media/video4.ogv'/>
---     <link xconnector='c1'>
---       <!-- How to use the same role in different binds?? -->
---       <!-- Same works for the simpleCondition part -->
---       <bind role='onEnd' component='m1'/>
---       <bind role='onEnd' component='m2'/>
---       <bind role='onEnd' component='m3'/>
---       <!--  -->
---       <bind role='start' component='m4'/>
---     </link>
---   </body>
--- </ncl>
--- ]]
+local str = [[
+<ncl>
+  <head>
+    <connectorBase>
+      <causalConnector id='c1'>
+        <compoundCondition operator='and'>
+          <simpleCondition role='onEnd-m1' transition='stops' eventType='presentation'/>
+          <compoundCondition operator='and'>
+            <simpleCondition role='onEnd-m2' transition='stops' eventType='presentation'/>
+            <simpleCondition role='onEnd-m3' transition='stops' eventType='presentation'/>
+          </compoundCondition>
+        </compoundCondition>
+        <simpleAction role='start'/>
+      </causalConnector>
+      <causalConnector id='c2'>
+        <simpleCondition role='onEnd'/>
+        <simpleAction role='start'/>
+      </causalConnector>
+    </connectorBase>
+  </head>
+  <body id='b'>
+    <port id='start-m1' component='m1'/>
+    <port id='start-m2' component='m2'/>
+    <port id='start-m3' component='m3'/>
+    <media id='m1' src='media/video1.ogv'/>
+    <media id='m2' src='media/video2.ogv'/>
+    <media id='m3' src='media/video3.ogv'/>
+    <media id='m4' src='media/video4.ogv'/>
+    <link xconnector='c1'>
+      <bind role='onEnd-m1' component='m1'/>
+      <bind role='onEnd-m2' component='m2'/>
+      <bind role='onEnd-m3' component='m3'/>
+      <bind role='start' component='m4'/>
+    </link>
+  </body>
+</ncl>
+]]
 
--- local ncl = dietncl.parsestring (str)
--- local ltab = filter.apply (ncl)
--- assert(ltab)
+local ncl = dietncl.parsestring (str)
+local ltab = filter.apply (ncl)
+assert(ltab)
 
--- local result = {}
+local result = {'context', 'b',
+                {},
+                {'m1@lambda', 'm2@lambda', 'm3@lambda'},
+                {
+                   {'media', 'm1',
+                    {src='media/video1.ogv'}, {}},
+                   {'media', 'm2',
+                    {src='media/video2.ogv'}, {}},
+                   {'media', 'm3',
+                    {src='media/video3.ogv'}, {}},
+                   {'media', 'm4',
+                    {src='media/video4.ogv'}, {}}
+                },
+                {
+                   {
+                      {{'stop', 'm1@lambda', {true}},
+                         {'stop', 'm2@lambda', {true}},
+                         {'stop', 'm3@lambda', {true}}},
+                      {{'start', 'm4@lambda'}}
+                   }
+                }
+}
 
--- assert (deepcompare(ltab, result))
+assert (deepcompare(ltab, result))
