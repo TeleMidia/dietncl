@@ -31,11 +31,121 @@ _ENV = nil
 --------------------------------------------------
 -- TODO:
 
--- in parse_context:
--- do i need to parse the ports before all the rest???
--- in order to store the events in cache
-
 -- add a test with a switch
+
+-- explain switch syntax
+--------------------------------------------------
+
+-- Table syntax explanation
+
+local ltab = {
+   -- tag
+   'context',
+
+   -- id
+   'ctx',
+
+   -- properties
+   {
+      -- name = value
+      prop = '5'
+   },
+
+   -- ports
+   {
+      -- event
+      'm1@lambda'
+   },
+
+   -- childrens
+   {
+      -- media
+      {
+         -- tag
+         'media',
+
+         -- id
+         'child1',
+
+         -- properties
+         {},
+
+         -- areas
+         {
+            -- first area
+            {
+               -- id
+               'a1',
+
+               -- start
+               '1s',
+
+               -- end
+               '2s'
+            }
+         }
+      },
+
+      -- switch
+      {
+         -- tag
+         'switch',
+
+         -- id
+         'child2',
+
+         -- children
+         {},
+
+         -- rules
+         {
+            -- id
+            'rule1',
+
+            -- predicate
+            {true}
+         }
+      },
+
+      -- context
+      {'context', 'child3', {}, {}, {}, {}}
+   },
+
+   -- links
+   {
+      -- first link
+      {
+         -- condition list
+         {
+            -- first condition
+            {
+               -- transition
+               'stop',
+
+               -- event
+               'child1@lambda',
+
+               -- predicate
+               {true}
+            }
+         },
+
+         -- action list
+         {
+            -- first action
+            {
+               -- transition
+               'start',
+
+               -- event
+               'child1@lambda'
+            }
+         }
+      }
+   }
+}
+
+
 --------------------------------------------------
 
 -- Auxiliary function to compare tables
@@ -72,7 +182,34 @@ end
 
 --------------------------------------------------
 
--- First example, explained in ltab comments
+-- Simple NCL
+
+local str = [[
+<ncl>
+  <head>
+  </head>
+  <body id='b'>
+  </body>
+</ncl>
+]]
+
+local ncl = dietncl.parsestring (str)
+local ltab = filter.apply (ncl)
+assert(ltab)
+
+local result = {'context', 'b',
+                {},
+                {},
+                {},
+                {}
+}
+
+assert (deepcompare(ltab, result))
+
+
+--------------------------------------------------
+
+-- Link using a chain of ports to reference a property
 
 local str = [[
 <ncl>
@@ -128,68 +265,41 @@ local str = [[
 local ncl = assert(dietncl.parsestring (str))
 local ltab = assert(filter.apply (ncl))
 
-local result = {'context', 'b',   -- body
-              -- properties
+local result = {'context', 'b',
               {p1='1'},
-              -- ports
               {'m1@lambda', 'm3@lambda'},
-              -- children
               {
-                 -- nested context
                  {'context', 'ctx1',
-                  -- no properties
                   {},
-                  -- ports
                   {'m3@lambda'},
-                  -- children
                   {
-                     -- nested context child
                      {'media', 'm3',
-                      -- media properties
                       {src='media/video3.ogv',
                        background='grey'},
-                      -- area list
                       {}
                      }
                   },
-                  -- no links
                   {}
-                  -- end of nested context
                  },
-                 -- first media
                  {'media', 'm1',
                   {src='media/video1.ogv',
                    background='grey'},
                   {{'a1', '1s'}, {'a2', '2s', '3s'}}},
-                 -- second media
                  {'media', 'm2', {}, {}},
               },
-              -- link list
               {
-                 -- first link
                  {
-                    -- condition list
                     {
-                       -- first condition
                        {'stop', 'm1@lambda',
-                        -- predicate
-                        {'m3.background', '==', 'm1.background'}
-                       }
+                        {'m3.background', '==', 'm1.background'}}
                     },
-                    -- action list
                     {
-                       -- first action
                        {'start', 'm2@lambda'}
                     }
                  },
-                 -- second link
                  {
-                    {
-                       {'stop', 'm2@lambda', {true}}
-                    },
-                    {
-                       {'start', 'm3@lambda'}
-                    }
+                    {{'stop', 'm2@lambda', {true}}},
+                    {{'start', 'm3@lambda'}}
                  }
               }
 }
@@ -404,6 +514,34 @@ local result = {'context', 'b',
                       }
                    }
                 }
+}
+
+assert (deepcompare(ltab, result))
+
+
+--------------------------------------------------
+
+-- TODO:
+-- Use a Switch element
+
+local str = [[
+<ncl>
+  <head>
+  </head>
+  <body id='b'>
+  </body>
+</ncl>
+]]
+
+local ncl = dietncl.parsestring (str)
+local ltab = filter.apply (ncl)
+assert(ltab)
+
+local result = {'context', 'b',
+                {},
+                {},
+                {},
+                {}
 }
 
 assert (deepcompare(ltab, result))

@@ -37,6 +37,7 @@ _ENV = nil
 -- @module dietncl.filter.lua_table
 ---
 
+
 --------------------------------------------------
 -- Forward Declaration
 local parser_table = {}
@@ -151,8 +152,8 @@ end
 
 -- Resolve event id
 local function get_event(elt, context, ltab)
+   -- check for cache
    if ltab['cache'][elt['id']] then
-      -- check for cache
       return ltab['cache'][elt['id']]
    elseif elt['interface'] == nil then
       -- whole object presentation
@@ -445,7 +446,7 @@ local function parse_context(context, ltab)
    local ctx = {'context', context['id'], {}, {}, {}, {}}
    new(ctx, ltab, context)
 
-   -- parse children
+   -- parse all children
    for child in context:children() do
       local tag = child:tag()
       local fn = parser_table[tag]
